@@ -414,7 +414,7 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
         G4cout<<"| particleID="<<particleID<<" | trackID="<<trackID<<" | parentID="<<parentID<<" | stepNo="<<stepNo<<" |"<<G4endl;
     }
 
-    if (volumeNamePreStep=="LD"){
+    if (volumeNamePreStep=="LD1" || volumeNamePreStep=="LD2"){
         evtac->AddEnergyDepositLD(energyDeposited);
         if (VerbosityLevel>2){
             G4cout<<"Energy Deposit in LD ! ("<<energyDeposited<<"keV)"<<G4endl;
@@ -460,7 +460,7 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
             theTrack->SetTrackStatus(fStopAndKill);
         }
 
-        if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "World") { // kill photon when they reach World
+        if (volumeNamePostStep == "World") { // kill photon when they reach World
             evtac->CountKilled();
             theTrack->SetTrackStatus(fStopAndKill);
             if (VerbosityLevel > 1){
@@ -468,7 +468,7 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
             }
         }
 
-        if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "LD") { // photon detected by the LD
+        if (volumeNamePostStep== "LD1" || volumeNamePostStep== "LD2") { // photon detected by the LD
             evtac->CountDetected();
             SetPhotonDetectedInformation(aStep, evtac);
             theTrack->SetTrackStatus(fStopAndKill);
