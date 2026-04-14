@@ -1,4 +1,4 @@
-# 📊 CUPID LP2IB Simulation
+# 📊 CUPID_LP2IB Simulation
 
 ## Optical Simulation for Alpha/Beta Contamination Meter
 

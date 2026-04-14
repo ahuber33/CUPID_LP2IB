@@ -236,16 +236,22 @@ void OpticalSimulationGeometryConstruction::ConstructLD() {
     LDPolygon.push_back( G4TwoVector( -15.7 * mm, +24.3 * mm ) );
     LDPolygon.push_back( G4TwoVector( -24.3 * mm, +15.7 * mm ) );
     LDPolygon.push_back( G4TwoVector( -24.3 * mm, -15.7 * mm ) );
-    LDThickness = 0.5 * mm;
+    LDThickness = 0.3 * mm;
 
-    LogicalLD = Geom->GetOctogonalVolume("LD", Germanium, LDPolygon, LDThickness);
+    LogicalLD1 = Geom->GetOctogonalVolume("LD1", Germanium, LDPolygon, LDThickness);
+    LogicalLD2 = Geom->GetOctogonalVolume("LD2", Germanium, LDPolygon, LDThickness);
 
     // Assign colors
-    SetLogicalVolumeColor(LogicalLD, "yellow");
+    SetLogicalVolumeColor(LogicalLD1, "yellow");
+    SetLogicalVolumeColor(LogicalLD2, "yellow");
 
-    PhysicalLD = new G4PVPlacement(
+    PhysicalLD1 = new G4PVPlacement(
+        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, -fLMOThickness/2 - fDistanceLMOtoLD - LDThickness/2 )),
+        LogicalLD1, "LD1", LogicalHolder, false, 0);
+
+    PhysicalLD2 = new G4PVPlacement(
         G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, fLMOThickness/2 + fDistanceLMOtoLD + LDThickness/2 )),
-        LogicalLD, "LD", LogicalHolder, false, 0);
+        LogicalLD2, "LD2", LogicalHolder, false, 0);
     
     //G4cout<<"LMO Thickness="<<fLMOThickness<<" | DistanceLMOtoLD="<<fDistanceLMOtoLD<<" | LDThickness="<<
     //LDThickness<<" | fLMOThickness/2 + fDistanceLMOtoLD + LDThickness/2 = "<<(fLMOThickness/2 + fDistanceLMOtoLD + LDThickness/2)<<G4endl;
@@ -255,7 +261,7 @@ void OpticalSimulationGeometryConstruction::ConstructLD() {
     // Roughness: Polished side < 1 nm RMS
     // How the coating affects the polishing?
 
-    auto opLDSurface = new G4OpticalSurface("LDSurface");
+   /*  auto opLDSurface = new G4OpticalSurface("LDSurface");
     opLDSurface->SetType(dielectric_dielectric);
     opLDSurface->SetFinish(polished);
     opLDSurface->SetModel(unified);
@@ -267,7 +273,7 @@ void OpticalSimulationGeometryConstruction::ConstructLD() {
     auto LDSurface = new G4LogicalBorderSurface("LDSurface", PhysicalLD, VacuumPhysical, opLDSurface);
     auto opticalSurfaceLD = dynamic_cast<G4OpticalSurface*>(LDSurface->GetSurface(PhysicalLD,VacuumPhysical)->GetSurfaceProperty());
     
-    if (opticalSurfaceLD) opticalSurfaceLD->DumpInfo();
+    if (opticalSurfaceLD) opticalSurfaceLD->DumpInfo(); */
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////// SiO coating
