@@ -1,4 +1,4 @@
-# 📊 Projet_Instru_Contaminametre_AlphaBeta
+# 📊 CUPID LP2IB Simulation
 
 ## Optical Simulation for Alpha/Beta Contamination Meter
 
