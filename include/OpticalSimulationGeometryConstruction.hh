@@ -114,7 +114,7 @@ class OpticalSimulationGeometryConstruction final
     G4double fDetectorDistance = 100 * CLHEP::mm;
 
     /** @brief Default Materials values. */
-    G4double fLMOLY = 44000 / MeV;
+    G4double fLMOLY = 1000 / MeV;
 
     /** @brief Visualization attributes (colors). */
     G4VisAttributes *invis = nullptr; // init all the pointers
@@ -132,16 +132,18 @@ class OpticalSimulationGeometryConstruction final
     /** @brief Logical volumes (geometry definitions). */
     G4LogicalVolume *LogicalWorld = nullptr;
     G4LogicalVolume *LogicalHolder = nullptr;
-    G4LogicalVolume *LogicalLD = nullptr;
-    G4LogicalVolume *LogicalLDCoating = nullptr;
+    G4LogicalVolume *LogicalLD1 = nullptr;
+    G4LogicalVolume *LogicalLD2 = nullptr;
+    //G4LogicalVolume *LogicalLDCoating = nullptr;
     G4LogicalVolume *LogicalLMO = nullptr;
     
 
     /** @brief Physical volumes (placements in space). */
     G4VPhysicalVolume *PhysicalWorld = nullptr;
     G4VPhysicalVolume *PhysicalHolder = nullptr;
-    G4VPhysicalVolume *PhysicalLD = nullptr;
-    G4VPhysicalVolume *PhysicalLDCoating = nullptr;
+    G4VPhysicalVolume *PhysicalLD1 = nullptr;
+    G4VPhysicalVolume *PhysicalLD2 = nullptr;
+    //G4VPhysicalVolume *PhysicalLDCoating = nullptr;
     G4VPhysicalVolume *PhysicalLMO = nullptr;
 
     /** @brief Rotation matrices for component orientation. */
