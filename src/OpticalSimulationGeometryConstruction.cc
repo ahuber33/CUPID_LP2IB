@@ -236,7 +236,7 @@ void OpticalSimulationGeometryConstruction::ConstructLD() {
     LDPolygon.push_back( G4TwoVector( -15.7 * mm, +24.3 * mm ) );
     LDPolygon.push_back( G4TwoVector( -24.3 * mm, +15.7 * mm ) );
     LDPolygon.push_back( G4TwoVector( -24.3 * mm, -15.7 * mm ) );
-    LDThickness = 0.3 * mm;
+    LDThickness = 0.5 * mm;
 
     LogicalLD1 = Geom->GetOctogonalVolume("LD1", Germanium, LDPolygon, LDThickness);
     LogicalLD2 = Geom->GetOctogonalVolume("LD2", Germanium, LDPolygon, LDThickness);
@@ -246,11 +246,11 @@ void OpticalSimulationGeometryConstruction::ConstructLD() {
     SetLogicalVolumeColor(LogicalLD2, "yellow");
 
     PhysicalLD1 = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, -fLMOThickness/2 - fDistanceLMOtoLD - LDThickness/2 )),
+        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, -fLMOThickness/2 - fDistanceLMOtoLD1 - LDThickness/2 )),
         LogicalLD1, "LD1", LogicalHolder, false, 0);
 
     PhysicalLD2 = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, fLMOThickness/2 + fDistanceLMOtoLD + LDThickness/2 )),
+        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, fLMOThickness/2 + fDistanceLMOtoLD2 + LDThickness/2 )),
         LogicalLD2, "LD2", LogicalHolder, false, 0);
     
     //G4cout<<"LMO Thickness="<<fLMOThickness<<" | DistanceLMOtoLD="<<fDistanceLMOtoLD<<" | LDThickness="<<

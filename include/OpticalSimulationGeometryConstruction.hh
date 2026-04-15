@@ -110,7 +110,8 @@ class OpticalSimulationGeometryConstruction final
     G4double fLMOLength = 45 * CLHEP::mm;
     G4double fLMOWidth = 45 * CLHEP::mm;
     G4double fLMOThickness = 45 * CLHEP::mm;
-    G4double fDistanceLMOtoLD = 0.5 * CLHEP::mm;
+    G4double fDistanceLMOtoLD1 = 0.5 * CLHEP::mm;
+    G4double fDistanceLMOtoLD2 = 3 * CLHEP::mm;
     G4double fDetectorDistance = 100 * CLHEP::mm;
 
     /** @brief Default Materials values. */
