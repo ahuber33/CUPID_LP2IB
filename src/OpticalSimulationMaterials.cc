@@ -15,6 +15,7 @@
 using namespace CLHEP;
 
 const G4String OpticalSimulationMaterials::path = "../simulation_input_files/";
+const G4String OpticalSimulationMaterials::path2 = "../optical_properties/";
 
 OpticalSimulationMaterials::OpticalSimulationMaterials() : fMaterialsList{} {
 
@@ -94,8 +95,7 @@ OpticalSimulationMaterials::OpticalSimulationMaterials() : fMaterialsList{} {
         if (Readabsorb.is_open()) {
             while (!Readabsorb.eof()) {
                 Readabsorb >> pWavelength >> filler >> var;
-                // G4cout << "Wavelength = " << pWavelength << " & absorption =
-                // "<< varabsorblength << G4endl;
+                //G4cout << "Wavelength = " << pWavelength << " & absorption = "<< var << " & filler = " << filler << "."  <<G4endl;
                 Absorption_Energy.push_back((1240. / pWavelength) * eV);
                 Absorption_Long.push_back(1. * var * m);
             }
@@ -311,87 +311,171 @@ OpticalSimulationMaterials::OpticalSimulationMaterials() : fMaterialsList{} {
 
     // LMO
 
-    // Refractive Index
-    // https://pubs.rsc.org/en/content/articlelanding/2021/ce/d1ce00766a NOT TOTALLY SURE
-    // Erin was using 1.44 I don't know from where
+    {
+        ReadEMISSION.clear();
+        ReadABSORPTION.clear();
+        ReadRINDEX.clear();
+        ReadELECTRONLY.clear();
+        ReadALPHALY.clear();
+        EMISSION_energy.clear();
+        EMISSION_var.clear();
+        ABSORPTION_energy.clear();
+        ABSORPTION_var.clear();
+        RINDEX_energy.clear();
+        RINDEX_var.clear();
+        ELECTRONLY_energy.clear();
+        ELECTRONLY_var.clear();
+        ALPHALY_energy.clear();
+        ALPHALY_var.clear();
 
-    std::vector<G4double> energy_LMO = {1.5 * eV, 2.5 * eV, 5.0 * eV};
-    std::vector<G4double> refractive_index_LMO = {1.7, 1.7, 1.7};
+        // READ EMISSION SPECTRUM
+        file = path2 + "LMO_EMISSION_eV.txt";
 
-    // Absorption 
-    // https://doi.org/10.1016/j.jallcom.2021.159148 Fig. 6 a) I
-    // At room temperature??
+        ReadEMISSION.open(file);
+        if (ReadEMISSION.is_open()) {
+            while (!ReadEMISSION.eof()) {
+                ReadEMISSION >> energy >> filler >> var;
+                EMISSION_energy.push_back(energy * eV);
+                EMISSION_var.push_back(var);
+            }
+        } else {
+            G4cout << "Error opening file: " << file << G4endl;
+        }
+        ReadEMISSION.close();
 
-    std::vector<G4double> energy_absorption_LMO = {1.5 * eV, 1.55 * eV, 1.77 * eV, 2.06 * eV, 2.48 * eV, 
-	                                           2.75 * eV, 3.10 * eV, 3.54 * eV, 3.88 * eV, 4.13 * eV, 
-						   5.0 * eV};
+        // READ ABSORPTION SPECTRUM
+        file = path2 + "LMO_ABSORPTION_eV_mm.txt";
 
-    std::vector<G4double> absorption_LMO = {191. *mm, 182. *mm, 173. *mm, 159. *mm, 146. *mm, 
-	                                    129. *mm, 84. *mm, 52. *mm, 55. *mm, 22. *mm, 
-					    0. *mm};
-    
-   
-    // Emission
-    // https://doi.org/10.1016/j.jallcom.2025.179848 Fig. 2a 10K
+        ReadABSORPTION.open(file);
+        if (ReadABSORPTION.is_open()) {
+            while (!ReadABSORPTION.eof()) {
+                ReadABSORPTION >> energy >> filler >> var;
+                ABSORPTION_energy.push_back(energy * eV);
+                ABSORPTION_var.push_back(var * mm);
+            }
+        } else {
+            G4cout << "Error opening file: " << file << G4endl;
+        }
+        ReadABSORPTION.close();
 
-    std::vector<G4double> emission_energy = {1.5 * eV, 1.75 * eV, 2.0 * eV, 2.15 * eV, 2.25 * eV, 
-	                                     2.5 * eV, 2.75 * eV,  3.0 * eV};
+        // READ REFRACTIVE INDEX
+        file = path2 + "LMO_RINDEX_eV.txt";
 
-    std::vector<G4double> emission = {0.1, 0.42, 0.93, 1.0, 0.92, 
-	                              0.42, 0.1, 0.03};
+        ReadRINDEX.open(file);
+        if (ReadRINDEX.is_open()) {
+            while (!ReadRINDEX.eof()) {
+                ReadRINDEX >> energy >> filler >> var;
+                RINDEX_energy.push_back(energy * eV);
+                RINDEX_var.push_back(var);
+            }
+        } else {
+            G4cout << "Error opening file: " << file << G4endl;
+        }
+        ReadRINDEX.close();
 
+        // READ ELECTRON LIGHT YIELD
+        file = path2 + "LMO_ELECTRONLY_eV_photon.txt";
+
+        ReadELECTRONLY.open(file);
+        if (ReadELECTRONLY.is_open()) {
+            while (!ReadELECTRONLY.eof()) {
+                ReadELECTRONLY >> energy >> filler >> var;
+                ELECTRONLY_energy.push_back(energy * eV);
+                ELECTRONLY_var.push_back(var);
+            }
+        } else {
+            G4cout << "Error opening file: " << file << G4endl;
+        }
+        ReadELECTRONLY.close();
+
+        // READ ALPHA LIGHT YIELD
+        file = path2 + "LMO_ALPHALY_eV_photon.txt";
+
+        ReadALPHALY.open(file);
+        if (ReadALPHALY.is_open()) {
+            while (!ReadALPHALY.eof()) {
+                ReadALPHALY >> energy >> filler >> var;
+                ALPHALY_energy.push_back(energy * eV);
+                ALPHALY_var.push_back(var);
+            }
+        } else {
+            G4cout << "Error opening file: " << file << G4endl;
+        }
+        ReadALPHALY.close();
+    }
 
     auto mptLi2MoO4 = new G4MaterialPropertiesTable();
-    //mptLi2MoO4->AddConstProperty("SCINTILLATIONYIELD", lightyieldLMO / MeV);
-    mptLi2MoO4->AddProperty("RINDEX", energy_LMO, refractive_index_LMO);
-    mptLi2MoO4->AddProperty("ABSLENGTH", energy_absorption_LMO, absorption_LMO);
+    mptLi2MoO4->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
+    mptLi2MoO4->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
 
-    G4double energy_LY[2] = {1. * eV, 100. * MeV};
-    G4double alpha[2] = {200.*1e-6, 200.*100}; //alpha yield factor
-    G4double electron[2] = {1000.*1e-6, 1000.*100}; //e- yield factor
-
-    mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", energy_LY, alpha, 2);
-    mptLi2MoO4->AddProperty("TRITONSCINTILLATIONYIELD", energy_LY, alpha, 2);
-    mptLi2MoO4->AddProperty("ELECTRONSCINTILLATIONYIELD", energy_LY, electron, 2);
-    mptLi2MoO4->AddProperty("IONSCINTILLATIONYIELD", energy_LY, alpha, 2);
-    mptLi2MoO4->AddProperty("PROTONSCINTILLATIONYIELD", energy_LY, alpha, 2);
-    mptLi2MoO4->AddProperty("DEUTERONSCINTILLATIONYIELD", energy_LY, alpha, 2);
+    mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    mptLi2MoO4->AddProperty("TRITONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    mptLi2MoO4->AddProperty("ELECTRONSCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
+    mptLi2MoO4->AddProperty("IONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    mptLi2MoO4->AddProperty("PROTONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    mptLi2MoO4->AddProperty("DEUTERONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
 
     mptLi2MoO4->AddConstProperty("RESOLUTIONSCALE", 1.0);
-    mptLi2MoO4->AddProperty("SCINTILLATIONCOMPONENT1", emission_energy, emission);
+    mptLi2MoO4->AddProperty("SCINTILLATIONCOMPONENT1", EMISSION_energy, EMISSION_var);
     mptLi2MoO4->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
     mptLi2MoO4->AddConstProperty("SCINTILLATIONTIMECONSTANT1", 84.5 * us); // https://doi.org/10.1140/epjc/s10052-019-7242-1
 
     Li2MoO4->SetMaterialPropertiesTable(mptLi2MoO4);
 
 
-
     // Germanium LD
 
-    std::vector<G4double> energy_germanium = {1.5 * eV, 5.0 * eV};
-    std::vector<G4double> absorption_germanium = {10. *cm, 10. *cm}; // IDK IDC?
+    {
+        ReadEMISSION.clear();
+        ReadABSORPTION.clear();
+        ReadRINDEX.clear();
+        ReadELECTRONLY.clear();
+        ReadALPHALY.clear();
+        EMISSION_energy.clear();
+        EMISSION_var.clear();
+        ABSORPTION_energy.clear();
+        ABSORPTION_var.clear();
+        RINDEX_energy.clear();
+        RINDEX_var.clear();
+        ELECTRONLY_energy.clear();
+        ELECTRONLY_var.clear();
+        ALPHALY_energy.clear();
+        ALPHALY_var.clear();
 
+        // READ ABSORPTION SPECTRUM
+        file = path2 + "LD_ABSORPTION_eV_cm.txt";
 
-    // Refractive Index
-    // https://doi.org/10.1103/PhysRevB.27.985
-    // https://refractiveindex.info/?shelf=main&book=Ge&page=Aspnes
+        ReadABSORPTION.open(file);
+        if (ReadABSORPTION.is_open()) {
+            while (!ReadABSORPTION.eof()) {
+                ReadABSORPTION >> energy >> filler >> var;
+                ABSORPTION_energy.push_back(energy * eV);
+                ABSORPTION_var.push_back(var * mm);
+            }
+        } else {
+            G4cout << "Error opening file: " << file << G4endl;
+        }
+        ReadABSORPTION.close();
 
-   /*  std::vector<G4double> energy_germanium_RI = {1.50 *eV, 1.60 *eV, 1.70 *eV, 1.80 *eV, 1.90 *eV, 2.00 *eV, 2.10 *eV, 2.20 *eV, 2.30 *eV, 2.40 *eV, 
-	                                         2.50 *eV, 2.60 *eV, 2.70 *eV, 2.80 *eV, 2.90 *eV, 3.00 *eV, 3.10 *eV, 3.20 *eV, 3.30 *eV, 3.40 *eV, 
-						 3.50 *eV, 3.60 *eV, 3.70 *eV, 3.80 *eV, 3.90 *eV, 4.00 *eV, 4.10 *eV, 4.20 *eV, 4.30 *eV, 4.40 *eV, 
-						 4.50 *eV, 4.60 *eV, 4.70 *eV, 4.80 *eV, 4.90 *eV, 5.00 *eV};
+        // READ REFRACTIVE INDEX
+        file = path2 + "LD_RINDEX_eV.txt";
 
-    std::vector<G4double> refractive_index_germanium = {4.65, 4.76, 4.90, 5.07, 5.29, 5.59, 5.75, 5.28, 5.06, 4.61, 
-	                                                4.34, 4.18, 4.08, 4.04, 4.04, 4.08, 4.14, 4.16, 4.13, 4.07, 
-							4.02, 3.98, 3.96, 3.94, 3.92, 3.90, 3.87, 3.75, 3.34, 2.52, 
-							1.95, 1.72, 1.59, 1.50, 1.44, 1.39};
- */
-    std::vector<G4double> energy_germanium_RI = {1. *eV, 5. *eV};
-    std::vector<G4double> refractive_index_germanium = {1., 1.};
+        ReadRINDEX.open(file);
+        if (ReadRINDEX.is_open()) {
+            while (!ReadRINDEX.eof()) {
+                ReadRINDEX >> energy >> filler >> var;
+                RINDEX_energy.push_back(energy * eV);
+                RINDEX_var.push_back(var);
+            }
+        } else {
+            G4cout << "Error opening file: " << file << G4endl;
+        }
+        ReadRINDEX.close();
+    }
 
     auto mptGermanium = new G4MaterialPropertiesTable();
-    mptGermanium->AddProperty("RINDEX", energy_germanium_RI, refractive_index_germanium);
-    mptGermanium->AddProperty("ABSLENGTH", energy_germanium, absorption_germanium);
+    mptGermanium->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
+    mptGermanium->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
 
     Germanium->SetMaterialPropertiesTable(mptGermanium);
 
