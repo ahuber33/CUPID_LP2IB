@@ -1,18 +1,24 @@
 void optical_results(){
 
+    
+
 TFile *f = TFile::Open("../Resultats");
 TTree *Input_tree = (TTree*)f->Get("Input");
 TTree *LMO_tree = (TTree*)f->Get("LMO");
 TTree *Optical_tree = (TTree*)f->Get("Optical");
 
-TCanvas *c1 = new TCanvas("c1", "Wavelength");
+TCanvas *c1 = new TCanvas("c1", "Wavelength spectrum");
+TCanvas *c1b = new TCanvas("c1b", "Energy spectrum");
 TCanvas *c2 = new TCanvas("c2", "Optical photons");
 TCanvas *c3 = new TCanvas("c3", "Energy deposit");
 TCanvas *c4 = new TCanvas("c4", "Yield");
 TCanvas *c5 = new TCanvas("c5", "Scintillation");
 
-TH1* h1 = new TH1I("h1", "birth_wavelength", 100.0, 0.0, 1000);
-TH1* h2 = new TH1I("h2", "detected_wavelength", 100.0, 0.0, 1000);
+TH1* h1 = new TH1F("h1", "birth_wavelength", 100.0, 200.0, 1000);
+TH1* h2 = new TH1F("h2", "detected_wavelength", 100.0, 200.0, 1000);
+
+TH1* h1b = new TH1F("h1", "birth_energy", 100.0, 1240/200.0, 1240/1000);
+TH1* h2b = new TH1F("h2", "detected_energy", 100.0, 1240/200.0, 1240/1000);
 
 TH1* h3 = new TH1I("h3", "scintillated", 100.0, 0.0, 1500);
 TH1* h4 = new TH1I("h4", "detected", 100.0, 0.0, 1500);
@@ -36,6 +42,8 @@ int reemitted;
 vector<double>* birth_wavelength = nullptr;
 vector<double>* detected_wavelength = nullptr;
 vector<double> energy;
+double xmin;
+double xmax;
 
 
 LMO_tree->SetBranchAddress("deposited_energy_event", &E_dep_event_LMO);
@@ -53,16 +61,32 @@ for (int i = 0; i < Optical_tree->GetEntries(); i++)
     Optical_tree->GetEntry(i);
     LMO_tree->GetEntry(i);
     E_dep_eV = 0;
+    xmin = birth_wavelength->at(0);
+    xmax = birth_wavelength->at(0);
 
     for(int j=0;j<(birth_wavelength->size());j++)
     {
         h1->Fill(birth_wavelength->at(j));
+        h1b->Fill(1240/birth_wavelength->at(j));
+        if (birth_wavelength->at(j) < xmin){
+            xmin = birth_wavelength->at(j);
+        }
+        if (birth_wavelength->at(j) > xmax){
+            xmax = birth_wavelength->at(j);
+        }
     }
 
     for(int j=0;j<(detected_wavelength->size());j++)
     {
         E_dep_eV += (1240 / detected_wavelength->at(j));
         h2->Fill(detected_wavelength->at(j));
+        h2b->Fill(1240/detected_wavelength->at(j));
+        if (detected_wavelength->at(j) < xmin){
+            xmin = birth_wavelength->at(j);
+        }
+        if (detected_wavelength->at(j) > xmax){
+            xmax = birth_wavelength->at(j);
+        }
     }
 
     //std::cout<<E_dep_event_LMO<<endl;
@@ -88,16 +112,55 @@ c1->cd();
 
 h1->SetLineColor(kBlue);
 h2->SetLineColor(kRed);
+h1->Scale( 1./h1->GetMaximum());
+h2->Scale( 1./h2->GetMaximum());
 h1->GetXaxis()->SetTitle("wavelength [nm]");
-h1->GetYaxis()->SetTitle("event");
-//h1->Scale( 1./h1->Integral());
-//h2->Scale( 1./h2->Integral());
+h1->GetYaxis()->SetTitle("ratio");
 h1->Draw("HIST");
-h2->Draw("same");
+h2->Draw("HIST same");
 
+c1b->cd();
+
+h1b->SetLineColor(kBlue);
+h2b->SetLineColor(kRed);
+h1b->Scale( 1./h1b->GetMaximum());
+h2b->Scale( 1./h2b->GetMaximum());
+h1b->GetXaxis()->SetTitle("energy [eV]");
+h1b->GetYaxis()->SetTitle("ratio");
+h1b->Draw("HIST");
+h2b->Draw("HIST same");
+
+// Emission data
+
+vector<double> emission_eV = {1.5, 1.75, 2., 2.15, 2.25, 2.5, 2.75, 3.0};
+vector<double> emission_var = {0.1, 0.42, 0.93, 1.0, 0.92, 0.42, 0.1, 0.03};
+
+TGraph *g = new TGraph(emission_eV.size());
+for (int i = 0; i < emission_eV.size(); i++) {
+    g->SetPoint(i, emission_eV[i], emission_var[i]);
+}
+
+g->SetMarkerStyle(47);
+g->SetMarkerSize(2);
+g->SetMarkerColor(kBlack);
+
+g->Draw("P SAME");
+
+
+/* 
+TF1 *ft = new TF1("ft","-x",(1240/1000),(1240/200));
+TGaxis *A1 = new TGaxis(200,h1->GetMaximum()+200,1000,h1->GetMaximum()+200,"ft",510,"-");
+A1->SetTitle("[eV]");
+A1->Draw();
+
+std::cout<<"XMIN = "<<xmin<<endl;
+
+std::cout<<"XMAX = "<<xmax<<endl;
+ */
 auto legend1 = new TLegend(0.1,0.7,0.28,0.9);
 legend1->AddEntry(h1, "birth");
 legend1->AddEntry(h2, "detected");
+legend1->AddEntry(g, "input");
 legend1->Draw();
 
 c2->cd();
