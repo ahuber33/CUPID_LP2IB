@@ -117,7 +117,7 @@ static void CreateOpticalBranches(TTree *tree, RunTallyOptical &stats) {
     tree->Branch("reemission_LMO", &stats.ReemissionLMO, "reemission_LMO/I");
     tree->Branch("bulk_abs_LMO", &stats.BulkAbsLMO, "bulk_abs_LMO/I");
     //tree->Branch("absorbed", &stats.Absorbed, "absorbed/I");
-    //tree->Branch("escaped", &stats.Escaped, "escaped/I");
+    tree->Branch("escaped", &stats.Escaped, "escaped/I");
     //tree->Branch("failed", &stats.Failed, "failed/I");
     tree->Branch("killed", &stats.Killed, "killed/I");
     tree->Branch("detected", &stats.Detected, "detected/I");

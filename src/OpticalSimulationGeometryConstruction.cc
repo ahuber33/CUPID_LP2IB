@@ -185,6 +185,152 @@ void OpticalSimulationGeometryConstruction::CreateWorldAndHolder() {
 }
 
 /**
+ * @brief Construct the Copper Frame.
+ */
+/* 
+void OpticalSimulationGeometryConstruction::ConstructCopperFrame() {
+
+    // -------------------------------------
+    // Pile detector tower (Gio, 29.04.20).
+    // Copper horizontal frames.
+    // Horizontal octagonal light detectors.
+    // -------------------------------------
+
+    //                          111
+    //      <--------------------------------------->
+    //    ^ * * * * * * * * * * * * * * * * * * * * *
+    //    | * * * * * * * * * * * * * * * * * * * * *
+    //    | * * *       ^     * * * *           * * *
+    //    | * *         |       * *               * *
+    //    | * *         |       * *               * *
+    //  59| * *       45|       * *               * *
+    //    | * *<--------|------>* *               * *
+    //    | * *         |       * *       35      * *
+    //    | * * *       v     * * * * <-------> * * *
+    //    | * * * * * * * * * * * * * * * * * * * * *
+    //    v * * * * * * * * * * * * * * * * * * * * *
+    //      <->                 <->
+    //       7                   7
+
+
+    NFloors         = 13;
+    CrystalL        = 45.  * mm;
+    LightDetL       = 49.  * mm;
+    LightDetDiagL   = 40. * sqrt(2.) * mm;
+    LightDetT       = 0.3  * mm;
+
+    CuFrameX        = 111. * mm;
+    CuFrameY        = 59.  * mm;
+    CuFrameH        = 2.   * mm;
+    CuTopFrameH     = 12.  * mm;
+    CuBottomFrameH  = 12.  * mm;
+    CuFrameHoleL    = 45.  * mm;
+    CuFrameDT       = 7.   * mm;// Lateral thickness
+
+    PTFEFrameX      = 7.  * mm;
+    PTFEFrameY      = 7.  * mm;
+    PTFEFrameH      = 7.  * mm;
+    PTFEFrameHoleL  = 5.   * mm;
+    PTFEFrameHoleL2 = 0.5 * PTFEFrameHoleL * sqrt(2.);
+    PTFEFrameHoleT  = 3.   * mm;
+    PTFEFrameHoleH  = 7.   * mm;
+    PTFEFrameT      = 2.   * mm;
+
+    CuBandX        = 8. * mm;
+    CuBandY        = 2. * mm;
+    CuBandH        = fDetTopCuPlate.Z
+        - 0.5 * fDetTopCuPlate.H
+        - 0.5 * fDetBottomCuPlate.H
+        - fDetBottomCuPlate.Z
+        - 30. * mm;
+    PENBandX = CuBandX;
+    PENBandY = 0.5 * mm; // 5 bands of ~100 um thickness each
+    PENBandH = CuBandH;
+    PENCoverT = 1. * mm;
+    PENCoverX = CuBandX + 2. * PENCoverT;
+    PENCoverY = 0.5 * mm + PENCoverT; //
+    PENCoverH = CuBandH;
+
+    ReflectorT = 70. * um;
+    ReflectorL = CrystalL
+        + 2. * PTFEFrameT;
+    ReflectorH = CrystalL
+        + 2. * PTFEFrameT;
+
+    // Cu band positions
+    CuBandPos.push_back( G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                -0.5 * CuFrameY    + 0.5 * CuBandY,
+                +0.5 * CuTopFrameH - 0.5 * CuBandH ) );
+    CuBandPos.push_back( G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                -0.5 * CuFrameY    + 0.5 * CuBandY,
+                +0.5 * CuTopFrameH - 0.5 * CuBandH ) );
+    CuBandPos.push_back( G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                +0.5 * CuFrameY    - 0.5 * CuBandY,
+                +0.5 * CuTopFrameH - 0.5 * CuBandH ) );
+    CuBandPos.push_back( G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                +0.5 * CuFrameY    - 0.5 * CuBandY,
+                +0.5 * CuTopFrameH - 0.5 * CuBandH ) );
+
+    // PEN band positions
+    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                    -0.5 * CuFrameY    - 0.5 * PENBandY,
+                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
+    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                    -0.5 * CuFrameY    - 0.5 * PENBandY,
+                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
+    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                    +0.5 * CuFrameY    + 0.5 * PENBandY,
+                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
+    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                    +0.5 * CuFrameY    + 0.5 * PENBandY,
+                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
+
+    // PEN cover positions
+    G4RotationMatrix rotcover = G4RotationMatrix();
+    rotcover.rotateZ( 180. * deg );
+    PENCoverTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                    -0.5 * CuFrameY    - 0.5 * PENCoverY,
+                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
+    PENCoverTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                    -0.5 * CuFrameY    - 0.5 * PENCoverY,
+                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
+    PENCoverTrans.push_back( new G4Transform3D( rotcover,
+                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                    +0.5 * CuFrameY    + 0.5 * PENCoverY,
+                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
+    PENCoverTrans.push_back( new G4Transform3D( rotcover,
+                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                    +0.5 * CuFrameY    + 0.5 * PENCoverY,
+                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
+
+
+    G4TwoVector offA(0,0), offB(0,0);
+    G4double scaleA = 1, scaleB = 1;
+
+    // Central vertical bands
+    G4VSolid* CuBand = new G4Box( "CuBand",
+				  0.5 * det.CuBandX,
+				  0.5 * det.CuBandY,
+				  0.5 * det.CuBandH );
+
+    G4VSolid* CuBandHole = new G4Box( "CuBandHole",
+				      0.5 * det.CuBandHoleX,
+				      det.CuBandY,
+				      0.5 * det.CuBandHoleH );
+
+    G4VSolid* CuBandTopHole = new G4Box( "CuBandTopHole",
+					 0.5 * det.CuBandHoleX,
+					 det.CuBandY,
+					 0.5 * det.CuBandTopHoleH );
+}
+ */
+/**
  * @brief Construct the LMO part.
  */
 void OpticalSimulationGeometryConstruction::ConstructLMO() {
@@ -204,10 +350,28 @@ void OpticalSimulationGeometryConstruction::ConstructLMO() {
 
     // Surface properties
 
+    std::string optical_model = "unified";
+
     auto opLMOSurface = new G4OpticalSurface("LMOSurface");
-    opLMOSurface->SetType(dielectric_dielectric);//dielectric_dielectric dielectric_LUTDAVIS
-    opLMOSurface->SetFinish(polished);// ground polished Rough_LUT Polished_LUT
-    opLMOSurface->SetModel(unified);//glisur unified DAVIS
+
+    if (optical_model == "unified"){
+        opLMOSurface->SetType(dielectric_dielectric);//dielectric_dielectric dielectric_LUTDAVIS
+        opLMOSurface->SetFinish(polished);// ground polished Rough_LUT Polished_LUT
+        opLMOSurface->SetModel(unified);//glisur unified DAVIS
+    }
+
+    if (optical_model == "glisur"){
+        opLMOSurface->SetType(dielectric_dielectric);//dielectric_dielectric dielectric_LUTDAVIS
+        opLMOSurface->SetFinish(Polished_LUT);// ground polished Rough_LUT Polished_LUT
+        opLMOSurface->SetModel(glisur);//glisur unified DAVIS
+        opLMOSurface->SetPolish(0.1);
+    }
+
+    if (optical_model == "DAVIS"){
+        opLMOSurface->SetType(dielectric_LUTDAVIS);//dielectric_dielectric dielectric_LUTDAVIS
+        opLMOSurface->SetFinish(Rough_LUT);// ground polished Rough_LUT Polished_LUT
+        opLMOSurface->SetModel(glisur);//glisur unified DAVIS
+    }
 
     auto LMOSurface = new G4LogicalSkinSurface("LMOSurface", LogicalLMO, opLMOSurface);
 

@@ -11,7 +11,8 @@ TCanvas *c1 = new TCanvas("c1", "Wavelength spectrum");
 TCanvas *c1b = new TCanvas("c1b", "Energy spectrum");
 TCanvas *c2 = new TCanvas("c2", "Optical photons");
 TCanvas *c3 = new TCanvas("c3", "Energy deposit");
-TCanvas *c4 = new TCanvas("c4", "Yield");
+TCanvas *c4 = new TCanvas("c4", "Yield [kev/MeV]");
+TCanvas *c4b = new TCanvas("c4b", "Yield [photons/MeV]");
 TCanvas *c5 = new TCanvas("c5", "Scintillation");
 
 TH1* h1 = new TH1F("h1", "birth_wavelength", 100.0, 200.0, 1000);
@@ -22,21 +23,22 @@ TH1* h2b = new TH1F("h2", "detected_energy", 100.0, 1240/200.0, 1240/1000);
 
 TH1* h3 = new TH1I("h3", "scintillated", 100.0, 0.0, 1500);
 TH1* h4 = new TH1I("h4", "detected", 100.0, 0.0, 1500);
-TH1* h5 = new TH1I("h5", "killed", 100.0, 0.0, 1500);
+TH1* h5 = new TH1I("h5", "escaped", 100.0, 0.0, 1500);
 TH1* h6 = new TH1I("h6", "absorbed", 100.0, 0.0, 1500);
 TH1* h7 = new TH1I("h7", "reemitted", 100.0, 0.0, 1500);
 
 TH1* h8 = new TH1I("h8", "E_dep_LD", 100.0, 0.0, 1100);
 TH1* h9 = new TH1I("h9", "E_dep_LMO", 100.0, 0.0, 1100);
 
-TH1* h10 = new TH1I("h10", "Yield", 100.0, 0.0, 1);
+TH1* h10 = new TH1I("h10", "Yield [kev/MeV]", 100.0, 0.0, 0.0);
+TH1* h10b = new TH1I("h10", "Yield [photons/MeV]", 50.0, 0.0, 0.0);
 
 int scintillated;
 float E_dep_event_LMO;
 float E_dep_eV;
 float yield;
 int detected;
-int killed;
+int escaped;
 int absorbed;
 int reemitted;
 vector<double>* birth_wavelength = nullptr;
@@ -52,7 +54,7 @@ Optical_tree->SetBranchAddress("birth_wavelength", &birth_wavelength);
 Optical_tree->SetBranchAddress("detected_wavelength", &detected_wavelength);
 Optical_tree->SetBranchAddress("scintillation_LMO", &scintillated);
 Optical_tree->SetBranchAddress("detected", &detected);
-Optical_tree->SetBranchAddress("killed", &killed);
+Optical_tree->SetBranchAddress("escaped", &escaped);
 Optical_tree->SetBranchAddress("bulk_abs_LMO", &absorbed);
 Optical_tree->SetBranchAddress("reemission_LMO", &reemitted);
 
@@ -91,12 +93,13 @@ for (int i = 0; i < Optical_tree->GetEntries(); i++)
 
     //std::cout<<E_dep_event_LMO<<endl;
 
-    if (E_dep_event_LMO>=1000){
-        if (scintillated<900){std::cout<<scintillated<<" photons scintilles | E_dep =  "<<E_dep_event_LMO<<endl;}
+    //if (E_dep_event_LMO>=1000){
+    //   if (scintillated<900){std::cout<<scintillated<<" photons scintilles | E_dep =  "<<E_dep_event_LMO<<endl;}
     
+        //std::cout<<scintillated<<endl;
         h3->Fill(scintillated);
         h4->Fill(detected);
-        h5->Fill(killed);
+        h5->Fill(escaped);
         h6->Fill(absorbed);
         h7->Fill(reemitted);
 
@@ -104,7 +107,8 @@ for (int i = 0; i < Optical_tree->GetEntries(); i++)
         h9->Fill(E_dep_event_LMO);
 
         h10->Fill(E_dep_eV/E_dep_event_LMO);
-    } 
+        h10b->Fill(detected/(E_dep_event_LMO/1000));
+    //} 
 
 }
 
@@ -193,7 +197,7 @@ c2->SetLogy(1);
 auto legend4 = new TLegend(0.1,0.7,0.28,0.9);
 legend4->AddEntry(h3, "scintillated");
 legend4->AddEntry(h4, "detected");
-legend4->AddEntry(h5, "killed");
+legend4->AddEntry(h5, "escaped");
 legend4->AddEntry(h6, "absorbed");
 legend4->AddEntry(h7, "reemitted");
 legend4->Draw();
@@ -215,10 +219,17 @@ legend3->Draw();
 
 c4->cd();
 h10->Draw();
-TF1 *f10 = new TF1 ("f10", "gaus", 0., 0.4);
+TF1 *f10 = new TF1 ("f10", "gaus", 0., 1.);
 h10->Fit("f10", "R");
 h10->GetXaxis()->SetTitle("yield [keV/MeV]");
 h10->GetYaxis()->SetTitle("event");
+
+c4b->cd();
+h10b->Draw();
+TF1 *f10b = new TF1 ("f10b", "gaus", 0., 0.);
+h10b->Fit("f10b", "R");
+h10b->GetXaxis()->SetTitle("yield [photons/MeV]");
+h10b->GetYaxis()->SetTitle("event");
 
 c5->cd();
 h3->SetLineColor(kBlack);

@@ -99,7 +99,7 @@ OpticalSimulationPhysics::OpticalSimulationPhysics() {
     // Optical Physics
     auto opticalParams = G4OpticalParameters::Instance();
     // Désactiver uniquement Cerenkov
-    opticalParams->SetProcessActivation("Cerenkov", false);
+    opticalParams->SetProcessActivation("Cerenkov", true);
 
     // Laisser Scintillation active (par défaut true)
     // opticalParams->SetProcessActivation("Scintillation", true);

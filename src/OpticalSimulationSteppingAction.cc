@@ -414,7 +414,7 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
         G4cout<<"| particleID="<<particleID<<" | trackID="<<trackID<<" | parentID="<<parentID<<" | stepNo="<<stepNo<<" |"<<G4endl;
     }
 
-    if (volumeNamePreStep=="LD1" || volumeNamePreStep=="LD2"){
+    if (volumeNamePreStep=="LD1"){// || volumeNamePreStep=="LD2"){
         evtac->AddEnergyDepositLD(energyDeposited);
         if (VerbosityLevel>2){
             G4cout<<"Energy Deposit in LD ! ("<<energyDeposited<<"keV)"<<G4endl;
@@ -434,16 +434,11 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
     auto it = ScMap.find(volumeNamePreStep);
     if (it != ScMap.end() && particleName != "opticalphoton") {
+        //G4cout<<"trackID = "<<trackID<<" | particleID = "<<particleID<<" | parentID = "<<parentID<<" | particleName = "<<particleName<<G4endl;
         RunTallySc &sc = (evtac->*(it->second))();
-        if (post->GetProcessDefinedStep()->GetProcessName()=="eIoni"){ //Test pour ne pas prendre en compte le Bremmstrahlung
         UpdateSc(sc, preStep.x, preStep.y, preStep.z, energy, energyDeposited,
                  energy_post, parentID, particleID, volumeNamePostStep,
-                 TrackingStatus, theTrack);}
-    }
-
-    if (volumeNamePreStep == "LMO" && parentID==0){
-        //evtac->CountEnergyDepositElectronLMO(energyDeposited)
-        //G4cout<<"electron energy deposit = "<<energyDeposited<<" keV | process = "<<post->GetProcessDefinedStep()->GetProcessName()<<G4endl;
+                 TrackingStatus, theTrack);//}
     }
 
 
@@ -460,18 +455,14 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
             theTrack->SetTrackStatus(fStopAndKill);
         }
 
-        if (volumeNamePostStep == "World") { // kill photon when they reach World
-            evtac->CountKilled();
-            theTrack->SetTrackStatus(fStopAndKill);
-            if (VerbosityLevel > 1){
-                G4cout << "Photon reached Wolrd and was killed" << G4endl;
-            }
-        }
-
-        if (volumeNamePostStep== "LD1" || volumeNamePostStep== "LD2") { // photon detected by the LD
+        if (volumeNamePostStep== "LD1"){// || volumeNamePostStep== "LD2") { // photon detected by the LD
             evtac->CountDetected();
             SetPhotonDetectedInformation(aStep, evtac);
             theTrack->SetTrackStatus(fStopAndKill);
+            //if (parentID != 1 || aStep->GetTrack()->GetCreatorProcess()->GetProcessName() != "Scintillation"){
+            //    G4cout<<"PHOTON DETECTED | CreatorProcess = "<<aStep->GetTrack()->GetCreatorProcess()->GetProcessName()
+            //    <<" | parentID = "<<parentID<<G4endl;
+            //}
             if (VerbosityLevel > 1){
                 G4cout << "Photon detected in the LD!!!" << G4endl;
             }
@@ -484,25 +475,17 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
         if (stepNo == 1) {
             if (aStep->GetTrack()->GetCreatorProcess()->GetProcessName() ==
                 "Scintillation"){
-                if (parentID == 1){ //parent is electron
                     CountScintillation(aStep, evtac);
                     SetPhotonBirthInformation(aStep, evtac);
                 }
-                else {
-                    CountReemission(aStep, evtac);
-                }
-            }
+            
 
             if (aStep->GetTrack()->GetCreatorProcess()->GetProcessName() ==
                 "Cerenkov"){
-                if (parentID == 1){
                     CountCerenkov(aStep, evtac);
-                }
-                else {
-                    CountReemission(aStep, evtac);
-                }
             }
         }
+        
     }
 
     // TPSimTrackInformation *info = static_cast<TPSimTrackInformation
