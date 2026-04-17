@@ -28,6 +28,22 @@
 #include "Geometry.hh"
 #include "OpticalSimulationGeometryMessenger.hh"
 #include "OpticalSimulationMaterials.hh"
+#include "G4Box.hh"
+#include "G4Tubs.hh"
+#include "G4VSolid.hh"
+#include "G4UnionSolid.hh"
+#include "G4SubtractionSolid.hh"
+#include "G4IntersectionSolid.hh"
+#include "G4LogicalVolume.hh"
+#include "G4PVPlacement.hh"
+#include "G4VPhysicalVolume.hh"
+#include "G4MultiUnion.hh"
+#include "G4Transform3D.hh"
+#include "G4ExtrudedSolid.hh"
+#include "G4ThreeVector.hh"
+
+#include "AgataGeometricParameters.hh"
+#include "AgataAbstractGeometry.hh"
 
 class Geometry;
 class G4FieldManager;
@@ -50,6 +66,9 @@ class OpticalSimulationGeometryConstruction final
 
     /** @brief Create world and base holder. */
     void CreateWorldAndHolder();
+
+    /** @brief Construct PTFE Part. */
+    void ConstructPTFE();
 
     /** @brief Construct LMO Part. */
     void ConstructLMO();
@@ -151,5 +170,33 @@ class OpticalSimulationGeometryConstruction final
     G4RotationMatrix DontRotate;
     G4RotationMatrix Flip;
     G4RotationMatrix *RotationMatrix;
+
+
+    // AGATA
+
+    AgataGeometricParameters* fGeomPars;
+
+    G4bool fSimplifyDrawing;
+
+    G4VSolid* fCuFrameSolid;
+    G4VSolid* fPENSolid;
+    G4VSolid* fPTFESolid;
+    G4VSolid* fLightDetSolid;
+    G4VSolid* fLightDetCoatingSolid;
+    G4VSolid* fCrystalSolid;
+
+    G4LogicalVolume* fCuFrameLogical;
+    G4LogicalVolume* fPENLogical;
+    G4LogicalVolume* fPTFELogical;
+    G4LogicalVolume* fLightDetLogical;
+    G4LogicalVolume* fLightDetCoatingLogical;
+    G4LogicalVolume* fCrystalLogical;
+
+    G4VPhysicalVolume* fCuFramePhysical;
+    G4VPhysicalVolume* fPENPhysical;
+    G4VPhysicalVolume* fPTFEPhysical;
+    G4VPhysicalVolume* fLightDetPhysical;
+    G4VPhysicalVolume* fLightDetCoatingPhysical;
+    G4VPhysicalVolume* fCrystalPhysical;
 };
 #endif

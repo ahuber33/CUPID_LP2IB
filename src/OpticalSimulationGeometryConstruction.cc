@@ -330,6 +330,138 @@ void OpticalSimulationGeometryConstruction::ConstructCopperFrame() {
 					 0.5 * det.CuBandTopHoleH );
 }
  */
+
+/**
+ * @brief Construct the LMO part.
+ */
+void OpticalSimulationGeometryConstruction::ConstructPTFE() {
+    auto Vacuum= OpticalSimulationMaterials::getInstance()->getMaterial("Vacuum");
+
+    const AgataGeometricParameters::BDPTDetector& det = fGeomPars->GetBDPTDetector();
+
+    // ----------
+    // PTFE parts
+    // ----------
+    G4VSolid* PTFECorner = new G4Box( "PTFECorner",
+				      0.5 * det.PTFECornerX,
+				      0.5 * det.PTFECornerY,
+				      0.5 * det.PTFECornerH );
+    G4VSolid* PTFECornerDiagHole = new G4Box( "PTFECornerDiagHole",
+					      0.5 * det.PTFECornerDiagHoleX,
+					      0.5 * det.PTFECornerDiagHoleX,
+					      det.PTFECornerH );
+
+    PTFECorner = new G4SubtractionSolid( "PTFECorner",
+					 PTFECorner,
+					 PTFECornerDiagHole,
+					 det.PTFECornerDiagHoleRot,
+					 det.PTFECornerDiagHolePos );
+
+    G4VSolid* PTFECornerTopHole = new G4Box( "PTFECornerTopHole",
+					     det.PTFECornerTopHoleX,
+					     det.PTFECornerTopHoleX,
+					     det.PTFECornerTopHoleH );
+
+    for( unsigned int i=0; i<det.PTFECornerTopHolePos.size(); i++ )
+	PTFECorner = new G4SubtractionSolid( "PTFECorner",
+					     PTFECorner,
+					     PTFECornerTopHole,
+					     det.PTFECornerTopHoleRot[i],
+					     det.PTFECornerTopHolePos[i] );
+
+    G4VSolid* PTFECornerXHole = new G4Box( "PTFECornerXHole",
+					   det.PTFECornerXHoleX,
+					   det.PTFECornerXHoleY,
+					   0.5 * det.PTFECornerXHoleH );
+
+    PTFECorner = new G4SubtractionSolid( "PTFECorner",
+					 PTFECorner,
+					 PTFECornerXHole,
+					 det.PTFECornerXHoleRot,
+					 det.PTFECornerXHolePos );
+
+    G4VSolid* PTFECornerYHole = new G4Box( "PTFECornerYHole",
+					   det.PTFECornerYHoleX,
+					   det.PTFECornerYHoleY,
+					   0.5 * det.PTFECornerYHoleH );
+
+    PTFECorner = new G4SubtractionSolid( "PTFECorner",
+					 PTFECorner,
+					 PTFECornerYHole,
+					 det.PTFECornerYHoleRot,
+					 det.PTFECornerYHolePos );
+
+    G4Tubs* PTFEButterflyBottom = new G4Tubs( "PTFE",
+					      0.,
+					      det.PTFEButterflyBottomR,
+					      0.5 * det.PTFEButterflyBottomH,
+					      0.,
+					      360. * deg );
+
+    G4Tubs* PTFEButterflyTop = new G4Tubs( "PTFE",
+					   0.,
+					   det.PTFEButterflyTopR,
+					   0.5 * det.PTFEButterflyTopH,
+					   0.,
+					   360. * deg );
+
+    G4VSolid* PTFEButterflyFlap = new G4Box( "PTFEButterflyFlap",
+					     0.5 * det.PTFEButterflyFlapX,
+					     0.5 * det.PTFEButterflyFlapY,
+					     0.5 * det.PTFEButterflyFlapH );
+
+    G4Tubs* PTFESmallCap = new G4Tubs( "PTFE",
+				       0.,
+				       det.PTFESmallCapR,
+				       0.5 * det.PTFESmallCapH,
+				       0.,
+				       360. * deg );
+
+    G4Tubs* PTFELargeCap = new G4Tubs( "PTFE",
+				       0.,
+				       det.PTFELargeCapR,
+				       0.5 * det.PTFELargeCapH,
+				       0.,
+				       360. * deg );
+
+    G4UnionSolid* PTFECap = new G4UnionSolid( "PTFE",
+					      PTFELargeCap,
+					      PTFESmallCap,
+					      0,
+					      G4ThreeVector( 0., 0., 0.5 * ( det.PTFELargeCapH + det.PTFESmallCapH ) ) );
+
+    G4MultiUnion* PTFE = new G4MultiUnion( "PTFE" );
+    for( unsigned int i=0; i<det.PTFECornerTrans.size(); i++ )
+    	PTFE->AddNode( *PTFECorner, *det.PTFECornerTrans[i] );
+    for( unsigned int i=0; i<det.PTFEButterflyTopTrans.size(); i++ )
+    	PTFE->AddNode( *PTFEButterflyTop, *det.PTFEButterflyTopTrans[i] );
+    for( unsigned int i=0; i<det.PTFEButterflyBottomTrans.size(); i++ )
+    	PTFE->AddNode( *PTFEButterflyBottom, *det.PTFEButterflyBottomTrans[i] );
+    for( unsigned int i=0; i<det.PTFEButterflyFlapTrans.size(); i++ )
+    	PTFE->AddNode( *PTFEButterflyFlap, *det.PTFEButterflyFlapTrans[i] );
+    for( unsigned int i=0; i<det.PTFELargeCapTrans.size(); i++ )
+    	PTFE->AddNode( *PTFELargeCap, *det.PTFELargeCapTrans[i] );
+    for( unsigned int i=0; i<det.PTFESmallCapTrans.size(); i++ )
+    	PTFE->AddNode( *PTFESmallCap, *det.PTFESmallCapTrans[i] );
+    PTFE->Voxelize();
+
+    fPTFESolid = PTFE;
+
+    // LOGICAL
+
+    fPTFELogical       = new G4LogicalVolume( fPTFESolid,      Vacuum,    "PTFELogical",       0, 0, 0 );
+
+    fPTFEPhysical = AgataAbstractGeometry::CreatePhysicalVolume( fPTFESolid,
+						  fPTFELogical,
+						  PhysicalHolder,
+						  det.PTFEPos + det.TowerPos[0],
+						  det.PTFESourcePos + det.TowerPos[0],
+						  AgataAbstractGeometry::GetColor(Color::kWhite),
+						  true,
+						  0 );
+
+}
+
 /**
  * @brief Construct the LMO part.
  */
@@ -504,6 +636,7 @@ G4VPhysicalVolume *OpticalSimulationGeometryConstruction::Construct() {
     CreateWorldAndHolder();
     ConstructLMO();
     ConstructLD();
+    ConstructPTFE();
 
     G4OpticalSurface *surface = new G4OpticalSurface("ScintillatorToHolder");
     surface->SetType(dielectric_dielectric);
