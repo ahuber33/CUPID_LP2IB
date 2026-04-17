@@ -73,6 +73,7 @@ void OpticalSimulationGeometryConstruction::Print() {
     G4cout << "-----------------------------------------------------" << G4endl;
 }
 
+
 /**
  * @brief Assign a visualization color to a logical volume.
  *
@@ -315,19 +316,19 @@ void OpticalSimulationGeometryConstruction::ConstructCopperFrame() {
 
     // Central vertical bands
     G4VSolid* CuBand = new G4Box( "CuBand",
-				  0.5 * det.CuBandX,
-				  0.5 * det.CuBandY,
-				  0.5 * det.CuBandH );
+				  0.5 * CuBandX,
+				  0.5 * CuBandY,
+				  0.5 * CuBandH );
 
     G4VSolid* CuBandHole = new G4Box( "CuBandHole",
-				      0.5 * det.CuBandHoleX,
-				      det.CuBandY,
-				      0.5 * det.CuBandHoleH );
+				      0.5 * CuBandHoleX,
+				      CuBandY,
+				      0.5 * CuBandHoleH );
 
     G4VSolid* CuBandTopHole = new G4Box( "CuBandTopHole",
-					 0.5 * det.CuBandHoleX,
-					 det.CuBandY,
-					 0.5 * det.CuBandTopHoleH );
+					 0.5 * CuBandHoleX,
+					 CuBandY,
+					 0.5 * CuBandTopHoleH );
 }
  */
 
@@ -337,90 +338,233 @@ void OpticalSimulationGeometryConstruction::ConstructCopperFrame() {
 void OpticalSimulationGeometryConstruction::ConstructPTFE() {
     auto Vacuum= OpticalSimulationMaterials::getInstance()->getMaterial("Vacuum");
 
-    const AgataGeometricParameters::BDPTDetector& det = fGeomPars->GetBDPTDetector();
+    PTFECornerX = 9. * mm;
+    PTFECornerY = 10. * mm;
+    PTFECornerH = 8. * mm;
+    PTFECornerDiagHoleX = 7.4 * mm;
+    PTFECornerDiagHoleRot = new G4RotationMatrix();
+    PTFECornerDiagHoleRot->rotateZ( 45. * deg );
+    PTFECornerDiagHolePos = G4ThreeVector( 0.5 * PTFECornerX, 0.5 * PTFECornerY, 0 );
+    PTFECornerTopHoleX = 5.2 * mm;
+    PTFECornerTopHoleH = 2. * mm;
+    for( double sign=-1; sign<=2.; sign+=2. )
+	{
+	    PTFECornerTopHoleRot.push_back( new G4RotationMatrix() );
+	    PTFECornerTopHolePos.push_back( G4ThreeVector( 0.5 * PTFECornerX,
+									 0.5 * PTFECornerY,
+									 sign * 0.5 * PTFECornerH ) );
+	}
+    PTFECornerXHoleX = 3. * mm;
+    PTFECornerXHoleY = 10. * mm;
+    PTFECornerXHoleH = 2. * mm;
+    PTFECornerXHoleRot = new G4RotationMatrix();
+    PTFECornerXHolePos = G4ThreeVector( -0.5 * PTFECornerX, 0, 0 );
+    PTFECornerYHoleX = 9. * mm;
+    PTFECornerYHoleY = 2. * mm;
+    PTFECornerYHoleH = 2. * mm;
+    PTFECornerYHoleRot = new G4RotationMatrix();
+    PTFECornerYHolePos = G4ThreeVector( 0, -0.5 * PTFECornerY, 0 );
+    
+
+    PTFECornerPos.push_back( G4ThreeVector( -48.5*mm, -22.5*mm, 0. ) );
+    PTFECornerRot.push_back( G4RotationMatrix() );
+
+    PTFECornerPos.push_back( G4ThreeVector( -48.5*mm, +22.5*mm, 0. ) );
+    PTFECornerRot.push_back( G4RotationMatrix() );
+    PTFECornerRot.back().rotateX( 180. * deg );
+
+    PTFECornerPos.push_back( G4ThreeVector( +48.5*mm, -22.5*mm, 0. ) );
+    PTFECornerRot.push_back( G4RotationMatrix() );
+    PTFECornerRot.back().rotateY( 180. * deg );
+
+    PTFECornerPos.push_back( G4ThreeVector( +48.5*mm, +22.5*mm, 0. ) );
+    PTFECornerRot.push_back( G4RotationMatrix() );
+    PTFECornerRot.back().rotateX( 180. * deg );
+    PTFECornerRot.back().rotateY( 180. * deg );
+
+    PTFECornerPos.push_back( G4ThreeVector( +4.5*mm, -22.5*mm, 0. ) );
+    PTFECornerRot.push_back( G4RotationMatrix() );
+
+    PTFECornerPos.push_back( G4ThreeVector( +4.5*mm, +22.5*mm, 0. ) );
+    PTFECornerRot.push_back( G4RotationMatrix() );
+    PTFECornerRot.back().rotateX( 180. * deg );
+
+    PTFECornerPos.push_back( G4ThreeVector( -4.5*mm, -22.5*mm, 0. ) );
+    PTFECornerRot.push_back( G4RotationMatrix() );
+    PTFECornerRot.back().rotateY( 180. * deg );
+
+    PTFECornerPos.push_back( G4ThreeVector( -4.5*mm, +22.5*mm, 0. ) );
+    PTFECornerRot.push_back( G4RotationMatrix() );
+    PTFECornerRot.back().rotateX( 180. * deg );
+    PTFECornerRot.back().rotateY( 180. * deg );
+
+    for( unsigned int f=0; f<=NFloors; f++ )
+
+	for( unsigned int i=0; i<PTFECornerPos.size(); i++ )
+	    {
+		double z = -0.5 * CuBandH + 15. * mm + f * 49. * mm
+		    -0.5 * CuFrameH;
+
+		PTFECornerTrans.push_back( new G4Transform3D( PTFECornerRot[i],
+									    PTFECornerPos[i] + G4ThreeVector( 0, 0, z ) ) );
+	    }
+
+    PTFEButterflyBottomR = 2.75 * mm;
+    PTFEButterflyBottomH = 2.   * mm;
+    PTFEButterflyTopR    = 1.5  * mm;
+    PTFEButterflyTopH    = 6.   * mm;
+    PTFEButterflyFlapX   = 7.   * mm;
+    PTFEButterflyFlapY   = 2.85 * mm;
+    PTFEButterflyFlapH   = 2.   * mm;
+    PTFEButterflyFlapDZ  = 2.5 * mm;
+
+    for( double sx=-1.; sx<=1.; sx+=2. )
+	for( double sy=-1.; sy<=1.; sy+=2. )
+	    {
+		PTFEButterflyFlapPos.push_back( G4ThreeVector( sx * 16. * mm, sy * 24.125 * mm, 0. ) );
+		PTFEButterflyFlapRot.push_back( G4RotationMatrix() );
+		
+		PTFEButterflyTopPos.push_back( G4ThreeVector( sx * 16. * mm, sy * 26.5 * mm, 0. ) );
+		PTFEButterflyTopRot.push_back( G4RotationMatrix() );
+		
+		PTFEButterflyBottomPos.push_back( G4ThreeVector( sx * 16. * mm, sy * 26.5 * mm, 0. ) );
+		PTFEButterflyBottomRot.push_back( G4RotationMatrix() );
+	    }
+    
+    for( unsigned int f=0; f<=NFloors; f++ )
+	for( unsigned int i=0; i<PTFEButterflyTopPos.size(); i++ )
+	    {
+		double z = -0.5 * CuBandH -0.5 * CuFrameH + 15. * mm + f * 49. * mm
+		    - PTFEButterflyBottomH;
+		PTFEButterflyBottomTrans.push_back( new G4Transform3D( PTFEButterflyBottomRot[i],
+										     PTFEButterflyBottomPos[i] + G4ThreeVector( 0, 0, z ) ) );
+		
+		z = -0.5 * CuBandH -0.5 * CuFrameH + 15. * mm + f * 49. * mm
+		    - 0.5 * PTFEButterflyBottomH
+		    + 0.5 * PTFEButterflyTopH;
+		PTFEButterflyTopTrans.push_back( new G4Transform3D( PTFEButterflyTopRot[i],
+										  PTFEButterflyTopPos[i] + G4ThreeVector( 0, 0, z ) ) );
+		
+		z = -0.5 * CuBandH -0.5 * CuFrameH + 15. * mm + f * 49. * mm
+		    - 0.5 * PTFEButterflyBottomH
+		    + PTFEButterflyFlapDZ
+		    + 0.5 * PTFEButterflyFlapH;
+		PTFEButterflyFlapTrans.push_back( new G4Transform3D( PTFEButterflyFlapRot[i],
+										   PTFEButterflyFlapPos[i] + G4ThreeVector( 0, 0, z ) ) );
+		
+	    }
+
+    PTFELargeCapR = 3.  * mm;
+    PTFESmallCapR = 1.  * mm;
+    PTFELargeCapH = 1.5 * mm;
+    PTFESmallCapH = 6.4 * mm;
+
+    for( int f=0; f<NFloors; f++ )
+
+	for( double sx=-1; sx<=1; sx+=2 )
+	    for( double sy=-1; sy<=1; sy+=2 )
+		{
+		    PTFECapRot.push_back( G4RotationMatrix() );
+		    PTFECapRot.back().rotateX( sy * 90. * deg );
+		    double x = sx * 25.7 * mm;
+		    double y = sy * 32. * mm;
+		    double z = -0.5 * CuBandH + 37.5 * mm + f * 49. * mm - 2.5 * mm;
+		    PTFELargeCapPos.push_back( G4ThreeVector( x, y, z ) );
+		    PTFELargeCapTrans.push_back( new G4Transform3D( PTFECapRot.back(),
+										  PTFELargeCapPos.back() ) );
+		    y = sy * (  32. * mm - 0.5 * PTFELargeCapH - 0.5 * PTFESmallCapH );
+		    PTFESmallCapPos.push_back( G4ThreeVector( x, y, z ) );
+		    PTFESmallCapTrans.push_back( new G4Transform3D( PTFECapRot.back(),
+										  PTFESmallCapPos.back() ) );
+		}
+
+    PTFEZ           = CuFrameZ - 0.5 * ( PTFEMiddleH - CuFrameH );
+    G4cout<<"PTFEZ = "<<PTFEZ<<G4endl;
+    PTFEPos         = G4ThreeVector( 0, 0, PTFEZ );
+    PTFESourcePos   = G4ThreeVector( 0, 0, PTFEZ );
 
     // ----------
     // PTFE parts
     // ----------
     G4VSolid* PTFECorner = new G4Box( "PTFECorner",
-				      0.5 * det.PTFECornerX,
-				      0.5 * det.PTFECornerY,
-				      0.5 * det.PTFECornerH );
+				      0.5 * PTFECornerX,
+				      0.5 * PTFECornerY,
+				      0.5 * PTFECornerH );
     G4VSolid* PTFECornerDiagHole = new G4Box( "PTFECornerDiagHole",
-					      0.5 * det.PTFECornerDiagHoleX,
-					      0.5 * det.PTFECornerDiagHoleX,
-					      det.PTFECornerH );
+					      0.5 * PTFECornerDiagHoleX,
+					      0.5 * PTFECornerDiagHoleX,
+					      PTFECornerH );
 
     PTFECorner = new G4SubtractionSolid( "PTFECorner",
 					 PTFECorner,
 					 PTFECornerDiagHole,
-					 det.PTFECornerDiagHoleRot,
-					 det.PTFECornerDiagHolePos );
+					 PTFECornerDiagHoleRot,
+					 PTFECornerDiagHolePos );
 
     G4VSolid* PTFECornerTopHole = new G4Box( "PTFECornerTopHole",
-					     det.PTFECornerTopHoleX,
-					     det.PTFECornerTopHoleX,
-					     det.PTFECornerTopHoleH );
+					     PTFECornerTopHoleX,
+					     PTFECornerTopHoleX,
+					     PTFECornerTopHoleH );
 
-    for( unsigned int i=0; i<det.PTFECornerTopHolePos.size(); i++ )
+    for( unsigned int i=0; i<PTFECornerTopHolePos.size(); i++ )
 	PTFECorner = new G4SubtractionSolid( "PTFECorner",
 					     PTFECorner,
 					     PTFECornerTopHole,
-					     det.PTFECornerTopHoleRot[i],
-					     det.PTFECornerTopHolePos[i] );
+					     PTFECornerTopHoleRot[i],
+					     PTFECornerTopHolePos[i] );
 
     G4VSolid* PTFECornerXHole = new G4Box( "PTFECornerXHole",
-					   det.PTFECornerXHoleX,
-					   det.PTFECornerXHoleY,
-					   0.5 * det.PTFECornerXHoleH );
+					   PTFECornerXHoleX,
+					   PTFECornerXHoleY,
+					   0.5 * PTFECornerXHoleH );
 
     PTFECorner = new G4SubtractionSolid( "PTFECorner",
 					 PTFECorner,
 					 PTFECornerXHole,
-					 det.PTFECornerXHoleRot,
-					 det.PTFECornerXHolePos );
+					 PTFECornerXHoleRot,
+					 PTFECornerXHolePos );
 
     G4VSolid* PTFECornerYHole = new G4Box( "PTFECornerYHole",
-					   det.PTFECornerYHoleX,
-					   det.PTFECornerYHoleY,
-					   0.5 * det.PTFECornerYHoleH );
+					   PTFECornerYHoleX,
+					   PTFECornerYHoleY,
+					   0.5 * PTFECornerYHoleH );
 
     PTFECorner = new G4SubtractionSolid( "PTFECorner",
 					 PTFECorner,
 					 PTFECornerYHole,
-					 det.PTFECornerYHoleRot,
-					 det.PTFECornerYHolePos );
+					 PTFECornerYHoleRot,
+					 PTFECornerYHolePos );
 
     G4Tubs* PTFEButterflyBottom = new G4Tubs( "PTFE",
 					      0.,
-					      det.PTFEButterflyBottomR,
-					      0.5 * det.PTFEButterflyBottomH,
+					      PTFEButterflyBottomR,
+					      0.5 * PTFEButterflyBottomH,
 					      0.,
 					      360. * deg );
 
     G4Tubs* PTFEButterflyTop = new G4Tubs( "PTFE",
 					   0.,
-					   det.PTFEButterflyTopR,
-					   0.5 * det.PTFEButterflyTopH,
+					   PTFEButterflyTopR,
+					   0.5 * PTFEButterflyTopH,
 					   0.,
 					   360. * deg );
 
     G4VSolid* PTFEButterflyFlap = new G4Box( "PTFEButterflyFlap",
-					     0.5 * det.PTFEButterflyFlapX,
-					     0.5 * det.PTFEButterflyFlapY,
-					     0.5 * det.PTFEButterflyFlapH );
+					     0.5 * PTFEButterflyFlapX,
+					     0.5 * PTFEButterflyFlapY,
+					     0.5 * PTFEButterflyFlapH );
 
     G4Tubs* PTFESmallCap = new G4Tubs( "PTFE",
 				       0.,
-				       det.PTFESmallCapR,
-				       0.5 * det.PTFESmallCapH,
+				       PTFESmallCapR,
+				       0.5 * PTFESmallCapH,
 				       0.,
 				       360. * deg );
 
     G4Tubs* PTFELargeCap = new G4Tubs( "PTFE",
 				       0.,
-				       det.PTFELargeCapR,
-				       0.5 * det.PTFELargeCapH,
+				       PTFELargeCapR,
+				       0.5 * PTFELargeCapH,
 				       0.,
 				       360. * deg );
 
@@ -428,38 +572,32 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
 					      PTFELargeCap,
 					      PTFESmallCap,
 					      0,
-					      G4ThreeVector( 0., 0., 0.5 * ( det.PTFELargeCapH + det.PTFESmallCapH ) ) );
+					      G4ThreeVector( 0., 0., 0.5 * ( PTFELargeCapH + PTFESmallCapH ) ) );
 
     G4MultiUnion* PTFE = new G4MultiUnion( "PTFE" );
-    for( unsigned int i=0; i<det.PTFECornerTrans.size(); i++ )
-    	PTFE->AddNode( *PTFECorner, *det.PTFECornerTrans[i] );
-    for( unsigned int i=0; i<det.PTFEButterflyTopTrans.size(); i++ )
-    	PTFE->AddNode( *PTFEButterflyTop, *det.PTFEButterflyTopTrans[i] );
-    for( unsigned int i=0; i<det.PTFEButterflyBottomTrans.size(); i++ )
-    	PTFE->AddNode( *PTFEButterflyBottom, *det.PTFEButterflyBottomTrans[i] );
-    for( unsigned int i=0; i<det.PTFEButterflyFlapTrans.size(); i++ )
-    	PTFE->AddNode( *PTFEButterflyFlap, *det.PTFEButterflyFlapTrans[i] );
-    for( unsigned int i=0; i<det.PTFELargeCapTrans.size(); i++ )
-    	PTFE->AddNode( *PTFELargeCap, *det.PTFELargeCapTrans[i] );
-    for( unsigned int i=0; i<det.PTFESmallCapTrans.size(); i++ )
-    	PTFE->AddNode( *PTFESmallCap, *det.PTFESmallCapTrans[i] );
+    for( unsigned int i=0; i<PTFECornerTrans.size(); i++ )
+    	PTFE->AddNode( *PTFECorner, *PTFECornerTrans[i] );
+    for( unsigned int i=0; i<PTFEButterflyTopTrans.size(); i++ )
+    	PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[i] );
+    for( unsigned int i=0; i<PTFEButterflyBottomTrans.size(); i++ )
+    	PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[i] );
+    for( unsigned int i=0; i<PTFEButterflyFlapTrans.size(); i++ )
+    	PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[i] );
+    for( unsigned int i=0; i<PTFELargeCapTrans.size(); i++ )
+    	PTFE->AddNode( *PTFELargeCap, *PTFELargeCapTrans[i] );
+    for( unsigned int i=0; i<PTFESmallCapTrans.size(); i++ )
+    	PTFE->AddNode( *PTFESmallCap, *PTFESmallCapTrans[i] );
     PTFE->Voxelize();
 
-    fPTFESolid = PTFE;
+    G4VSolid* SolidPTFE = PTFE;
 
     // LOGICAL
 
-    fPTFELogical       = new G4LogicalVolume( fPTFESolid,      Vacuum,    "PTFELogical",       0, 0, 0 );
+    G4LogicalVolume* LogicalPTFE       = new G4LogicalVolume( SolidPTFE,      Vacuum,    "PTFE",       0, 0, 0 );
 
-    fPTFEPhysical = AgataAbstractGeometry::CreatePhysicalVolume( fPTFESolid,
-						  fPTFELogical,
-						  PhysicalHolder,
-						  det.PTFEPos + det.TowerPos[0],
-						  det.PTFESourcePos + det.TowerPos[0],
-						  AgataAbstractGeometry::GetColor(Color::kWhite),
-						  true,
-						  0 );
-
+    G4VPhysicalVolume* PhysicalPTFE = new G4PVPlacement(
+        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, 0 * mm)),
+        LogicalPTFE, "PTFE", LogicalHolder, false, 0);
 }
 
 /**

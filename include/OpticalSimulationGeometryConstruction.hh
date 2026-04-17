@@ -112,6 +112,233 @@ class OpticalSimulationGeometryConstruction final
     const float GetLMOLY() const { return fLMOLY; }
     ///@}
 
+    G4int    NFloors;
+            G4double CrystalL;
+            G4double CrystalOffset;
+            G4double LightDetT;
+	    G4double LightDetCoatingT;
+
+            std::vector<G4TwoVector> LightDetPolygon;
+            std::vector<G4ThreeVector> LightDetSolidPos;
+	    std::vector<G4ThreeVector> LightDetCoatingSolidPos;
+            std::vector<G4ThreeVector> CrystalSolidPos;
+
+
+            G4double CuFrameX;
+            G4double CuFrameY;
+            G4double CuFrameH;
+
+            std::vector<G4double> CuFrameHoleX;
+            std::vector<G4double> CuFrameHoleY;
+            std::vector<G4double> CuFrameHoleH;
+            std::vector<G4ThreeVector> CuFrameHolePos;
+
+            G4double CuBandX;
+            G4double CuBandY;
+            G4double CuBandH;
+            G4double CuBandHoleX;
+            G4double CuBandHoleH;
+            G4double CuBandTopHoleH;
+            G4double CuMidBandX;
+            G4double CuMidBandY;
+            G4double CuMidBandH;
+            G4double CuLatBandX;
+            G4double CuLatBandY;
+            G4double CuLatBandH;
+            G4double CuLatBandHole1X;
+            G4double CuLatBandHole1Y;
+            G4double CuLatBandHole1H;
+            G4double CuLatBandHole2X;
+            G4double CuLatBandHole2Y;
+            G4double CuLatBandHole2H;
+
+
+
+            std::vector<G4ThreeVector> CuBandHolePos;
+            G4ThreeVector CuBandTopHolePos;
+            std::vector<G4ThreeVector> CuLatBandHole1Pos;
+            std::vector<G4ThreeVector> CuLatBandHole2Pos;
+            G4double CuLatBandT;
+            G4double CuBandLittleHoleR;
+            std::vector<G4RotationMatrix*> CuBandLittleHoleRot;
+            std::vector<G4ThreeVector> CuBandLittleHolePos;
+
+            std::vector<G4RotationMatrix>  CuBandRot;
+            std::vector<G4ThreeVector>     CuBandPos;
+            std::vector<G4Transform3D*>    CuBandTrans;
+            std::vector<G4RotationMatrix>  CuMidBandRot;
+            std::vector<G4ThreeVector>     CuMidBandPos;
+            std::vector<G4Transform3D*>    CuMidBandTrans;
+            std::vector<G4RotationMatrix>  CuLatBandRot;
+            std::vector<G4ThreeVector>     CuLatBandPos;
+            std::vector<G4Transform3D*>    CuLatBandTrans;
+            std::vector<G4RotationMatrix>  CuLeftLatBandRot;
+            std::vector<G4ThreeVector>     CuLeftLatBandPos;
+            std::vector<G4Transform3D*>    CuLeftLatBandTrans;
+            std::vector<G4RotationMatrix>  CuRightLatBandRot;
+            std::vector<G4ThreeVector>     CuRightLatBandPos;
+            std::vector<G4Transform3D*>    CuRightLatBandTrans;
+
+            G4double          CuBottomX;
+            G4double          CuBottomY;
+            G4double          CuBottomH;
+            G4ThreeVector     CuBottomPos;
+            G4RotationMatrix  CuBottomRot;
+            G4Transform3D*    CuBottomTrans;
+
+            std::vector<G4double>      CuBottomHoleX;
+            std::vector<G4double>      CuBottomHoleY;
+            std::vector<G4ThreeVector> CuBottomHolePos;
+
+            G4double          CuTopX;
+            G4double          CuTopY;
+            G4double          CuTopH;
+            G4ThreeVector     CuTopPos;
+            G4RotationMatrix  CuTopRot;
+            G4Transform3D*    CuTopTrans;
+
+            G4double          CuTopTopX;
+            G4double          CuTopTopY;
+            G4double          CuTopTopH;
+            G4ThreeVector     CuTopTopPos;
+            G4RotationMatrix  CuTopTopRot;
+            G4Transform3D*    CuTopTopTrans;
+            std::vector<G4double>      CuTopTopHoleX;
+            std::vector<G4double>      CuTopTopHoleY;
+            std::vector<G4ThreeVector> CuTopTopHolePos;
+            std::vector<G4double>      CuTopTopRadHoleR;
+            std::vector<G4ThreeVector> CuTopTopRadHolePos;
+
+            std::vector<G4RotationMatrix>  CuHorizontalFrameRot;
+            std::vector<G4ThreeVector>     CuHorizontalFramePos;
+            std::vector<G4Transform3D*>    CuHorizontalFrameTrans;
+
+            G4double CuBandZ;
+            G4double CuFrameZ;
+
+            G4double ClearanceX;
+            G4double ClearanceY;
+
+            G4ThreeVector CuFramePos;
+            G4ThreeVector CuFrameSourcePos;
+
+            // PEN parts
+            G4double PENBandX;
+            G4double PENBandY;
+            G4double PENBandH;
+            G4double PENBandHole1X;
+            G4double PENBandHole1Y;
+            G4double PENBandHole1H;
+            G4double PENBandHole2X;
+            G4double PENBandHole2Y;
+            G4double PENBandHole2H;
+            G4double PENBandHole3X;
+            G4double PENBandHole3Y;
+            G4double PENBandHole3H;
+            G4double PENBandZ;
+
+            std::vector<G4ThreeVector> PENBandHole1Pos;
+            std::vector<G4ThreeVector> PENBandHole2Pos;
+            std::vector<G4ThreeVector> PENBandHole3Pos;
+
+            G4double                       PENBandLittleHoleR;
+            std::vector<G4RotationMatrix*> PENBandLittleHoleRot;
+            std::vector<G4ThreeVector>     PENBandLittleHolePos;
+
+            std::vector<G4RotationMatrix>  PENBandRot;
+            std::vector<G4ThreeVector>     PENBandPos;
+            std::vector<G4Transform3D*>    PENBandTrans;
+
+
+            G4double PENFlapX;
+            G4double PENFlapY;
+            G4double PENFlapH;
+            G4double PENFlapT;
+            std::vector<G4RotationMatrix> PENFlapRot;
+            std::vector<G4ThreeVector>    PENFlapPos;
+            std::vector<G4Transform3D*>   PENFlapTrans;
+
+
+            G4double PENZ;
+            G4ThreeVector PENPos;
+            G4ThreeVector PENSourcePos;
+
+
+            G4double PTFECornerX;
+            G4double PTFECornerY;
+            G4double PTFECornerH;
+            G4double PTFECornerDiagHoleX;
+            G4RotationMatrix* PTFECornerDiagHoleRot;
+            G4ThreeVector     PTFECornerDiagHolePos;
+            G4double PTFECornerTopHoleX;
+            G4double PTFECornerTopHoleH;
+            std::vector<G4RotationMatrix*> PTFECornerTopHoleRot;
+            std::vector<G4ThreeVector>     PTFECornerTopHolePos;
+            G4double PTFECornerXHoleX;
+            G4double PTFECornerXHoleY;
+            G4double PTFECornerXHoleH;
+            G4RotationMatrix* PTFECornerXHoleRot;
+            G4ThreeVector     PTFECornerXHolePos;
+            G4double PTFECornerYHoleX;
+            G4double PTFECornerYHoleY;
+            G4double PTFECornerYHoleH;
+            G4RotationMatrix* PTFECornerYHoleRot;
+            G4ThreeVector     PTFECornerYHolePos;
+            G4double PTFEMiddleH;
+            std::vector<G4RotationMatrix> PTFECornerRot;
+            std::vector<G4ThreeVector>    PTFECornerPos;
+            std::vector<G4Transform3D*>   PTFECornerTrans;
+
+            G4double PTFEButterflyBottomR;
+            G4double PTFEButterflyBottomH;
+            G4double PTFEButterflyTopR;
+            G4double PTFEButterflyTopH;
+            G4double PTFEButterflyFlapX;
+            G4double PTFEButterflyFlapY;
+            G4double PTFEButterflyFlapH;
+            G4double PTFEButterflyFlapDZ;
+
+            std::vector<G4RotationMatrix> PTFEButterflyBottomRot;
+            std::vector<G4ThreeVector>    PTFEButterflyBottomPos;
+            std::vector<G4Transform3D*>   PTFEButterflyBottomTrans;
+            std::vector<G4RotationMatrix> PTFEButterflyTopRot;
+            std::vector<G4ThreeVector>    PTFEButterflyTopPos;
+            std::vector<G4Transform3D*>   PTFEButterflyTopTrans;
+            std::vector<G4RotationMatrix> PTFEButterflyFlapRot;
+            std::vector<G4ThreeVector>    PTFEButterflyFlapPos;
+            std::vector<G4Transform3D*>   PTFEButterflyFlapTrans;
+
+            G4double PTFELargeCapR;
+            G4double PTFESmallCapR;
+            G4double PTFELargeCapH;
+            G4double PTFESmallCapH;
+
+            std::vector<G4RotationMatrix> PTFECapRot;
+            std::vector<G4ThreeVector>    PTFELargeCapPos;
+            std::vector<G4ThreeVector>    PTFESmallCapPos;
+            std::vector<G4Transform3D*>   PTFELargeCapTrans;
+            std::vector<G4Transform3D*>   PTFESmallCapTrans;
+
+            G4double      PTFEZ;
+            G4ThreeVector PTFEPos;
+            G4ThreeVector PTFESourcePos;
+
+
+            std::vector<G4ThreeVector> TowerPos;
+            G4int NTowers;
+
+            G4double LightDetZ;
+            G4ThreeVector LightDetPos;
+            G4ThreeVector LightDetSourcePos;
+
+	    G4double LightDetCoatingZ;
+            G4ThreeVector LightDetCoatingPos;
+            G4ThreeVector LightDetCoatingSourcePos;
+
+            G4double CrystalZ;
+            G4ThreeVector CrystalPos;
+            G4ThreeVector CrystalSourcePos;
+
   private:
     static const G4String path;
 
