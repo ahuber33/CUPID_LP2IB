@@ -42,9 +42,6 @@
 #include "G4ExtrudedSolid.hh"
 #include "G4ThreeVector.hh"
 
-#include "AgataGeometricParameters.hh"
-#include "AgataAbstractGeometry.hh"
-
 class Geometry;
 class G4FieldManager;
 class OpticalSimulationGeometryMessenger;
@@ -383,6 +380,10 @@ class OpticalSimulationGeometryConstruction final
     G4LogicalVolume *LogicalLD2 = nullptr;
     //G4LogicalVolume *LogicalLDCoating = nullptr;
     G4LogicalVolume *LogicalLMO = nullptr;
+    G4LogicalVolume *LogicalPTFE = nullptr;
+    
+
+    G4VSolid *SolidPTFE = nullptr;
     
 
     /** @brief Physical volumes (placements in space). */
@@ -392,6 +393,7 @@ class OpticalSimulationGeometryConstruction final
     G4VPhysicalVolume *PhysicalLD2 = nullptr;
     //G4VPhysicalVolume *PhysicalLDCoating = nullptr;
     G4VPhysicalVolume *PhysicalLMO = nullptr;
+    G4VPhysicalVolume *PhysicalPTFE = nullptr;
 
     /** @brief Rotation matrices for component orientation. */
     G4RotationMatrix DontRotate;
@@ -400,8 +402,6 @@ class OpticalSimulationGeometryConstruction final
 
 
     // AGATA
-
-    AgataGeometricParameters* fGeomPars;
 
     G4bool fSimplifyDrawing;
 

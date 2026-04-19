@@ -336,7 +336,7 @@ void OpticalSimulationGeometryConstruction::ConstructCopperFrame() {
  * @brief Construct the LMO part.
  */
 void OpticalSimulationGeometryConstruction::ConstructPTFE() {
-    auto Vacuum= OpticalSimulationMaterials::getInstance()->getMaterial("Vacuum");
+    auto Teflon = OpticalSimulationMaterials::getInstance()->getMaterial("Vacuum");
 
     PTFECornerX = 9. * mm;
     PTFECornerY = 10. * mm;
@@ -575,7 +575,7 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
 					      G4ThreeVector( 0., 0., 0.5 * ( PTFELargeCapH + PTFESmallCapH ) ) );
 
     G4MultiUnion* PTFE = new G4MultiUnion( "PTFE" );
-    for( unsigned int i=0; i<PTFECornerTrans.size(); i++ )
+    /* for( unsigned int i=0; i<PTFECornerTrans.size(); i++ )
     	PTFE->AddNode( *PTFECorner, *PTFECornerTrans[i] );
     for( unsigned int i=0; i<PTFEButterflyTopTrans.size(); i++ )
     	PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[i] );
@@ -586,17 +586,46 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
     for( unsigned int i=0; i<PTFELargeCapTrans.size(); i++ )
     	PTFE->AddNode( *PTFELargeCap, *PTFELargeCapTrans[i] );
     for( unsigned int i=0; i<PTFESmallCapTrans.size(); i++ )
-    	PTFE->AddNode( *PTFESmallCap, *PTFESmallCapTrans[i] );
+    	PTFE->AddNode( *PTFESmallCap, *PTFESmallCapTrans[i] ); */
+        
+    G4cout<<"FLAG = "<<PTFEButterflyTopTrans.size()<<G4endl;
+    
+
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[0] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[1] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[2] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[3] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[4] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[5] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[6] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[7] );
+
+    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[0] );
+    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[1] );
+    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[2] );
+    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[3] );
+
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[0] );
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[1] );
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[2] );
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[3] );
+
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[0] );
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[1] );
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[2] );
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[3] );
+
+
     PTFE->Voxelize();
 
-    G4VSolid* SolidPTFE = PTFE;
+    SolidPTFE = PTFE;
+
+    LogicalPTFE = new G4LogicalVolume( SolidPTFE,      Teflon,    "PTFE",       0, 0, 0 );
 
     // LOGICAL
 
-    G4LogicalVolume* LogicalPTFE       = new G4LogicalVolume( SolidPTFE,      Vacuum,    "PTFE",       0, 0, 0 );
-
-    G4VPhysicalVolume* PhysicalPTFE = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, 0 * mm)),
+    PhysicalPTFE = new G4PVPlacement(
+        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, 60 * mm)),
         LogicalPTFE, "PTFE", LogicalHolder, false, 0);
 }
 
