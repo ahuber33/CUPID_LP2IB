@@ -188,128 +188,194 @@ void OpticalSimulationGeometryConstruction::CreateWorldAndHolder() {
 /**
  * @brief Construct the Copper Frame.
  */
-/* 
+
 void OpticalSimulationGeometryConstruction::ConstructCopperFrame() {
+    auto Copper = OpticalSimulationMaterials::getInstance()->getMaterial("Vacuum");
 
-    // -------------------------------------
-    // Pile detector tower (Gio, 29.04.20).
-    // Copper horizontal frames.
-    // Horizontal octagonal light detectors.
-    // -------------------------------------
+    NFloors         = 1;
 
-    //                          111
-    //      <--------------------------------------->
-    //    ^ * * * * * * * * * * * * * * * * * * * * *
-    //    | * * * * * * * * * * * * * * * * * * * * *
-    //    | * * *       ^     * * * *           * * *
-    //    | * *         |       * *               * *
-    //    | * *         |       * *               * *
-    //  59| * *       45|       * *               * *
-    //    | * *<--------|------>* *               * *
-    //    | * *         |       * *       35      * *
-    //    | * * *       v     * * * * <-------> * * *
-    //    | * * * * * * * * * * * * * * * * * * * * *
-    //    v * * * * * * * * * * * * * * * * * * * * *
-    //      <->                 <->
-    //       7                   7
+    double epsilon = 100. * um;
+    // Copper frames
+    CuFrameX        = 108. * mm;
+
+    CuFrameY        =  65. * mm;
+    CuFrameH        =   7. * mm;
+
+    for( double sx=-1.; sx<=1.; sx+=2. )
+	{
+	    CuFrameHoleX.push_back( 45. * mm );
+	    CuFrameHoleY.push_back( 45. * mm );
+	    CuFrameHoleH.push_back( 14. * mm );
+	    CuFrameHolePos.push_back( G4ThreeVector( sx * 26.5 * mm, 0, 0 ) );
+	}
+
+    for( double sx=-1.; sx<=1.; sx+=2. )
+	for( double sy=-1.; sy<=1.; sy+=2. )
+	    {
+		CuFrameHoleX.push_back(  6.  * mm );
+		CuFrameHoleY.push_back( 16.5 * mm );
+		CuFrameHoleH.push_back( 14.  * mm );
+		CuFrameHolePos.push_back( G4ThreeVector( sx * 47. * mm, sy * 17.25 * mm, 0 ) );
+	    }
+    for( double sx=-1.; sx<=1.; sx+=2. )
+	for( double sy=-1.; sy<=1.; sy+=2. )
+	    {
+		CuFrameHoleX.push_back(  6.  * mm );
+		CuFrameHoleY.push_back( 16.5 * mm );
+		CuFrameHoleH.push_back( 14.  * mm );
+		CuFrameHolePos.push_back( G4ThreeVector( sx * 6. * mm, sy * 17.25 * mm, 0 ) );
+	    }
+    for( double sx=-1.; sx<=1.; sx+=2. )
+	for( double sy=-1.; sy<=1.; sy+=2. )
+	    {
+		CuFrameHoleX.push_back(  3.6 * mm );
+		CuFrameHoleY.push_back( 11.2 * mm );
+		CuFrameHoleH.push_back( 14.  * mm );
+		CuFrameHolePos.push_back( G4ThreeVector( sx * 16. * mm, sy * 22.5 * mm, 0 ) );
+	    }
+    for( double sx=-1.; sx<=1.; sx+=2. )
+	for( double sy=-1.; sy<=1.; sy+=2. )
+	    {
+		CuFrameHoleX.push_back( 27.5 * mm );
+		CuFrameHoleY.push_back(  6.  * mm );
+		CuFrameHoleH.push_back( 14.  * mm );
+		CuFrameHolePos.push_back( G4ThreeVector( sx * 54. * mm, sy * 32.5 * mm, 0 ) );
+	    }
+    for( double sy=-1.; sy<=1.; sy+=2. )
+	{
+	    CuFrameHoleX.push_back( 69.5 * mm );
+	    CuFrameHoleY.push_back(  2.  * mm );
+	    CuFrameHoleH.push_back( 14.  * mm );
+	    CuFrameHolePos.push_back( G4ThreeVector( 0, sy * 32.5 * mm, 0 ) );
+	}
+    for( double sx=-1.; sx<=1.; sx+=2. )
+	for( double sy=-1.; sy<=1.; sy+=2. )
+	    {
+		CuFrameHoleX.push_back( 15.75 * mm );
+		CuFrameHoleY.push_back(  6.   * mm );
+		CuFrameHoleH.push_back( 14.   * mm );
+		CuFrameHolePos.push_back( G4ThreeVector( sx * 26.875 * mm, sy * 32.5 * mm, 0 ) );
+	    }
+    CuFrameHoleX.push_back( 110. * mm );
+    CuFrameHoleY.push_back(  61. * mm );
+    CuFrameHoleH.push_back(  10. * mm );
+    CuFrameHolePos.push_back( G4ThreeVector( 0, 0, - 0.5 * CuFrameH ) );
+
+    
+
+    CuBandX           =  43. * mm;
+    CuBandY           =   1. * mm;
+    CuBandH           =  53. * mm;   //739. * mm;
+    CuBandHoleX       =  37. * mm;
+    CuBandHoleH       =  45. * mm;
+    CuBandTopHoleH    =  27. * mm;
+
+    for( int f=0; f<14; f++ )
+    {
+        double z = -0.5 * CuBandH + 16. * mm
+            + ( 0.5 + f ) * CuBandHoleH
+            + 4. * mm * f;
+        CuBandHolePos.push_back( G4ThreeVector( 0., 0., z ) );
+    }
+    CuBandTopHolePos = G4ThreeVector( 0., 0., 0.5 * CuBandH - 10. * mm - 0.5 * CuBandTopHoleH );
+    
+    CuMidBandX        =   1. * mm;
+    CuMidBandY        =   3. * mm;
+    CuMidBandH        =  53. * mm;   //739. * mm;
+    
+    CuLatBandX        =  13.9  * mm;
+    CuLatBandY        =   1.   * mm;
+    CuLatBandH        =    53. * mm;   //739. * mm;
+    CuLatBandHole1X   =   5.4  * mm;
+    CuLatBandHole1Y   =   1.   * mm;
+    CuLatBandHole1H   =  20.25 * mm;
+    CuLatBandHole2X   =   5.4  * mm;
+    CuLatBandHole2Y   =   1.   * mm;
+    CuLatBandHole2H   =  16.25 * mm;
+    
+    for( int f=0; f<NFloors; f++ )
+
+	{
+	    double x = -0.5 * CuLatBandX;
+	    double z = -0.5 * CuLatBandH + 16.*mm
+		+ 0.5 * CuLatBandHole1H
+		+ 49. * mm * f;
+	    CuLatBandHole1Pos.push_back( G4ThreeVector( x, 0., z ) );
+	    
+	    z = - 0.5 * CuLatBandH + 16.*mm + 24.75*mm
+		+ 0.5 * CuLatBandHole2H
+		+ 49. * mm * f;
+	    CuLatBandHole2Pos.push_back( G4ThreeVector( x, 0., z ) );
+	}
+
+    CuBandLittleHoleR = 1.1 * mm;
+    for( int f=0; f<NFloors; f++ )
+	{
+	    CuBandLittleHoleRot.push_back( new G4RotationMatrix() );
+	    CuBandLittleHoleRot.back()->rotateX( 90. * deg );
+	    double x = 1.75 * mm;
+	    double y = 0.;
+	    double z = -0.5 * CuBandH + 38.5 * mm + f * 49. * mm;
+	    CuBandLittleHolePos.push_back( G4ThreeVector( x, y, z ) );
+	}
 
 
-    NFloors         = 13;
-    CrystalL        = 45.  * mm;
-    LightDetL       = 49.  * mm;
-    LightDetDiagL   = 40. * sqrt(2.) * mm;
-    LightDetT       = 0.3  * mm;
+    for( double sy=-1.; sy<=1.; sy+=2. )
+	{
+	    CuBandRot.push_back( G4RotationMatrix() );
+	    CuBandPos.push_back( G4ThreeVector( 0, sy * ( 34.0*mm + 3. * epsilon ), 0. ) );
+	}
+    for( unsigned int i=0; i<CuBandPos.size(); i++ )
+	CuBandTrans.push_back( new G4Transform3D( CuBandRot[i],
+								CuBandPos[i] ) );
 
-    CuFrameX        = 111. * mm;
-    CuFrameY        = 59.  * mm;
-    CuFrameH        = 2.   * mm;
-    CuTopFrameH     = 12.  * mm;
-    CuBottomFrameH  = 12.  * mm;
-    CuFrameHoleL    = 45.  * mm;
-    CuFrameDT       = 7.   * mm;// Lateral thickness
+    for( double sx=-1.; sx<=1.; sx+=2. )
+	for( double sy=-1.; sy<=1.; sy+=2. )
+	{
+	    CuMidBandPos.push_back( G4ThreeVector( sx * 21.*mm, sy * ( 32.*mm + 2. * epsilon ), 0. ) );
+	    CuMidBandRot.push_back( G4RotationMatrix() );
+	}
+    for( unsigned int i=0; i<CuMidBandPos.size(); i++ )
+	CuMidBandTrans.push_back( new G4Transform3D( CuMidBandRot[i],
+								   CuMidBandPos[i] ) );
 
-    PTFEFrameX      = 7.  * mm;
-    PTFEFrameY      = 7.  * mm;
-    PTFEFrameH      = 7.  * mm;
-    PTFEFrameHoleL  = 5.   * mm;
-    PTFEFrameHoleL2 = 0.5 * PTFEFrameHoleL * sqrt(2.);
-    PTFEFrameHoleT  = 3.   * mm;
-    PTFEFrameHoleH  = 7.   * mm;
-    PTFEFrameT      = 2.   * mm;
 
-    CuBandX        = 8. * mm;
-    CuBandY        = 2. * mm;
-    CuBandH        = fDetTopCuPlate.Z
-        - 0.5 * fDetTopCuPlate.H
-        - 0.5 * fDetBottomCuPlate.H
-        - fDetBottomCuPlate.Z
-        - 30. * mm;
-    PENBandX = CuBandX;
-    PENBandY = 0.5 * mm; // 5 bands of ~100 um thickness each
-    PENBandH = CuBandH;
-    PENCoverT = 1. * mm;
-    PENCoverX = CuBandX + 2. * PENCoverT;
-    PENCoverY = 0.5 * mm + PENCoverT; //
-    PENCoverH = CuBandH;
 
-    ReflectorT = 70. * um;
-    ReflectorL = CrystalL
-        + 2. * PTFEFrameT;
-    ReflectorH = CrystalL
-        + 2. * PTFEFrameT;
+    for( double sx=-1.; sx<=1.; sx+=2. )
+	for( double sy=-1.; sy<=1.; sy+=2. )
+	    {
+		double x = sx * 27.45*mm;
+		double y = sy * ( 30*mm + epsilon );
+		double z = 0.;
+		CuLatBandPos.push_back( G4ThreeVector( x, y, z ) );
+		CuLatBandRot.push_back( G4RotationMatrix() );
+		if( sx == 1. )
+		    CuLatBandRot.back().rotateZ( 180. * deg );
+	    }
+    for( unsigned int i=0; i<CuLatBandPos.size(); i++ )
+	CuLatBandTrans.push_back( new G4Transform3D( CuLatBandRot[i],
+								   CuLatBandPos[i] ) );
+    
+    for( unsigned int f=0; f<=NFloors; f++ )
+	{
+	    double z = -0.5 * CuBandH + 15. * mm + f * 49. * mm - 2.5 * mm;
+	    CuHorizontalFramePos.push_back( G4ThreeVector( 0, 0, z ) );
+	    CuHorizontalFrameRot.push_back( G4RotationMatrix() );
+	    CuHorizontalFrameTrans.push_back( new G4Transform3D( CuHorizontalFrameRot[f],
+									       CuHorizontalFramePos[f]) );
+	} 
 
-    // Cu band positions
-    CuBandPos.push_back( G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
-                -0.5 * CuFrameY    + 0.5 * CuBandY,
-                +0.5 * CuTopFrameH - 0.5 * CuBandH ) );
-    CuBandPos.push_back( G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
-                -0.5 * CuFrameY    + 0.5 * CuBandY,
-                +0.5 * CuTopFrameH - 0.5 * CuBandH ) );
-    CuBandPos.push_back( G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
-                +0.5 * CuFrameY    - 0.5 * CuBandY,
-                +0.5 * CuTopFrameH - 0.5 * CuBandH ) );
-    CuBandPos.push_back( G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
-                +0.5 * CuFrameY    - 0.5 * CuBandY,
-                +0.5 * CuTopFrameH - 0.5 * CuBandH ) );
 
-    // PEN band positions
-    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
-                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
-                    -0.5 * CuFrameY    - 0.5 * PENBandY,
-                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
-    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
-                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
-                    -0.5 * CuFrameY    - 0.5 * PENBandY,
-                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
-    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
-                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
-                    +0.5 * CuFrameY    + 0.5 * PENBandY,
-                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
-    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
-                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
-                    +0.5 * CuFrameY    + 0.5 * PENBandY,
-                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
+    CuBandZ         = 0;
+    CuFrameZ = CuBandZ;
 
-    // PEN cover positions
-    G4RotationMatrix rotcover = G4RotationMatrix();
-    rotcover.rotateZ( 180. * deg );
-    PENCoverTrans.push_back( new G4Transform3D( G4RotationMatrix(),
-                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
-                    -0.5 * CuFrameY    - 0.5 * PENCoverY,
-                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
-    PENCoverTrans.push_back( new G4Transform3D( G4RotationMatrix(),
-                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
-                    -0.5 * CuFrameY    - 0.5 * PENCoverY,
-                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
-    PENCoverTrans.push_back( new G4Transform3D( rotcover,
-                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
-                    +0.5 * CuFrameY    + 0.5 * PENCoverY,
-                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
-    PENCoverTrans.push_back( new G4Transform3D( rotcover,
-                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
-                    +0.5 * CuFrameY    + 0.5 * PENCoverY,
-                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
+    CuFramePos         = G4ThreeVector( 0, 0, CuFrameZ );
+    CuFrameSourcePos   = G4ThreeVector( 0, 0, CuFrameZ );
 
+
+    // ------------
+    // Copper parts
+    // ------------
 
     G4TwoVector offA(0,0), offB(0,0);
     G4double scaleA = 1, scaleB = 1;
@@ -329,8 +395,178 @@ void OpticalSimulationGeometryConstruction::ConstructCopperFrame() {
 					 0.5 * CuBandHoleX,
 					 CuBandY,
 					 0.5 * CuBandTopHoleH );
+
+    for( unsigned int f=0; f<CuBandHolePos.size(); f++ )
+	CuBand = new G4SubtractionSolid( "CuFrame",
+					 CuBand,
+					 CuBandHole,
+					 0,
+					 CuBandHolePos[f] );
+
+    CuBand = new G4SubtractionSolid( "CuFrame",
+				     CuBand,
+				     CuBandTopHole,
+				     0,
+				     CuBandTopHolePos );
+
+    // Vertical mid band
+    G4VSolid* CuMidBand = new G4Box( "CuMidBand",
+				     0.5 * CuMidBandX,
+				     0.5 * CuMidBandY,
+				     0.5 * CuMidBandH );
+
+    // Vertical lateral band
+    G4VSolid* CuLatBand = new G4Box( "CuLatBand",
+				     0.5 * CuLatBandX,
+				     0.5 * CuLatBandY,
+				     0.5 * CuLatBandH );
+
+    G4VSolid* CuLatBandHole1 = new G4Box( "CuLatBandHole1",
+					  CuLatBandHole1X,
+					  CuLatBandHole1Y,
+					  0.5 * CuLatBandHole1H );
+
+    G4VSolid* CuLatBandHole2 = new G4Box( "CuLatBandHole2",
+					  CuLatBandHole2X,
+					  CuLatBandHole2Y,
+					  0.5 * CuLatBandHole2H );
+
+    for( unsigned int f=0; f<CuLatBandHole1Pos.size(); f++ )
+	CuLatBand = new G4SubtractionSolid( "CuLatBand",
+					    CuLatBand,
+					    CuLatBandHole1,
+					    0,
+					    CuLatBandHole1Pos[f] );
+
+    for( unsigned int f=0; f<CuLatBandHole2Pos.size(); f++ )
+	CuLatBand = new G4SubtractionSolid( "CuLatBand",
+					    CuLatBand,
+					    CuLatBandHole2,
+					    0,
+					    CuLatBandHole2Pos[f] );
+
+    G4Tubs* CuBandLittleHole = new G4Tubs( "CuBandLittleHole",
+					   0.,
+					   CuBandLittleHoleR,
+					   CuLatBandY,
+					   0.,
+					   360. * deg );
+
+    for( unsigned int f=0; f<CuBandLittleHolePos.size(); f++ )
+	CuLatBand = new G4SubtractionSolid( "CuFrame",
+					    CuLatBand,
+					    CuBandLittleHole,
+					    CuBandLittleHoleRot[f],
+					    CuBandLittleHolePos[f] );
+
+    // Middle frames
+    G4VSolid* CuHorizontalFrame = new G4Box( "CuHorizontalFrame",
+					     0.5 * CuFrameX,
+					     0.5 * CuFrameY,
+					     0.5 * CuFrameH );
+    std::vector<G4VSolid*> CuHorizontalFrameHole;
+
+    G4cout<<"FLAG 10 = "<<CuFrameHolePos.size()<<G4endl;
+
+	CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[0], 0.5 * CuFrameHoleY[0], 0.5 * CuFrameHoleH[0] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[0] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[1], 0.5 * CuFrameHoleY[1], 0.5 * CuFrameHoleH[1] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[1] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[2], 0.5 * CuFrameHoleY[2], 0.5 * CuFrameHoleH[2] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[2] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[3], 0.5 * CuFrameHoleY[3], 0.5 * CuFrameHoleH[3] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[3] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[4], 0.5 * CuFrameHoleY[4], 0.5 * CuFrameHoleH[4] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[4] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[5], 0.5 * CuFrameHoleY[5], 0.5 * CuFrameHoleH[5] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[5] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[6], 0.5 * CuFrameHoleY[6], 0.5 * CuFrameHoleH[6] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[6] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[7], 0.5 * CuFrameHoleY[7], 0.5 * CuFrameHoleH[7] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[7] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[8], 0.5 * CuFrameHoleY[8], 0.5 * CuFrameHoleH[8] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[8] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[9], 0.5 * CuFrameHoleY[9], 0.5 * CuFrameHoleH[9] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[9] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[10], 0.5 * CuFrameHoleY[10], 0.5 * CuFrameHoleH[10] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[10] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[11], 0.5 * CuFrameHoleY[11], 0.5 * CuFrameHoleH[11] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[11] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[12], 0.5 * CuFrameHoleY[12], 0.5 * CuFrameHoleH[12] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[12] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[13], 0.5 * CuFrameHoleY[13], 0.5 * CuFrameHoleH[13] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[13] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[14], 0.5 * CuFrameHoleY[14], 0.5 * CuFrameHoleH[14] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[14] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[15], 0.5 * CuFrameHoleY[15], 0.5 * CuFrameHoleH[15] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[15] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[16], 0.5 * CuFrameHoleY[16], 0.5 * CuFrameHoleH[16] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[16] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[17], 0.5 * CuFrameHoleY[17], 0.5 * CuFrameHoleH[17] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[17] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[18], 0.5 * CuFrameHoleY[18], 0.5 * CuFrameHoleH[18] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[18] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[19], 0.5 * CuFrameHoleY[19], 0.5 * CuFrameHoleH[19] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[19] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[20], 0.5 * CuFrameHoleY[20], 0.5 * CuFrameHoleH[20] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[20] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[21], 0.5 * CuFrameHoleY[21], 0.5 * CuFrameHoleH[21] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[21] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[22], 0.5 * CuFrameHoleY[22], 0.5 * CuFrameHoleH[22] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[22] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[23], 0.5 * CuFrameHoleY[23], 0.5 * CuFrameHoleH[23] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[23] );
+    CuHorizontalFrameHole.push_back( new G4Box( "CuFrameHole", 0.5 * CuFrameHoleX[24], 0.5 * CuFrameHoleY[24], 0.5 * CuFrameHoleH[24] ) );
+    CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,CuHorizontalFrameHole.back(), 0, CuFrameHolePos[24] );
+
+
+    // Put everything together
+    
+    G4MultiUnion* CuFrame = new G4MultiUnion( "CuFrame" );
+
+    /* for( unsigned int i=0; i<CuHorizontalFrameTrans.size(); i++ )
+    	CuFrame->AddNode( *CuHorizontalFrame, *CuHorizontalFrameTrans[i] );
+    for( unsigned int i=0; i<CuBandTrans.size(); i++ )
+    	CuFrame->AddNode( *CuBand, *CuBandTrans[i] );
+    for( unsigned int i=0; i<CuMidBandTrans.size(); i++ )
+    	CuFrame->AddNode( *CuMidBand, *CuMidBandTrans[i] );
+    for( unsigned int i=0; i<CuLatBandTrans.size(); i++ )
+    	CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[i] ); */
+
+    G4cout<<CuHorizontalFrameTrans.size()<<G4endl;
+    G4cout<<CuBandTrans.size()<<G4endl;
+    G4cout<<CuMidBandTrans.size()<<G4endl;
+    G4cout<<CuLatBandTrans.size()<<G4endl;
+
+    CuFrame->AddNode( *CuHorizontalFrame, *CuHorizontalFrameTrans[0] );
+    CuFrame->AddNode( *CuHorizontalFrame, *CuHorizontalFrameTrans[1] );
+
+    CuFrame->AddNode( *CuBand, *CuBandTrans[0] );
+    CuFrame->AddNode( *CuBand, *CuBandTrans[1] );
+
+    CuFrame->AddNode( *CuMidBand, *CuMidBandTrans[0] );
+    CuFrame->AddNode( *CuMidBand, *CuMidBandTrans[1] );
+    CuFrame->AddNode( *CuMidBand, *CuMidBandTrans[2] );
+    CuFrame->AddNode( *CuMidBand, *CuMidBandTrans[3] );
+
+    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[0] );
+    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[1] );
+    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[2] );
+    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[3] );
+
+    CuFrame->Voxelize();
+
+    SolidCuFrame = CuFrame;
+
+    LogicalCuFrame    = new G4LogicalVolume( SolidCuFrame,    Copper,    "CuFrame",    0, 0, 0 );
+
+    LogicalCuFrame->SetVisAttributes(orange);
+
+    PhysicalCuFrame = new G4PVPlacement(
+        G4Transform3D(DontRotate, G4ThreeVector(26.5 * mm, 0 * mm, -13 * mm)),
+        LogicalCuFrame, "CuFrame", LogicalHolder, false, 0);
 }
- */
+
 
 /**
  * @brief Construct the LMO part.
@@ -506,12 +742,13 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
 					     PTFECornerTopHoleX,
 					     PTFECornerTopHoleH );
 
-    for( unsigned int i=0; i<PTFECornerTopHolePos.size(); i++ )
-	PTFECorner = new G4SubtractionSolid( "PTFECorner",
-					     PTFECorner,
-					     PTFECornerTopHole,
-					     PTFECornerTopHoleRot[i],
-					     PTFECornerTopHolePos[i] );
+    for( unsigned int i=0; i<PTFECornerTopHolePos.size(); i++ ){
+        PTFECorner = new G4SubtractionSolid( "PTFECorner",
+                            PTFECorner,
+                            PTFECornerTopHole,
+                            PTFECornerTopHoleRot[i],
+                            PTFECornerTopHolePos[i] );
+    }
 
     G4VSolid* PTFECornerXHole = new G4Box( "PTFECornerXHole",
 					   PTFECornerXHoleX,
@@ -593,27 +830,27 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
 
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[0] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[1] );
-    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[2] );
-    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[3] );
-    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[4] );
-    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[5] );
+    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[2] );
+    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[3] );
+    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[4] );
+    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[5] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[6] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[7] );
 
     PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[0] );
     PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[1] );
-    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[2] );
-    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[3] );
+    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[2] );
+    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[3] );
 
     PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[0] );
     PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[1] );
-    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[2] );
-    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[3] );
+    //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[2] );
+    //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[3] );
 
     PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[0] );
     PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[1] );
-    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[2] );
-    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[3] );
+    //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[2] );
+    //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[3] );
 
 
     PTFE->Voxelize();
@@ -621,11 +858,11 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
     SolidPTFE = PTFE;
 
     LogicalPTFE = new G4LogicalVolume( SolidPTFE,      Teflon,    "PTFE",       0, 0, 0 );
-
+    LogicalPTFE->SetVisAttributes(gray);
     // LOGICAL
 
     PhysicalPTFE = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, 60 * mm)),
+        G4Transform3D(DontRotate, G4ThreeVector(26.5 * mm, 0 * mm, 9.5 * mm)),
         LogicalPTFE, "PTFE", LogicalHolder, false, 0);
 }
 
@@ -804,15 +1041,8 @@ G4VPhysicalVolume *OpticalSimulationGeometryConstruction::Construct() {
     ConstructLMO();
     ConstructLD();
     ConstructPTFE();
+    ConstructCopperFrame();
 
-    G4OpticalSurface *surface = new G4OpticalSurface("ScintillatorToHolder");
-    surface->SetType(dielectric_dielectric);
-    surface->SetFinish(polished);
-    surface->SetModel(unified); // modèle plus complet
-    /* 
-    new G4LogicalBorderSurface("SurfScintHolder", PhysicalScintillator,
-                               PhysicalHolder, surface);
-    */
 
     G4cout << "END OF THE DETECTOR CONSTRUCTION" << G4endl;
 

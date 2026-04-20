@@ -118,7 +118,7 @@ void OpticalSimulationSteppingAction::CheckBoundaryStatus(
 
         switch (boundaryStatus) {
         case Detection:
-            evtac->CountDetected();
+            //evtac->CountDetected();
             evtac->FillPhotonDetectorPositionX(postStep.x);
             evtac->FillPhotonDetectorPositionY(postStep.y);
             evtac->FillPhotonDetectorPositionZ(postStep.z);
@@ -414,13 +414,6 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
         G4cout<<"| particleID="<<particleID<<" | trackID="<<trackID<<" | parentID="<<parentID<<" | stepNo="<<stepNo<<" |"<<G4endl;
     }
 
-    if (volumeNamePreStep=="LD1"){// || volumeNamePreStep=="LD2"){
-        evtac->AddEnergyDepositLD(energyDeposited);
-        if (VerbosityLevel>2){
-            G4cout<<"Energy Deposit in LD ! ("<<energyDeposited<<"keV)"<<G4endl;
-        }
-    }
-
     // Initial beam info (step 1, primary particle only)
     if (parentID == 0 && stepNo == 1)
         SetInputInformations(evtac);
@@ -455,8 +448,23 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
             theTrack->SetTrackStatus(fStopAndKill);
         }
 
-        if (volumeNamePostStep== "LD1"){// || volumeNamePostStep== "LD2") { // photon detected by the LD
-            evtac->CountDetected();
+        if (volumeNamePostStep== "CuFrame" || volumeNamePostStep== "PTFE"){ // photon in secondary volume -> killed
+            evtac->CountKilled();
+            theTrack->SetTrackStatus(fStopAndKill);
+
+            if (VerbosityLevel > 1){
+                G4cout << "Photon detected in secondary volume and killed." << G4endl;
+            }
+        }
+
+        if (volumeNamePostStep== "LD1" || volumeNamePostStep== "LD2") { // photon detected in the LD
+            if (volumeNamePostStep== "LD1"){
+                evtac->CountDetectedLD1();
+            }
+            if (volumeNamePostStep== "LD2"){
+                evtac->CountDetectedLD2();
+            }
+            
             SetPhotonDetectedInformation(aStep, evtac);
             theTrack->SetTrackStatus(fStopAndKill);
             //if (parentID != 1 || aStep->GetTrack()->GetCreatorProcess()->GetProcessName() != "Scintillation"){

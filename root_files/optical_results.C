@@ -53,7 +53,7 @@ LMO_tree->SetBranchAddress("energy", &energy);
 Optical_tree->SetBranchAddress("birth_wavelength", &birth_wavelength);
 Optical_tree->SetBranchAddress("detected_wavelength", &detected_wavelength);
 Optical_tree->SetBranchAddress("scintillation_LMO", &scintillated);
-Optical_tree->SetBranchAddress("detected", &detected);
+Optical_tree->SetBranchAddress("detected_total", &detected);
 Optical_tree->SetBranchAddress("escaped", &escaped);
 Optical_tree->SetBranchAddress("bulk_abs_LMO", &absorbed);
 Optical_tree->SetBranchAddress("reemission_LMO", &reemitted);

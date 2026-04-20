@@ -66,6 +66,9 @@ class OpticalSimulationGeometryConstruction final
 
     /** @brief Construct PTFE Part. */
     void ConstructPTFE();
+    
+    /** @brief Construct Copper Frame. */
+    void ConstructCopperFrame();
 
     /** @brief Construct LMO Part. */
     void ConstructLMO();
@@ -381,9 +384,11 @@ class OpticalSimulationGeometryConstruction final
     //G4LogicalVolume *LogicalLDCoating = nullptr;
     G4LogicalVolume *LogicalLMO = nullptr;
     G4LogicalVolume *LogicalPTFE = nullptr;
+    G4LogicalVolume *LogicalCuFrame = nullptr;
     
 
     G4VSolid *SolidPTFE = nullptr;
+    G4VSolid *SolidCuFrame = nullptr;
     
 
     /** @brief Physical volumes (placements in space). */
@@ -394,6 +399,7 @@ class OpticalSimulationGeometryConstruction final
     //G4VPhysicalVolume *PhysicalLDCoating = nullptr;
     G4VPhysicalVolume *PhysicalLMO = nullptr;
     G4VPhysicalVolume *PhysicalPTFE = nullptr;
+    G4VPhysicalVolume *PhysicalCuFrame = nullptr;
 
     /** @brief Rotation matrices for component orientation. */
     G4RotationMatrix DontRotate;
