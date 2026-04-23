@@ -15,7 +15,7 @@
 using namespace CLHEP;
 
 const G4String OpticalSimulationMaterials::path = "../simulation_input_files/";
-const G4String OpticalSimulationMaterials::path2 = "../optical_properties/";
+const G4String OpticalSimulationMaterials::path2 = "../optical_input/";
 
 OpticalSimulationMaterials::OpticalSimulationMaterials() : fMaterialsList{} {
 

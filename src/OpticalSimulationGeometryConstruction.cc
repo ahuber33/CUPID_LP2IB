@@ -558,6 +558,9 @@ void OpticalSimulationGeometryConstruction::ConstructCopperFrame() {
 
     SolidCuFrame = CuFrame;
 
+    /* CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,                           ////// TO REMOVE HALF
+        new G4Box( "CuRemoveHalf", 0.5 * 60*mm, 0.5 * 60*mm, 0.5 * 60*mm ), 0, G4ThreeVector(31*mm,0*mm,0*mm) );  ////// OF THE FRAME */
+
     LogicalCuFrame    = new G4LogicalVolume( SolidCuFrame,    Copper,    "CuFrame",    0, 0, 0 );
 
     LogicalCuFrame->SetVisAttributes(orange);
@@ -573,6 +576,8 @@ void OpticalSimulationGeometryConstruction::ConstructCopperFrame() {
  */
 void OpticalSimulationGeometryConstruction::ConstructPTFE() {
     auto Teflon = OpticalSimulationMaterials::getInstance()->getMaterial("Vacuum");
+
+    NFloors = 1;
 
     PTFECornerX = 9. * mm;
     PTFECornerY = 10. * mm;
@@ -695,24 +700,27 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
     PTFELargeCapH = 1.5 * mm;
     PTFESmallCapH = 6.4 * mm;
 
-    for( int f=0; f<NFloors; f++ )
+    G4cout<<NFloors<<G4endl;
 
-	for( double sx=-1; sx<=1; sx+=2 )
-	    for( double sy=-1; sy<=1; sy+=2 )
-		{
-		    PTFECapRot.push_back( G4RotationMatrix() );
-		    PTFECapRot.back().rotateX( sy * 90. * deg );
-		    double x = sx * 25.7 * mm;
-		    double y = sy * 32. * mm;
-		    double z = -0.5 * CuBandH + 37.5 * mm + f * 49. * mm - 2.5 * mm;
-		    PTFELargeCapPos.push_back( G4ThreeVector( x, y, z ) );
-		    PTFELargeCapTrans.push_back( new G4Transform3D( PTFECapRot.back(),
-										  PTFELargeCapPos.back() ) );
-		    y = sy * (  32. * mm - 0.5 * PTFELargeCapH - 0.5 * PTFESmallCapH );
-		    PTFESmallCapPos.push_back( G4ThreeVector( x, y, z ) );
-		    PTFESmallCapTrans.push_back( new G4Transform3D( PTFECapRot.back(),
-										  PTFESmallCapPos.back() ) );
-		}
+    for( int f=0; f<NFloors; f++ ){
+
+        for( double sx=-1; sx<=1; sx+=2 )
+            for( double sy=-1; sy<=1; sy+=2 )
+            {
+                PTFECapRot.push_back( G4RotationMatrix() );
+                PTFECapRot.back().rotateX( sy * 90. * deg );
+                double x = sx * 25.7 * mm;
+                double y = sy * 32. * mm;
+                double z = -0.5 * CuBandH + 37.5 * mm + f * 49. * mm - 2.5 * mm;
+                PTFELargeCapPos.push_back( G4ThreeVector( x, y, z ) );
+                PTFELargeCapTrans.push_back( new G4Transform3D( PTFECapRot.back(),
+                                            PTFELargeCapPos.back() ) );
+                y = sy * (  32. * mm - 0.5 * PTFELargeCapH - 0.5 * PTFESmallCapH );
+                PTFESmallCapPos.push_back( G4ThreeVector( x, y, z ) );
+                PTFESmallCapTrans.push_back( new G4Transform3D( PTFECapRot.back(),
+                                            PTFESmallCapPos.back() ) );
+            }
+    }
 
     PTFEZ           = CuFrameZ - 0.5 * ( PTFEMiddleH - CuFrameH );
     G4cout<<"PTFEZ = "<<PTFEZ<<G4endl;
@@ -836,21 +844,41 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
     //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[5] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[6] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[7] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[8] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[9] );
+    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[10] );
+    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[11] );
+    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[12] );
+    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[13] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[14] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[15] );
 
     PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[0] );
     PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[1] );
     //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[2] );
     //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[3] );
+    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[4] );
+    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[5] );
+    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[6] );
+    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[7] );
 
     PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[0] );
     PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[1] );
     //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[2] );
     //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[3] );
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[4] );
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[5] );
+    //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[6] );
+    //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[7] );
 
     PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[0] );
     PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[1] );
     //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[2] );
     //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[3] );
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[4] );
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[5] );
+    //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[6] );
+    //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[7] );
 
 
     PTFE->Voxelize();
@@ -862,7 +890,7 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
     // LOGICAL
 
     PhysicalPTFE = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(26.5 * mm, 0 * mm, 9.5 * mm)),
+        G4Transform3D(DontRotate, G4ThreeVector(26.5 * mm, 0 * mm, -49 * mm + 9.5 * mm)),
         LogicalPTFE, "PTFE", LogicalHolder, false, 0);
 }
 
@@ -892,21 +920,22 @@ void OpticalSimulationGeometryConstruction::ConstructLMO() {
 
     if (optical_model == "unified"){
         opLMOSurface->SetType(dielectric_dielectric);//dielectric_dielectric dielectric_LUTDAVIS
-        opLMOSurface->SetFinish(polished);// ground polished Rough_LUT Polished_LUT
+        opLMOSurface->SetFinish(ground);// ground polished Rough_LUT Polished_LUT
         opLMOSurface->SetModel(unified);//glisur unified DAVIS
+        opLMOSurface->SetSigmaAlpha(1.);
     }
 
     if (optical_model == "glisur"){
         opLMOSurface->SetType(dielectric_dielectric);//dielectric_dielectric dielectric_LUTDAVIS
-        opLMOSurface->SetFinish(Polished_LUT);// ground polished Rough_LUT Polished_LUT
+        opLMOSurface->SetFinish(ground);// ground polished Rough_LUT Polished_LUT
         opLMOSurface->SetModel(glisur);//glisur unified DAVIS
-        opLMOSurface->SetPolish(0.1);
+        opLMOSurface->SetPolish(0.);
     }
 
     if (optical_model == "DAVIS"){
         opLMOSurface->SetType(dielectric_LUTDAVIS);//dielectric_dielectric dielectric_LUTDAVIS
         opLMOSurface->SetFinish(Rough_LUT);// ground polished Rough_LUT Polished_LUT
-        opLMOSurface->SetModel(glisur);//glisur unified DAVIS
+        opLMOSurface->SetModel(DAVIS);//glisur unified DAVIS
     }
 
     auto LMOSurface = new G4LogicalSkinSurface("LMOSurface", LogicalLMO, opLMOSurface);

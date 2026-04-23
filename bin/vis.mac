@@ -2,6 +2,8 @@
 /vis/open OGL 600x600-0+0                                         # Open an OpenGL viewer with a 600x600 pixel window
 /vis/drawVolume                                                   # Draw the full geometry
 #/vis/viewer/set/style wireframe                                  # (optional) Set geometry to wireframe style
+/vis/geometry/set/forceSolid PTFE
+/vis/geometry/set/forceSolid CuFrame
 /vis/viewer/set/viewpointThetaPhi 0 0                             # Set the camera viewpoint angles theta=0, phi=0
 /vis/viewer/set/upVector 1 0 0                                    # Set the camera "up" vector
 /vis/viewer/set/viewpointVector -0.99 0 0.01                      # Set the camera pointing vector
