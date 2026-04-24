@@ -43,7 +43,7 @@ int absorbed;
 int reemitted;
 vector<double>* birth_wavelength = nullptr;
 vector<double>* detected_wavelength = nullptr;
-vector<double> energy;
+vector<double>* energy;
 double xmin;
 double xmax;
 

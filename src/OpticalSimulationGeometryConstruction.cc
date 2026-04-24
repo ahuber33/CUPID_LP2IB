@@ -110,7 +110,7 @@ void OpticalSimulationGeometryConstruction::SetLogicalVolumeColor(
     orange->SetForceSolid(true);
     orange->SetVisibility(true);
 
-    yellow = new G4VisAttributes(G4Colour(1, 1, 0, 0.5));
+    yellow = new G4VisAttributes(G4Colour(1, 1, 0, 1));
     yellow->SetForceSolid(true);
     yellow->SetVisibility(true);
 
@@ -894,6 +894,177 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
         LogicalPTFE, "PTFE", LogicalHolder, false, 0);
 }
 
+/**
+ * @brief Construct the PEN Flaps.
+ */
+/* void OpticalSimulationGeometryConstruction::ConstructPEN() {
+
+    NFloors         = 13;
+    CrystalL        = 45.  * mm;
+    LightDetL       = 49.  * mm;
+    LightDetDiagL   = 40. * sqrt(2.) * mm;
+    LightDetT       = 0.3  * mm;
+
+    CuFrameX        = 111. * mm;
+    CuFrameY        = 59.  * mm;
+    CuFrameH        = 2.   * mm;
+    CuTopFrameH     = 12.  * mm;
+    CuBottomFrameH  = 12.  * mm;
+    CuFrameHoleL    = 45.  * mm;
+    CuFrameDT       = 7.   * mm;// Lateral thickness
+
+    PTFEFrameX      = 7.  * mm;
+    PTFEFrameY      = 7.  * mm;
+    PTFEFrameH      = 7.  * mm;
+    PTFEFrameHoleL  = 5.   * mm;
+    PTFEFrameHoleL2 = 0.5 * PTFEFrameHoleL * sqrt(2.);
+    PTFEFrameHoleT  = 3.   * mm;
+    PTFEFrameHoleH  = 7.   * mm;
+    PTFEFrameT      = 2.   * mm;
+
+    CuBandX        = 8. * mm;
+    CuBandY        = 2. * mm;
+    CuBandH        = fDetTopCuPlate.Z
+        - 0.5 * fDetTopCuPlate.H
+        - 0.5 * fDetBottomCuPlate.H
+        - fDetBottomCuPlate.Z
+        - 30. * mm;
+    PENBandX = CuBandX;
+    PENBandY = 0.5 * mm; // 5 bands of ~100 um thickness each
+    PENBandH = CuBandH;
+    PENCoverT = 1. * mm;
+    PENCoverX = CuBandX + 2. * PENCoverT;
+    PENCoverY = 0.5 * mm + PENCoverT; //
+    PENCoverH = CuBandH;
+
+    // PEN band positions
+    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                    -0.5 * CuFrameY    - 0.5 * PENBandY,
+                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
+    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                    -0.5 * CuFrameY    - 0.5 * PENBandY,
+                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
+    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                    +0.5 * CuFrameY    + 0.5 * PENBandY,
+                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
+    PENBandTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                    +0.5 * CuFrameY    + 0.5 * PENBandY,
+                    +0.5 * CuTopFrameH - 0.5 * PENBandH ) ) );
+
+    // PEN cover positions
+    G4RotationMatrix rotcover = G4RotationMatrix();
+    rotcover.rotateZ( 180. * deg );
+    PENCoverTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                    -0.5 * CuFrameY    - 0.5 * PENCoverY,
+                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
+    PENCoverTrans.push_back( new G4Transform3D( G4RotationMatrix(),
+                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                    -0.5 * CuFrameY    - 0.5 * PENCoverY,
+                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
+    PENCoverTrans.push_back( new G4Transform3D( rotcover,
+                G4ThreeVector( -0.25 * CuFrameX   - 0.5 * CuFrameDT,
+                    +0.5 * CuFrameY    + 0.5 * PENCoverY,
+                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
+    PENCoverTrans.push_back( new G4Transform3D( rotcover,
+                G4ThreeVector( +0.25 * CuFrameX   + 0.5 * CuFrameDT,
+                    +0.5 * CuFrameY    + 0.5 * PENCoverY,
+                    +0.5 * CuTopFrameH - 0.5 * PENCoverH ) ) );
+
+    // ---------
+    // PEN parts
+    // ---------
+
+    G4VSolid* PENBand = new G4Box( "PENBand",
+				   0.5 * PENBandX,
+				   0.5 * PENBandY,
+				   0.5 * PENBandH );
+
+
+    G4VSolid* PENBandHole1 = new G4Box( "PENBandHole1",
+					PENBandHole1X,
+					PENBandHole1Y,
+					0.5 * PENBandHole1H );
+
+    G4VSolid* PENBandHole2 = new G4Box( "PENBandHole2",
+					PENBandHole2X,
+					PENBandHole2Y,
+					0.5 * PENBandHole2H );
+
+    G4VSolid* PENBandHole3 = new G4Box( "PENBandHole3",
+					PENBandHole3X,
+					PENBandHole3Y,
+					0.5 * PENBandHole3H );
+
+    for( unsigned int f=0; f<PENBandHole1Pos.size(); f++ )
+	PENBand = new G4SubtractionSolid( "PENBand",
+					  PENBand,
+					  PENBandHole1,
+					  0,
+					  PENBandHole1Pos[f] );
+
+    for( unsigned int f=0; f<PENBandHole2Pos.size(); f++ )
+	PENBand = new G4SubtractionSolid( "PENBand",
+					  PENBand,
+					  PENBandHole2,
+					  0,
+					  PENBandHole2Pos[f] );
+
+    for( unsigned int f=0; f<PENBandHole3Pos.size(); f++ )
+	PENBand = new G4SubtractionSolid( "PENBand",
+					  PENBand,
+					  PENBandHole3,
+					  0,
+					  PENBandHole3Pos[f] );
+
+    G4VSolid* PENBandLittleHole = new G4Tubs( "PENBandLittleHole",
+					      0.,
+					      PENBandLittleHoleR,
+					      2. * PENBandY,
+					      0.,
+					      360. * deg );
+
+    for( unsigned int f=0; f<PENBandLittleHolePos.size(); f++ )
+	PENBand = new G4SubtractionSolid( "PENLatBand",
+					  PENBand,
+					  PENBandLittleHole,
+					  PENBandLittleHoleRot[f],
+					  PENBandLittleHolePos[f] );
+
+    G4VSolid* PENFlap = new G4Box( "PENFlap",
+				   0.5 * PENFlapX,
+				   0.5 * PENFlapY + 0.5 * PENFlapT,
+				   0.5 * PENFlapH + 0.5 * PENFlapT );
+
+    G4VSolid* PENFlapHole = new G4Box( "PENFlapHole",
+				       PENFlapX,
+				       PENFlapY,
+				       PENFlapH );
+
+    PENFlap = new G4SubtractionSolid( "PENFlap",
+				      PENFlap,
+				      PENFlapHole,
+				      0,
+				      G4ThreeVector( 0.,
+						     0.5 * ( PENFlapY + PENFlapT ),
+						     -0.5 * ( PENFlapH + PENFlapT ) ) );
+
+
+    G4MultiUnion* PEN = new G4MultiUnion( "PEN" );
+    for( unsigned int i=0; i<PENBandTrans.size(); i++ )
+    	PEN->AddNode( *PENBand, *PENBandTrans[i] );
+    for( unsigned int i=0; i<PENFlapTrans.size(); i++ )
+    	PEN->AddNode( *PENFlap, *PENFlapTrans[i] );
+
+    PEN->Voxelize();
+
+    fPENSolid = PEN;
+}
+ */
 /**
  * @brief Construct the LMO part.
  */

@@ -66,6 +66,9 @@ class OpticalSimulationGeometryConstruction final
 
     /** @brief Construct PTFE Part. */
     void ConstructPTFE();
+
+    /** @brief Construct PTFE Part. */
+    /* void ConstructPEN(); */
     
     /** @brief Construct Copper Frame. */
     void ConstructCopperFrame();

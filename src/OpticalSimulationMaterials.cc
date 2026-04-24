@@ -408,12 +408,14 @@ OpticalSimulationMaterials::OpticalSimulationMaterials() : fMaterialsList{} {
     mptLi2MoO4->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
     mptLi2MoO4->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
 
-    mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
-    mptLi2MoO4->AddProperty("TRITONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    //mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    //mptLi2MoO4->AddProperty("TRITONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    //mptLi2MoO4->AddProperty("ELECTRONSCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
+    //mptLi2MoO4->AddProperty("IONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    //mptLi2MoO4->AddProperty("PROTONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    //mptLi2MoO4->AddProperty("DEUTERONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
     mptLi2MoO4->AddProperty("ELECTRONSCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
-    mptLi2MoO4->AddProperty("IONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
-    mptLi2MoO4->AddProperty("PROTONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
-    mptLi2MoO4->AddProperty("DEUTERONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
 
     mptLi2MoO4->AddConstProperty("RESOLUTIONSCALE", 1.0);
     mptLi2MoO4->AddProperty("SCINTILLATIONCOMPONENT1", EMISSION_energy, EMISSION_var);
