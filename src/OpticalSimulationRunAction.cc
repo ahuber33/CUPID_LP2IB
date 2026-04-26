@@ -223,7 +223,7 @@ void OpticalSimulationRunAction::BeginOfRunAction(const G4Run *aRun) {
     // YAGs*****************************************
     //************************************INFORMATIONS FROM THE BS
     // YAG*****************************************
-    CreateScBranches(Tree_LMO, StatsLMO);
+    CreateScBranches(Tree_Optical, StatsLMO);
 
     //************************************INFORMATIONS FROM THE OPTICAL
     // PHOTON*****************************************
