@@ -44,8 +44,8 @@
 /run/physicsModified
 
 
-/OpticalSimulation/step/setVerbose 0
-/OpticalSimulation/step/setPhotonTrackStatus true                   # Activate (true) or not the tracking of optical photons
+/SimOp/step/setVerbose 0
+/SimOp/step/setPhotonTrackStatus true                   # Activate (true) or not the tracking of optical photons
 
 /tracking/verbose 0                                               # Enable or not detailed tracking output
 /run/verbose 1                                                    # Enable or not verbose run output
