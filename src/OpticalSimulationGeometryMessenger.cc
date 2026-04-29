@@ -50,6 +50,10 @@ OpticalSimulationGeometryMessenger::OpticalSimulationGeometryMessenger(
     fMaterialsDir = new G4UIdirectory("/OpticalSimulation/materials/");
     fMaterialsDir->SetGuidance("Materials construction UI commands");
 
+    // Create sub-directory for surface finish commands
+    fMaterialsDir = new G4UIdirectory("/OpticalSimulation/geometry/");
+    fMaterialsDir->SetGuidance("Surface finish UI commands");
+
     // Command to print current geometry and field settings
     fPrintCmd = new G4UIcmdWithoutParameter("/OpticalSimulation/print", this);
     fPrintCmd->SetGuidance("Print current settings.");
@@ -101,6 +105,51 @@ OpticalSimulationGeometryMessenger::OpticalSimulationGeometryMessenger(
     fGeometryLMOThicknessCmd->SetToBeBroadcasted(false);
 
     /**
+     * @brief Command to set the LMO Surface Finish Model.
+     *
+     * Parameter: LMO Surface Finish Model
+     */
+    fGeometryLMOModelCmd = new G4UIcmdWithAString(
+        "/OpticalSimulation/geometry/setLMOSurfaceModel", this);
+    fGeometryLMOModelCmd->SetParameterName("LMOSurfaceModel", false);
+
+    /**
+     * @brief Command to set the LMO Surface Finish Polish.
+     *
+     * Parameter: LMO Surface Finish Polish
+     */
+    fGeometryLMOPolishCmd = new G4UIcmdWithADouble(
+        "/OpticalSimulation/geometry/setLMOSurfacePolish", this);
+    fGeometryLMOPolishCmd->SetParameterName("LMOSurfacePolish", false);
+
+    /**
+     * @brief Command to set the LMO Surface Finish Type.
+     *
+     * Parameter: LMO Surface Finish Type
+     */
+    fGeometryLMOTypeCmd = new G4UIcmdWithAString(
+        "/OpticalSimulation/geometry/setLMOSurfaceType", this);
+    fGeometryLMOTypeCmd->SetParameterName("LMOSurfaceType", false);
+
+    /**
+     * @brief Command to set the LMO Surface Finish Type.
+     *
+     * Parameter: LMO Surface Finish Type
+     */
+    fGeometryLMOFinishCmd = new G4UIcmdWithAString(
+        "/OpticalSimulation/geometry/setLMOSurfaceFinish", this);
+    fGeometryLMOFinishCmd->SetParameterName("LMOSurfaceFinish", false);
+
+    /**
+     * @brief Command to set the LMO Surface Finish SigmaAlpha.
+     *
+     * Parameter: LMO Surface Finish SigmaAlpha
+     */
+    fGeometryLMOSigmaAlphaCmd = new G4UIcmdWithADouble(
+        "/OpticalSimulation/geometry/setLMOSurfaceSigmaAlpha", this);
+    fGeometryLMOSigmaAlphaCmd->SetParameterName("LMOSurfaceSigmaAlpha", false);
+
+    /**
      * @brief Command to set the Detector Distance.
      *
      * Parameter: DetectorDistance (double) unit
@@ -146,6 +195,12 @@ OpticalSimulationGeometryMessenger::~OpticalSimulationGeometryMessenger() {
     delete fGeometryLMOThicknessCmd;
     delete fGeometryDetectorDistanceCmd;
     delete fGeometryLMOLYCmd;
+    delete fGeometryLMOModelCmd;
+    delete fGeometryLMOPolishCmd;
+    delete fGeometryLMOTypeCmd;
+    delete fGeometryLMOFinishCmd;
+    delete fGeometryLMOSigmaAlphaCmd;
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -176,6 +231,16 @@ void OpticalSimulationGeometryMessenger::SetNewValue(G4UIcommand *aCommand,
             fGeometryDetectorDistanceCmd->GetNewDoubleValue(aNewValue));
     } else if (aCommand == fGeometryLMOLYCmd) {
         fGeometry->SetLMOLY(fGeometryLMOLYCmd->GetNewDoubleValue(aNewValue));
+    } else if (aCommand == fGeometryLMOModelCmd) {
+        fGeometry->SetLMOSurfaceModel(aNewValue);
+    } else if (aCommand == fGeometryLMOPolishCmd) {
+        fGeometry->SetLMOSurfacePolish(fGeometryLMOPolishCmd->GetNewDoubleValue(aNewValue));
+    } else if (aCommand == fGeometryLMOTypeCmd) {
+        fGeometry->SetLMOSurfaceType(aNewValue);
+    } else if (aCommand == fGeometryLMOFinishCmd) {
+        fGeometry->SetLMOSurfaceFinish(aNewValue);
+    } else if (aCommand == fGeometryLMOSigmaAlphaCmd) {
+        fGeometry->SetLMOSurfaceSigmaAlpha(fGeometryLMOSigmaAlphaCmd->GetNewDoubleValue(aNewValue));
     }
 }
 

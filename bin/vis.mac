@@ -2,6 +2,8 @@
 /vis/open OGL 600x600-0+0                                         # Open an OpenGL viewer with a 600x600 pixel window
 /vis/drawVolume                                                   # Draw the full geometry
 #/vis/viewer/set/style wireframe                                  # (optional) Set geometry to wireframe style
+/vis/geometry/set/forceSolid PTFE
+/vis/geometry/set/forceSolid CuFrame
 /vis/viewer/set/viewpointThetaPhi 0 0                             # Set the camera viewpoint angles theta=0, phi=0
 /vis/viewer/set/upVector 1 0 0                                    # Set the camera "up" vector
 /vis/viewer/set/viewpointVector -0.99 0 0.01                      # Set the camera pointing vector
@@ -37,12 +39,6 @@
 ################# PART FOR MESSENGER INFORMATION ##################
 ###################################################################
 
-/OpticalSimulation/geometry/setLMOLength 45 mm                    # Set LMO Length
-/OpticalSimulation/geometry/setLMOWidth 45 mm                     # Set LMO Width
-/OpticalSimulation/geometry/setLMOThickness 45 mm                # Set LMO Thickness
-
-#/OpticalSimulation/geometry/setDetectorDistance 10 mm           # Set Detector Distance
-
 
 /run/reinitializeGeometry                                         # Apply geometry changes
 /run/physicsModified
@@ -62,9 +58,15 @@
 /gps/number 1                                                     # Generate 1 particle
 /gps/particle e-                                              # Set particle type
 /gps/pos/type Point                                               # Particle generated at a point
-/gps/pos/centre 0.0 0.0 0.0 mm                                      # Particle start position
+
+#/gps/pos/type Volume
+#/gps/pos/shape Para
+#/gps/pos/halfx 22.5 mm
+#/gps/pos/halfy 22.5 mm
+#/gps/pos/halfz 22.5 mm
+
+/gps/pos/centre 0.0 0.0 15.0 mm                                      # Particle start position
+
 #/gps/direction 0.0 0.0 1.0                                        # Particle direction along Y-axis
 /gps/ang/type iso                                                # Particle isotropic direction
 /gps/energy 1. MeV                                              # Particle energy
-
-#/run/beamOn 1                                                     # Start simulation for 1 particle

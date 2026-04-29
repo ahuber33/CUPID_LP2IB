@@ -14,12 +14,14 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh" // for G4UIcmdWithADoubleAndUnit
 #include "G4UIcmdWithAnInteger.hh"      // for G4UIcmdWithAnInteger
+#include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithoutParameter.hh"   // for G4UIcmdWithoutParameter
 #include "G4UIdirectory.hh"             // for G4UIdirectory
 #include "OpticalSimulationGeometryConstruction.hh" // for OpticalSimulationGeometryConstruction
 
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
+class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWithoutParameter;
 class G4UIdirectory;
@@ -58,6 +60,16 @@ class OpticalSimulationGeometryMessenger : public G4UImessenger {
     G4UIcmdWithADoubleAndUnit *fGeometryLMOThicknessCmd = nullptr;
     /// Command to set the Detector Distance
     G4UIcmdWithADoubleAndUnit *fGeometryDetectorDistanceCmd = nullptr;
+    /// Command to set the LMO Surface Model
+    G4UIcmdWithAString *fGeometryLMOModelCmd = nullptr;
+    /// Command to set the LMO Surface Polish
+    G4UIcmdWithADouble *fGeometryLMOPolishCmd = nullptr;
+    /// Command to set the LMO Surface Type
+    G4UIcmdWithAString *fGeometryLMOTypeCmd = nullptr;
+    /// Command to set the LMO Surface Finish
+    G4UIcmdWithAString *fGeometryLMOFinishCmd = nullptr;
+    /// Command to set the LMO Surface SigmaAlpha
+    G4UIcmdWithADouble *fGeometryLMOSigmaAlphaCmd = nullptr;
 
     /// MATERIALS
     ///  Command to set the LMO LY

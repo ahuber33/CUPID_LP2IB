@@ -37,6 +37,7 @@ class OpticalSimulationMaterials {
 
   private:
     static const G4String path;
+    static const G4String path2;
 
     std::vector<G4Material *> fMaterialsList;
     G4double wavelengthNmToEnergy(G4double wavelength);
@@ -44,6 +45,7 @@ class OpticalSimulationMaterials {
     const G4int TAB_COLUMN_1 = 25;
     const G4int TAB_COLUMN = 10;
 
+    G4double energy;
     G4double var;
     G4double pWavelength;
     G4String filler;
@@ -60,6 +62,22 @@ class OpticalSimulationMaterials {
     std::vector<G4double> Index_Value;
     std::vector<G4double> Scatt_Energy;
     std::vector<G4double> Scatt_Long;
+
+    std::ifstream ReadEMISSION;
+    std::ifstream ReadABSORPTION;
+    std::ifstream ReadRINDEX;
+    std::ifstream ReadELECTRONLY;
+    std::ifstream ReadALPHALY;
+    std::vector<G4double> EMISSION_energy;
+    std::vector<G4double> EMISSION_var;
+    std::vector<G4double> ABSORPTION_energy;
+    std::vector<G4double> ABSORPTION_var;
+    std::vector<G4double> RINDEX_energy;
+    std::vector<G4double> RINDEX_var;
+    std::vector<G4double> ELECTRONLY_energy;
+    std::vector<G4double> ELECTRONLY_var;
+    std::vector<G4double> ALPHALY_energy;
+    std::vector<G4double> ALPHALY_var;
 
     G4double Res = 0.0;
     G4double Fastconst = 0.0;
