@@ -1070,44 +1070,18 @@ void OpticalSimulationGeometryConstruction::ConstructPTFE() {
  */
 void OpticalSimulationGeometryConstruction::ConstructLMO() {
     auto Li2MoO4 = OpticalSimulationMaterials::getInstance()->getMaterial("Li2MoO4");
-    /* auto Li2MoO4 = OpticalSimulationMaterials::getInstance()->getMaterial("EJ212"); */
     G4MaterialPropertiesTable *mpt = Li2MoO4->GetMaterialPropertiesTable();
 
-    LogicalLMO =
-        Geom->GetBoxVolume("Li2MoO4", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+    LogicalLMO = Geom->GetBoxVolume("Li2MoO4", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
 
     // Assign colors
     SetLogicalVolumeColor(LogicalLMO, "blue");
 
-    PhysicalLMO = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, 0 * mm)),
-        LogicalLMO, "LMO", LogicalHolder, false, 0);
+    PhysicalLMO = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, 0 * mm)),LogicalLMO, "LMO", LogicalHolder, false, 0);
 
     // Surface properties
 
     auto opLMOSurface = new G4OpticalSurface("LMOSurface");
-
-    /* std::string optical_model = "unified";
-
-    if (optical_model == "unified"){
-        opLMOSurface->SetType(dielectric_dielectric);//dielectric_dielectric dielectric_LUTDAVIS
-        opLMOSurface->SetFinish(polished);// ground polished Rough_LUT Polished_LUT
-        opLMOSurface->SetModel(unified);//glisur unified DAVIS
-        //opLMOSurface->SetSigmaAlpha(1.);
-    }
-
-    if (optical_model == "glisur"){
-        opLMOSurface->SetType(dielectric_dielectric);//dielectric_dielectric dielectric_LUTDAVIS
-        opLMOSurface->SetFinish(ground);// ground polished Rough_LUT Polished_LUT
-        opLMOSurface->SetModel(glisur);//glisur unified DAVIS
-        opLMOSurface->SetPolish(1.);
-    }
-
-    if (optical_model == "DAVIS"){
-        opLMOSurface->SetType(dielectric_LUTDAVIS);//dielectric_dielectric dielectric_LUTDAVIS
-        opLMOSurface->SetFinish(Rough_LUT);// ground polished Rough_LUT Polished_LUT
-        opLMOSurface->SetModel(DAVIS);//glisur unified DAVIS
-    } */
 
     if (fLMOSurfaceType=="dielectric_dielectric"){opLMOSurface->SetType(dielectric_dielectric);}
     if (fLMOSurfaceFinish=="ground"){opLMOSurface->SetFinish(ground);}
@@ -1129,6 +1103,41 @@ void OpticalSimulationGeometryConstruction::ConstructLMO() {
 
     auto opticalSurface = dynamic_cast<G4OpticalSurface*>(LMOSurface->GetSurface(LogicalLMO)->GetSurfaceProperty());
     if (opticalSurface) opticalSurface->DumpInfo();
+
+    // Secondary LMOs
+
+    G4bool constructSecLMO = true;
+
+    if (constructSecLMO){
+        LogicalLMOsec1 = Geom->GetBoxVolume("LMOsec1", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+        LogicalLMOsec2 = Geom->GetBoxVolume("LMOsec2", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+        LogicalLMOsec3 = Geom->GetBoxVolume("LMOsec3", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+        LogicalLMOsec4 = Geom->GetBoxVolume("LMOsec4", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+        LogicalLMOsec5 = Geom->GetBoxVolume("LMOsec5", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+        LogicalLMOsec6 = Geom->GetBoxVolume("LMOsec6", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+        LogicalLMOsec7 = Geom->GetBoxVolume("LMOsec7", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+        LogicalLMOsec8 = Geom->GetBoxVolume("LMOsec8", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+
+        G4double side_offset =  15. * mm;
+
+        PhysicalLMOsec1 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(-53. * mm, -53. * mm - side_offset, 0 * mm)), LogicalLMOsec1, "LMOsec1", LogicalHolder, false, 0);
+        PhysicalLMOsec2 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(-53. * mm, 0. * mm, 0 * mm)), LogicalLMOsec2, "LMOsec2", LogicalHolder, false, 0);
+        PhysicalLMOsec3 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(-53. * mm, 53. * mm + side_offset, 0 * mm)), LogicalLMOsec3, "LMOsec3", LogicalHolder, false, 0);
+        PhysicalLMOsec4 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(0. * mm, -53 * mm - side_offset, 0 * mm)), LogicalLMOsec4, "LMOsec4", LogicalHolder, false, 0);
+        PhysicalLMOsec5 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 53 * mm + side_offset, 0 * mm)), LogicalLMOsec5, "LMOsec5", LogicalHolder, false, 0);
+        PhysicalLMOsec6 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(53. * mm, -53 * mm - side_offset, 0 * mm)), LogicalLMOsec6, "LMOsec6", LogicalHolder, false, 0);
+        PhysicalLMOsec7 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(53. * mm, 0 * mm, 0 * mm)), LogicalLMOsec7, "LMOsec7", LogicalHolder, false, 0);
+        PhysicalLMOsec8 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(53. * mm, 53 * mm + side_offset, 0 * mm)), LogicalLMOsec8, "LMOsec8", LogicalHolder, false, 0);
+
+        auto LMOSurface1 = new G4LogicalSkinSurface("LMOSurface1", LogicalLMOsec1, opLMOSurface);
+        auto LMOSurface2 = new G4LogicalSkinSurface("LMOSurface2", LogicalLMOsec2, opLMOSurface);
+        auto LMOSurface3 = new G4LogicalSkinSurface("LMOSurface3", LogicalLMOsec3, opLMOSurface);
+        auto LMOSurface4 = new G4LogicalSkinSurface("LMOSurface4", LogicalLMOsec4, opLMOSurface);
+        auto LMOSurface5 = new G4LogicalSkinSurface("LMOSurface5", LogicalLMOsec5, opLMOSurface);
+        auto LMOSurface6 = new G4LogicalSkinSurface("LMOSurface6", LogicalLMOsec6, opLMOSurface);
+        auto LMOSurface7 = new G4LogicalSkinSurface("LMOSurface7", LogicalLMOsec7, opLMOSurface);
+        auto LMOSurface8 = new G4LogicalSkinSurface("LMOSurface8", LogicalLMOsec8, opLMOSurface);
+    }
 }
 
 /**

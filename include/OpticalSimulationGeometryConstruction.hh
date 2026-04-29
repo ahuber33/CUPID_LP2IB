@@ -396,6 +396,15 @@ class OpticalSimulationGeometryConstruction final
     G4LogicalVolume *LogicalLMO = nullptr;
     G4LogicalVolume *LogicalPTFE = nullptr;
     G4LogicalVolume *LogicalCuFrame = nullptr;
+    G4LogicalVolume *LogicalLMOsec1 = nullptr;
+    G4LogicalVolume *LogicalLMOsec2 = nullptr;
+    G4LogicalVolume *LogicalLMOsec3 = nullptr;
+    G4LogicalVolume *LogicalLMOsec4 = nullptr;
+    G4LogicalVolume *LogicalLMOsec5 = nullptr;
+    G4LogicalVolume *LogicalLMOsec6 = nullptr;
+    G4LogicalVolume *LogicalLMOsec7 = nullptr;
+    G4LogicalVolume *LogicalLMOsec8 = nullptr;
+
     
 
     G4VSolid *SolidPTFE = nullptr;
@@ -411,6 +420,14 @@ class OpticalSimulationGeometryConstruction final
     G4VPhysicalVolume *PhysicalLMO = nullptr;
     G4VPhysicalVolume *PhysicalPTFE = nullptr;
     G4VPhysicalVolume *PhysicalCuFrame = nullptr;
+    G4VPhysicalVolume *PhysicalLMOsec1 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOsec2 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOsec3 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOsec4 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOsec5 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOsec6 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOsec7 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOsec8 = nullptr;
 
     /** @brief Rotation matrices for component orientation. */
     G4RotationMatrix DontRotate;

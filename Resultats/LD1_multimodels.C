@@ -1,6 +1,6 @@
 void LD1_multimodels(){
 
-    const char *models[] = {"unified", "glisur"};
+    const char *models[] = {"glisur"};
     int i, j;
     for (i = 0; i < 2; i++) {
         for (j = 0; j <= 10; j++) {
@@ -10,7 +10,7 @@ void LD1_multimodels(){
             //std::cout<<"------------------------------------------------------------------"<<std::endl;
             //std::cout<<"opening file "<<filename<<std::endl;
 
-            TString filepath = "../Resultats/n_1/";
+            TString filepath = "../Resultats/";
             filepath += filename;
             filepath += ".root";
             TFile *f = TFile::Open(filepath);
