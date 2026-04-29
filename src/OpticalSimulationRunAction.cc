@@ -117,10 +117,12 @@ static void CreateOpticalBranches(TTree *tree, RunTallyOptical &stats) {
     tree->Branch("reemission_LMO", &stats.ReemissionLMO, "reemission_LMO/I");
     tree->Branch("bulk_abs_LMO", &stats.BulkAbsLMO, "bulk_abs_LMO/I");
     //tree->Branch("absorbed", &stats.Absorbed, "absorbed/I");
-    //tree->Branch("escaped", &stats.Escaped, "escaped/I");
+    tree->Branch("escaped", &stats.Escaped, "escaped/I");
     //tree->Branch("failed", &stats.Failed, "failed/I");
     tree->Branch("killed", &stats.Killed, "killed/I");
-    tree->Branch("detected", &stats.Detected, "detected/I");
+    tree->Branch("detected_LD1", &stats.DetectedLD1, "detected/I");
+    tree->Branch("detected_LD2", &stats.DetectedLD2, "detected/I");
+    tree->Branch("detected_total", &stats.DetectedTotal, "detected/I");
     // tree->Branch("exit_light_position_x", "vector<float>",
     //              &stats.ExitLightPositionX);
     // tree->Branch("exit_light_position_y", "vector<float>",
@@ -221,7 +223,7 @@ void OpticalSimulationRunAction::BeginOfRunAction(const G4Run *aRun) {
     // YAGs*****************************************
     //************************************INFORMATIONS FROM THE BS
     // YAG*****************************************
-    CreateScBranches(Tree_LMO, StatsLMO);
+    CreateScBranches(Tree_Optical, StatsLMO);
 
     //************************************INFORMATIONS FROM THE OPTICAL
     // PHOTON*****************************************

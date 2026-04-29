@@ -50,7 +50,9 @@ struct RunTallyOptical {
     G4int Escaped;
     G4int Failed;
     G4int Killed;
-    G4int Detected;
+    G4int DetectedLD1;
+    G4int DetectedLD2;
+    G4int DetectedTotal;
     std::vector<float> ExitLightPositionX;
     std::vector<float> ExitLightPositionY;
     std::vector<float> ExitLightPositionZ;
@@ -179,8 +181,9 @@ class OpticalSimulationEventAction : public G4UserEventAction {
     void CountReemissionLMO() { StatsOptical.ReemissionLMO++; }
     void CountKilled() { StatsOptical.Killed++; }
     int GetKilled() { return StatsOptical.Killed; }
-    void CountDetected() { StatsOptical.Detected++; }
-    int GetDetected() { return StatsOptical.Detected; }
+    void CountDetectedLD1() { StatsOptical.DetectedLD1++; StatsOptical.DetectedTotal++;}
+    void CountDetectedLD2() { StatsOptical.DetectedLD2++; StatsOptical.DetectedTotal++;}
+    int GetDetected() { return StatsOptical.DetectedTotal; }
     // void CountWLS(){StatsOptical.WLS++;}
     void CountAbsorbed() { StatsOptical.Absorbed++; }
     int GetAbsorbed() { return StatsOptical.Absorbed; }
@@ -237,11 +240,6 @@ class OpticalSimulationEventAction : public G4UserEventAction {
     float GetAirIndex() { return Air_Index; }
 
     void AddEnergyDepositLMO(float d){energy_deposit_electron_LMO += d; }
-
-    void AddEnergyDepositLD(float d){energy_deposit_LD_event += d; }
-    float GetEnergyDepositLD() const {
-        return energy_deposit_LD_event;
-    }
 
     /** Accessors for generic detector statistics */
     RunTallySc &GetLMO() { return StatsLMO; }
