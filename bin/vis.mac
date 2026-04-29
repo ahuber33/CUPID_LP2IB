@@ -39,12 +39,6 @@
 ################# PART FOR MESSENGER INFORMATION ##################
 ###################################################################
 
-/OpticalSimulation/geometry/setLMOLength 45 mm                    # Set LMO Length
-/OpticalSimulation/geometry/setLMOWidth 45 mm                     # Set LMO Width
-/OpticalSimulation/geometry/setLMOThickness 45 mm                # Set LMO Thickness
-
-#/OpticalSimulation/geometry/setDetectorDistance 10 mm           # Set Detector Distance
-
 
 /run/reinitializeGeometry                                         # Apply geometry changes
 /run/physicsModified
@@ -62,7 +56,7 @@
 ########## PART TO SIMULATE PARTICLE WITH GPS (no setgun) #########
 ###################################################################
 /gps/number 1                                                     # Generate 1 particle
-/gps/particle alpha                                              # Set particle type
+/gps/particle e-                                              # Set particle type
 /gps/pos/type Point                                               # Particle generated at a point
 
 #/gps/pos/type Volume

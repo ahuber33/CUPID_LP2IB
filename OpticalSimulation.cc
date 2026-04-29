@@ -4,6 +4,7 @@
 #include "Geometry.hh"
 #include "OpticalSimulationActionInitialization.hh"
 #include "OpticalSimulationPhysics.hh"
+#include "OpticalSimulationGeometryConstruction.hh"
 #include <thread>
 #include "G4UImanager.hh"
 #include "G4PhysicalVolumeStore.hh"
@@ -48,6 +49,21 @@ int main(int argc, char **argv) {
     // Geometry and physics
     Geometry *Geom = new Geometry();
     OpticalSimulationGeometryConstruction *GeomCons = new OpticalSimulationGeometryConstruction;
+
+    // Surface Finish inputs
+    if (argc == 9) {
+        GeomCons->SetLMOSurfaceModel(G4String(argv[5]));
+        GeomCons->SetLMOSurfaceType(G4String(argv[6]));
+        GeomCons->SetLMOSurfaceFinish(G4String(argv[7]));
+        if (G4String(argv[5])=="unified"){
+            GeomCons->SetLMOSurfaceSigmaAlpha(G4double(atof(argv[8])));
+        }
+        if (G4String(argv[5])=="glisur"){
+            GeomCons->SetLMOSurfacePolish(G4double(atof(argv[8])));
+        }
+    }
+
+
     runManager->SetUserInitialization(GeomCons);
     runManager->SetUserInitialization(new OpticalSimulationPhysics);
     runManager->SetUserInitialization(new OpticalSimulationActionInitialization(

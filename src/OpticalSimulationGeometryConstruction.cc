@@ -1085,28 +1085,44 @@ void OpticalSimulationGeometryConstruction::ConstructLMO() {
 
     // Surface properties
 
-    std::string optical_model = "unified";
-
     auto opLMOSurface = new G4OpticalSurface("LMOSurface");
+
+    /* std::string optical_model = "unified";
 
     if (optical_model == "unified"){
         opLMOSurface->SetType(dielectric_dielectric);//dielectric_dielectric dielectric_LUTDAVIS
-        opLMOSurface->SetFinish(ground);// ground polished Rough_LUT Polished_LUT
+        opLMOSurface->SetFinish(polished);// ground polished Rough_LUT Polished_LUT
         opLMOSurface->SetModel(unified);//glisur unified DAVIS
-        opLMOSurface->SetSigmaAlpha(1.);
+        //opLMOSurface->SetSigmaAlpha(1.);
     }
 
     if (optical_model == "glisur"){
         opLMOSurface->SetType(dielectric_dielectric);//dielectric_dielectric dielectric_LUTDAVIS
         opLMOSurface->SetFinish(ground);// ground polished Rough_LUT Polished_LUT
         opLMOSurface->SetModel(glisur);//glisur unified DAVIS
-        opLMOSurface->SetPolish(0.);
+        opLMOSurface->SetPolish(1.);
     }
 
     if (optical_model == "DAVIS"){
         opLMOSurface->SetType(dielectric_LUTDAVIS);//dielectric_dielectric dielectric_LUTDAVIS
         opLMOSurface->SetFinish(Rough_LUT);// ground polished Rough_LUT Polished_LUT
         opLMOSurface->SetModel(DAVIS);//glisur unified DAVIS
+    } */
+
+    if (fLMOSurfaceType=="dielectric_dielectric"){opLMOSurface->SetType(dielectric_dielectric);}
+    if (fLMOSurfaceFinish=="ground"){opLMOSurface->SetFinish(ground);}
+    if (fLMOSurfaceFinish=="polished"){opLMOSurface->SetFinish(polished);}
+    if (fLMOSurfaceModel=="unified"){opLMOSurface->SetModel(unified);}
+    if (fLMOSurfaceModel=="glisur"){opLMOSurface->SetModel(glisur);}
+
+    G4cout<<"POLISH VALUE = "<<fLMOSurfacePolish<<G4endl;
+
+    if (fLMOSurfacePolish >= 0.){
+        opLMOSurface->SetPolish(fLMOSurfacePolish);
+    }
+
+    if (fLMOSurfaceSigmaAlpha >= 0.){
+        opLMOSurface->SetSigmaAlpha(fLMOSurfaceSigmaAlpha);
     }
 
     auto LMOSurface = new G4LogicalSkinSurface("LMOSurface", LogicalLMO, opLMOSurface);

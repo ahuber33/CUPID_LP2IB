@@ -70,6 +70,7 @@ void OpticalSimulationSteppingAction::CheckBoundaryStatus(
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING CheckBoundaryStatus-----"<<G4endl;
     }
+
     G4OpBoundaryProcessStatus boundaryStatus = Undefined;
     G4OpBoundaryProcess *boundary = NULL;
 
@@ -411,7 +412,7 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
     // --- Begin main logic ---
     if (VerbosityLevel>2){
-        G4cout<<"| particleID="<<particleID<<" | trackID="<<trackID<<" | parentID="<<parentID<<" | stepNo="<<stepNo<<" |"<<G4endl;
+        G4cout<<"| particleID="<<particleID<<" | trackID="<<trackID<<" | parentID="<<parentID<<" | stepNo="<<stepNo<<" | PreVolume = "<<volumeNamePreStep<<" | PostVolume = "<<volumeNamePostStep<<G4endl;
     }
 
     // Initial beam info (step 1, primary particle only)
@@ -443,9 +444,14 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
     // ░╚════╝░╚═╝░░░░░░░░╚═╝░░░╚═╝░╚════╝░╚═╝░░╚═╝╚══════╝  ╚═╝░░░░░╚═╝░░╚═╝╚═╝░░╚═╝░░░╚═╝░░░
 
     if (particleName == "opticalphoton") {
+
         if (PhotonTrackStatus == false) {
             evtac->CountKilled();
             theTrack->SetTrackStatus(fStopAndKill);
+        }
+
+        else {
+            CheckBoundaryStatus(aStep, evtac);
         }
 
         if (volumeNamePostStep== "CuFrame" || volumeNamePostStep== "PTFE"){ // photon in secondary volume -> killed
@@ -457,27 +463,59 @@ void OpticalSimulationSteppingAction::UserSteppingAction(const G4Step *aStep) {
             }
         }
 
-        if (volumeNamePostStep== "LD1" || volumeNamePostStep== "LD2") { // photon detected in the LD
-            if (volumeNamePostStep== "LD1"){
-                evtac->CountDetectedLD1();
+
+        G4OpBoundaryProcessStatus boundaryStatus = Undefined;
+            G4OpBoundaryProcess *boundary = NULL;
+
+            // find the boundary process only once
+            if (!boundary) {
+                G4ProcessManager *pm =
+                    aStep->GetTrack()->GetDefinition()->GetProcessManager();
+                G4int nprocesses = pm->GetProcessListLength();
+                G4ProcessVector *pv = pm->GetProcessList();
+                G4int i;
+                for (i = 0; i < nprocesses; i++) {
+                    if ((*pv)[i]->GetProcessName() == "OpBoundary") {
+                        boundary = (G4OpBoundaryProcess *)(*pv)[i];
+                        break;
+                    }
+                }
             }
-            if (volumeNamePostStep== "LD2"){
-                evtac->CountDetectedLD2();
-            }
+
+
+            boundaryStatus = boundary->GetStatus();
+
+        if ((volumeNamePostStep== "LD1" && volumeNamePreStep == "Holder")
+             && !(boundaryStatus == FresnelReflection
+            || boundaryStatus == TotalInternalReflection || boundaryStatus == LambertianReflection 
+            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection) ) { // photon detected in the LD
+
+
+            evtac->CountDetectedLD1();
+        
             
             SetPhotonDetectedInformation(aStep, evtac);
             theTrack->SetTrackStatus(fStopAndKill);
-            //if (parentID != 1 || aStep->GetTrack()->GetCreatorProcess()->GetProcessName() != "Scintillation"){
-            //    G4cout<<"PHOTON DETECTED | CreatorProcess = "<<aStep->GetTrack()->GetCreatorProcess()->GetProcessName()
-            //    <<" | parentID = "<<parentID<<G4endl;
-            //}
+            
             if (VerbosityLevel > 1){
-                G4cout << "Photon detected in the LD!!!" << G4endl;
+                G4cout << "Photon detected in the LD1!!!" << G4endl;
             }
         }
 
-        else {
-            CheckBoundaryStatus(aStep, evtac);
+        if ((volumeNamePostStep== "LD2" && volumeNamePreStep == "Holder")
+             && !(boundaryStatus == FresnelReflection
+            || boundaryStatus == TotalInternalReflection || boundaryStatus == LambertianReflection 
+            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection) ) { // photon detected in the LD
+
+
+            evtac->CountDetectedLD2();
+            
+            SetPhotonDetectedInformation(aStep, evtac);
+            theTrack->SetTrackStatus(fStopAndKill);
+            
+            if (VerbosityLevel > 1){
+                G4cout << "Photon detected in the LD2!!!" << G4endl;
+            }
         }
 
         if (stepNo == 1) {

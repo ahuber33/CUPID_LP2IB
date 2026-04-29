@@ -2,9 +2,7 @@ void optical_results_LD1(){
 
     
 
-TFile *f = TFile::Open("../Resultats");
-TTree *Input_tree = (TTree*)f->Get("Input");
-TTree *LMO_tree = (TTree*)f->Get("LMO");
+TFile *f = TFile::Open("../Resultats/output.root");
 TTree *Optical_tree = (TTree*)f->Get("Optical");
 
 TCanvas *c1 = new TCanvas("c1", "Wavelength spectrum");
@@ -18,8 +16,8 @@ TCanvas *c5 = new TCanvas("c5", "Scintillation");
 TH1* h1 = new TH1F("h1", "birth_wavelength", 100.0, 200.0, 1000);
 TH1* h2 = new TH1F("h2", "detected_wavelength", 100.0, 200.0, 1000);
 
-TH1* h1b = new TH1F("h1", "birth_energy", 100.0, 1240/200.0, 1240/1000);
-TH1* h2b = new TH1F("h2", "detected_energy", 100.0, 1240/200.0, 1240/1000);
+TH1* h1b = new TH1F("h1b", "birth_energy", 100.0, 1240/200.0, 1240/1000);
+TH1* h2b = new TH1F("h2b", "detected_energy", 100.0, 1240/200.0, 1240/1000);
 
 TH1* h3 = new TH1I("h3", "scintillated", 100.0, 0.0, 1500);
 TH1* h4 = new TH1I("h4", "detected", 100.0, 0.0, 1500);
@@ -31,7 +29,7 @@ TH1* h8 = new TH1I("h8", "E_dep_LD", 100.0, 0.0, 1100);
 TH1* h9 = new TH1I("h9", "E_dep_LMO", 100.0, 0.0, 1100);
 
 TH1* h10 = new TH1I("h10", "Yield [kev/MeV]", 100.0, 0.0, 0.0);
-TH1* h10b = new TH1I("h10", "Yield [photons/MeV]", 50.0, 0.0, 0.0);
+TH1* h10b = new TH1I("h10b", "Yield [photons/MeV]", 50.0, 0.0, 0.0);
 
 int scintillated;
 float E_dep_event_LMO;
@@ -41,15 +39,13 @@ int detected;
 int escaped;
 int absorbed;
 int reemitted;
-vector<double>* birth_wavelength = nullptr;
-vector<double>* detected_wavelength = nullptr;
-vector<double>* energy;
+vector<float>* birth_wavelength = nullptr;
+vector<float>* detected_wavelength = nullptr;
 double xmin;
 double xmax;
 
 
-LMO_tree->SetBranchAddress("deposited_energy_event", &E_dep_event_LMO);
-LMO_tree->SetBranchAddress("energy", &energy);
+Optical_tree->SetBranchAddress("deposited_energy_event", &E_dep_event_LMO);
 Optical_tree->SetBranchAddress("birth_wavelength", &birth_wavelength);
 Optical_tree->SetBranchAddress("detected_wavelength", &detected_wavelength);
 Optical_tree->SetBranchAddress("scintillation_LMO", &scintillated);
@@ -61,7 +57,6 @@ Optical_tree->SetBranchAddress("reemission_LMO", &reemitted);
 for (int i = 0; i < Optical_tree->GetEntries(); i++)
 {
     Optical_tree->GetEntry(i);
-    LMO_tree->GetEntry(i);
     E_dep_eV = 0;
     xmin = birth_wavelength->at(0);
     xmax = birth_wavelength->at(0);
@@ -91,24 +86,18 @@ for (int i = 0; i < Optical_tree->GetEntries(); i++)
         }
     }
 
-    //std::cout<<E_dep_event_LMO<<endl;
+    h3->Fill(scintillated);
+    h4->Fill(detected);
+    h5->Fill(escaped);
+    h6->Fill(absorbed);
+    h7->Fill(reemitted);
 
-    //if (E_dep_event_LMO>=1000){
-    //   if (scintillated<900){std::cout<<scintillated<<" photons scintilles | E_dep =  "<<E_dep_event_LMO<<endl;}
+    h8->Fill(E_dep_eV);
+    h9->Fill(E_dep_event_LMO);
+
+    h10->Fill(E_dep_eV/E_dep_event_LMO);
+    h10b->Fill(detected/(E_dep_event_LMO/1000));
     
-        //std::cout<<scintillated<<endl;
-        h3->Fill(scintillated);
-        h4->Fill(detected);
-        h5->Fill(escaped);
-        h6->Fill(absorbed);
-        h7->Fill(reemitted);
-
-        h8->Fill(E_dep_eV);
-        h9->Fill(E_dep_event_LMO);
-
-        h10->Fill(E_dep_eV/E_dep_event_LMO);
-        h10b->Fill(detected/(E_dep_event_LMO/1000));
-    //} 
 
 }
 

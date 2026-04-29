@@ -94,13 +94,16 @@ class OpticalSimulationGeometryConstruction final
 
     void SetLMOLength(const G4double Length) { fLMOLength = Length; };
     void SetLMOWidth(const G4double Width) { fLMOWidth = Width; };
-    void SetLMOThickness(const G4double Thickness) {
-        fLMOThickness = Thickness;
-    };
+    void SetLMOThickness(const G4double Thickness) {fLMOThickness = Thickness;};
 
-    void SetDetectorDistance(const G4double Distance) {
-        fDetectorDistance = Distance;
-    };
+    // Surface
+    void SetLMOSurfaceModel(const G4String Model) {fLMOSurfaceModel = Model;};
+    void SetLMOSurfacePolish(const G4double Polish) {fLMOSurfacePolish = Polish;};
+    void SetLMOSurfaceType(const G4String Type) {fLMOSurfaceType = Type;};
+    void SetLMOSurfaceFinish(const G4String Finish) {fLMOSurfaceFinish = Finish;};
+    void SetLMOSurfaceSigmaAlpha(const G4double SigmaAlpha) {fLMOSurfaceSigmaAlpha = SigmaAlpha;};
+
+    void SetDetectorDistance(const G4double Distance) {fDetectorDistance = Distance;};
 
     const float GetLMOLength() const { return fLMOLength; }
     const float GetLMOWidth() const { return fLMOWidth; }
@@ -362,6 +365,11 @@ class OpticalSimulationGeometryConstruction final
     G4double fDistanceLMOtoLD1 = 0.5 * CLHEP::mm;
     G4double fDistanceLMOtoLD2 = 3 * CLHEP::mm;
     G4double fDetectorDistance = 100 * CLHEP::mm;
+    G4String fLMOSurfaceModel = "unified";
+    G4double fLMOSurfacePolish = -1.;
+    G4String fLMOSurfaceType = "dielectric_dielectric";
+    G4String fLMOSurfaceFinish = "ground";
+    G4double fLMOSurfaceSigmaAlpha = -1.;
 
     /** @brief Default Materials values. */
     G4double fLMOLY = 1000 / MeV;

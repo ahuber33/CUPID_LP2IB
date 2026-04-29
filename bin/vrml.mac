@@ -12,10 +12,12 @@
 ################# PART FOR MESSENGER INFORMATION ##################
 ###################################################################
 
-/OpticalSimulation/geometry/setLMOLength 45 mm                    # Set ZnS Length
-/OpticalSimulation/geometry/setLMOWidth 45 mm                     # Set ZnS Width
-/OpticalSimulation/geometry/setLMOThickness 45 mm                # Set ZnS Thickness
-#/OpticalSimulation/materials/setLMOLY 44000                       # Set ZnS:Ag LY
+
+#/OpticalSimulation/geometry/setLMOSurfaceModel glisur
+#/OpticalSimulation/geometry/setLMOSurfaceType dielectric_dielectric
+#/OpticalSimulation/geometry/setLMOSurfaceFinish ground
+#/OpticalSimulation/geometry/setLMOSurfacePolish 1.0
+#/OpticalSimulation/geometry/setLMOSurfaceSigmaAlpha 0.1
 
 #/OpticalSimulation/geometry/setDetectorDistance 100 mm             # Set Detector Distance
 
@@ -34,7 +36,7 @@
 ########## PART TO SIMULATE PARTICLE WITH GPS (no setgun) #########
 ###################################################################
 /gps/number 1                                                     # Generate 1 particle
-/gps/particle alpha                                              # Set particle type
+/gps/particle e-                                              # Set particle type
 #/gps/pos/type Point                                               # Particle generated at a point
 
 /gps/pos/type Volume
