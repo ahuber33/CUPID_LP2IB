@@ -1,6 +1,6 @@
 /**
  * @file Geometry.cc
- * @brief Implementation of the Geometry class for the OpticalSimulation.
+ * @brief Implementation of the Geometry class for the SimOp.
  *
  * This file implements the methods defined in Geometry.hh to construct and
  * retrieve Geant4 geometry volumes used in the optical simulation framework.
