@@ -1,13 +1,13 @@
 /**
- * @file SimOpGeometryConstruction.cc
+ * @file OpSimGeometryConstruction.cc
  * @brief Implements the detector geometry and magnetic field setup for the
  * Optical simulation.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  *
  * This file contains the method definitions for the
- * `SimOpGeometryConstruction` class declared in
- * `SimOpGeometryConstruction.hh`. It manages:
+ * `OpSimGeometryConstruction` class declared in
+ * `OpSimGeometryConstruction.hh`. It manages:
  *  - Construction of the full and simplified detector geometry
  *  - Loading of GDML models for realistic component shapes
  *  - Definition of visualization attributes for logical volumes
@@ -25,7 +25,7 @@
  * Thread safety is ensured via:
  *  - `G4Mutex fieldManagerMutex` for synchronized access to the magnetic field
  * manager
- *  - `G4ThreadLocal` instances of `SimOpMagneticField` and
+ *  - `G4ThreadLocal` instances of `OpSimMagneticField` and
  * `G4FieldManager`
  *
  * Visualization colors for logical volumes:
@@ -34,40 +34,40 @@
  *
  */
 
-#include "SimOpGeometryConstruction.hh"
+#include "OpSimGeometryConstruction.hh"
 
 using namespace CLHEP;
 
 //! Mutex to synchronize access to the magnetic field manager in multithreaded
 //! mode
-const G4String SimOpGeometryConstruction::path =
+const G4String OpSimGeometryConstruction::path =
     "../simulation_input_files/";
 std::mutex geometryMutex;
 std::mutex fileAccessMutex;
 
 /**
- * @brief Constructor for SimOpGeometryConstruction.
+ * @brief Constructor for OpSimGeometryConstruction.
  *
  * Initializes the base geometry and attaches the geometry messenger
  * for interactive user control via macro commands.
  */
-SimOpGeometryConstruction::SimOpGeometryConstruction()
+OpSimGeometryConstruction::OpSimGeometryConstruction()
     : G4VUserDetectorConstruction() {
     Geom = std::make_unique<Geometry>();
     fGeometryMessenger =
-        std::make_unique<SimOpGeometryMessenger>(this);
+        std::make_unique<OpSimGeometryMessenger>(this);
 }
 
 /**
- * @brief Destructor for SimOpGeometryConstruction.
+ * @brief Destructor for OpSimGeometryConstruction.
  */
-SimOpGeometryConstruction::
-    ~SimOpGeometryConstruction() = default;
+OpSimGeometryConstruction::
+    ~OpSimGeometryConstruction() = default;
 
 /**
  * @brief Print a summary of the current geometry setup.
  */
-void SimOpGeometryConstruction::Print() {
+void OpSimGeometryConstruction::Print() {
     G4cout << "\n------------------------------------------------------"
            << G4endl;
     G4cout << "-----------------------------------------------------" << G4endl;
@@ -83,7 +83,7 @@ void SimOpGeometryConstruction::Print() {
  * @param LogicalVolume Pointer to the logical volume to colorize.
  * @param Color Name of the color (e.g. "red", "green", "gray").
  */
-void SimOpGeometryConstruction::SetLogicalVolumeColor(
+void OpSimGeometryConstruction::SetLogicalVolumeColor(
     G4LogicalVolume *LogicalVolume, G4String Color) {
     // ***********************
     // Visualization Colors
@@ -161,11 +161,11 @@ void SimOpGeometryConstruction::SetLogicalVolumeColor(
  * Defines the simulation world as a large vacuum box and
  * places a holder volume inside it for containing components.
  */
-void SimOpGeometryConstruction::CreateWorldAndHolder() {
+void OpSimGeometryConstruction::CreateWorldAndHolder() {
     auto VacuumWorld =
-        SimOpMaterials::getInstance()->getMaterial("VacuumWorld");
+        OpSimMaterials::getInstance()->getMaterial("VacuumWorld");
     auto Vacuum =
-        SimOpMaterials::getInstance()->getMaterial("Vacuum");
+        OpSimMaterials::getInstance()->getMaterial("Vacuum");
 
     G4Box *SolidWorld = new G4Box("SolidWorld", 2.1 * m, 15.1 * m, 2.1 * m);
     LogicalWorld = new G4LogicalVolume(SolidWorld, VacuumWorld, "LogicalWorld");
@@ -189,8 +189,8 @@ void SimOpGeometryConstruction::CreateWorldAndHolder() {
  * @brief Construct the Copper Frame.
  */
 
-void SimOpGeometryConstruction::ConstructCopperFrame() {
-    auto Copper = SimOpMaterials::getInstance()->getMaterial("Vacuum");
+void OpSimGeometryConstruction::ConstructCopperFrame() {
+    auto Copper = OpSimMaterials::getInstance()->getMaterial("Vacuum");
 
     NFloors         = 1;
 
@@ -574,8 +574,8 @@ void SimOpGeometryConstruction::ConstructCopperFrame() {
 /**
  * @brief Construct the LMO part.
  */
-void SimOpGeometryConstruction::ConstructPTFE() {
-    auto Teflon = SimOpMaterials::getInstance()->getMaterial("Vacuum");
+void OpSimGeometryConstruction::ConstructPTFE() {
+    auto Teflon = OpSimMaterials::getInstance()->getMaterial("Vacuum");
 
     NFloors = 1;
 
@@ -897,7 +897,7 @@ void SimOpGeometryConstruction::ConstructPTFE() {
 /**
  * @brief Construct the PEN Flaps.
  */
-/* void SimOpGeometryConstruction::ConstructPEN() {
+/* void OpSimGeometryConstruction::ConstructPEN() {
 
     NFloors         = 13;
     CrystalL        = 45.  * mm;
@@ -1068,8 +1068,8 @@ void SimOpGeometryConstruction::ConstructPTFE() {
 /**
  * @brief Construct the LMO part.
  */
-void SimOpGeometryConstruction::ConstructLMO() {
-    auto Li2MoO4 = SimOpMaterials::getInstance()->getMaterial("Li2MoO4");
+void OpSimGeometryConstruction::ConstructLMO() {
+    auto Li2MoO4 = OpSimMaterials::getInstance()->getMaterial("Li2MoO4");
     G4MaterialPropertiesTable *mpt = Li2MoO4->GetMaterialPropertiesTable();
 
     LogicalLMO = Geom->GetBoxVolume("Li2MoO4", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
@@ -1143,8 +1143,8 @@ void SimOpGeometryConstruction::ConstructLMO() {
 /**
  * @brief Construct the Light Detector part.
  */
-void SimOpGeometryConstruction::ConstructLD() {
-    auto Germanium = SimOpMaterials::getInstance()->getMaterial("Germanium");
+void OpSimGeometryConstruction::ConstructLD() {
+    auto Germanium = OpSimMaterials::getInstance()->getMaterial("Germanium");
 
     G4MaterialPropertiesTable *mptLD = Germanium->GetMaterialPropertiesTable();
 
@@ -1204,7 +1204,7 @@ void SimOpGeometryConstruction::ConstructLD() {
     /////////////////// SiO coating
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     
-   /*  auto SiO = SimOpMaterials::getInstance()->getMaterial("SiO");
+   /*  auto SiO = OpSimMaterials::getInstance()->getMaterial("SiO");
     G4MaterialPropertiesTable *mptLDCoating = SiO->GetMaterialPropertiesTable();
 
     G4double LDCoatingThickness;
@@ -1244,7 +1244,7 @@ void SimOpGeometryConstruction::ConstructLD() {
  * @return Pointer to the top-level physical volume (`PhysicalWorld`)
  *         containing the entire detector setup.
  */
-G4VPhysicalVolume *SimOpGeometryConstruction::Construct() {
+G4VPhysicalVolume *OpSimGeometryConstruction::Construct() {
     // --- Cleanup of previous geometry ----------------------------------------
     G4GeometryManager::GetInstance()->OpenGeometry();
     G4PhysicalVolumeStore::GetInstance()->Clean();

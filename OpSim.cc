@@ -2,9 +2,9 @@
 #include "G4UIExecutive.hh"
 #include "G4VisExecutive.hh"
 #include "Geometry.hh"
-#include "SimOpActionInitialization.hh"
-#include "SimOpPhysics.hh"
-#include "SimOpGeometryConstruction.hh"
+#include "OpSimActionInitialization.hh"
+#include "OpSimPhysics.hh"
+#include "OpSimGeometryConstruction.hh"
 #include <thread>
 #include "G4UImanager.hh"
 #include "G4PhysicalVolumeStore.hh"
@@ -13,7 +13,7 @@
 int main(int argc, char **argv) {
     if (argc < 2) {
         G4Exception("Main", "main0004", FatalException,
-                    "Insufficient input arguments. Usage: ./SimOp [ROOT file name] [events] [macro] [MT ON/OFF] [threads]");
+                    "Insufficient input arguments. Usage: ./OpSim [ROOT file name] [events] [macro] [MT ON/OFF] [threads]");
         return 1;
     }
 
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 
     // Geometry and physics
     Geometry *Geom = new Geometry();
-    SimOpGeometryConstruction *GeomCons = new SimOpGeometryConstruction;
+    OpSimGeometryConstruction *GeomCons = new OpSimGeometryConstruction;
 
     // Surface Finish inputs
     if (argc == 9) {
@@ -65,8 +65,8 @@ int main(int argc, char **argv) {
 
 
     runManager->SetUserInitialization(GeomCons);
-    runManager->SetUserInitialization(new SimOpPhysics);
-    runManager->SetUserInitialization(new SimOpActionInitialization(
+    runManager->SetUserInitialization(new OpSimPhysics);
+    runManager->SetUserInitialization(new OpSimActionInitialization(
         outputFile, TotalNParticles, Ncores, flag_MT, GeomCons));
 
     // --- Initialize visualization manager silently (no real window) ---

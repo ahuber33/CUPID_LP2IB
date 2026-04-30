@@ -1,11 +1,11 @@
 /**
- * @file SimOpActionInitialization.cc
+ * @file OpSimActionInitialization.cc
  * @brief Implementation of the ActionInitialization class for the Optical
  * simulation.
  *
- * This file defines the SimOpActionInitialization class, which is
+ * This file defines the OpSimActionInitialization class, which is
  * responsible for setting up all user actions required for a Geant4 simulation
- * of the SimOp. It manages the creation and assignment of the
+ * of the OpSim. It manages the creation and assignment of the
  * following actions:
  *   - Primary generator action
  *   - Run action
@@ -24,7 +24,7 @@
  * @date 2026
  */
 
-#include "SimOpActionInitialization.hh"
+#include "OpSimActionInitialization.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -36,9 +36,9 @@
  * @param pMT Flag indicating whether multithreading is enabled
  * @param geometry Pointer to the simulation geometry
  */
-SimOpActionInitialization::SimOpActionInitialization(
+OpSimActionInitialization::OpSimActionInitialization(
     const char *suff, size_t N, size_t Ncores, G4bool pMT,
-    SimOpGeometryConstruction *geometry)
+    OpSimGeometryConstruction *geometry)
     : G4VUserActionInitialization(), suffixe(suff), NEventsGenerated(N),
       numThreads(Ncores), flag_MT(pMT), fGeometry(geometry) {}
 
@@ -47,8 +47,8 @@ SimOpActionInitialization::SimOpActionInitialization(
 /**
  * @brief Destructor for ActionInitialization class
  */
-SimOpActionInitialization::
-    ~SimOpActionInitialization() {}
+OpSimActionInitialization::
+    ~OpSimActionInitialization() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -58,9 +58,9 @@ SimOpActionInitialization::
  * This function is called in multithreaded mode to define actions
  * that are executed only in the master thread, such as RunAction.
  */
-void SimOpActionInitialization::BuildForMaster() const {
+void OpSimActionInitialization::BuildForMaster() const {
     SetUserAction(
-        new SimOpRunAction(suffixe, NEventsGenerated, flag_MT));
+        new OpSimRunAction(suffixe, NEventsGenerated, flag_MT));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -75,17 +75,17 @@ void SimOpActionInitialization::BuildForMaster() const {
  * - EventAction
  * - SteppingAction
  */
-void SimOpActionInitialization::Build() const {
+void OpSimActionInitialization::Build() const {
     // Create primary generator action
-    auto *generator = new SimOpPrimaryGeneratorAction(
+    auto *generator = new OpSimPrimaryGeneratorAction(
         NEventsGenerated, numThreads, flag_MT);
 
     // Create run action
     auto *runAction =
-        new SimOpRunAction(suffixe, NEventsGenerated, flag_MT);
+        new OpSimRunAction(suffixe, NEventsGenerated, flag_MT);
 
     // Create event action
-    auto *eventAction = new SimOpEventAction(suffixe);
+    auto *eventAction = new OpSimEventAction(suffixe);
 
     // Provide the run action with pointers to the primary generator and
     // geometry
@@ -96,5 +96,5 @@ void SimOpActionInitialization::Build() const {
     SetUserAction(generator);
     SetUserAction(runAction);
     SetUserAction(eventAction);
-    SetUserAction(new SimOpSteppingAction());
+    SetUserAction(new OpSimSteppingAction());
 }

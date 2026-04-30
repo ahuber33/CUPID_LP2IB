@@ -20,7 +20,7 @@
 #include "G4Tubs.hh"
 #include "G4UnitsTable.hh"
 
-class SimOpGeometryConstruction;
+class OpSimGeometryConstruction;
 
 /**
  * @class Geometry
@@ -98,7 +98,7 @@ class Geometry {
 
   private:
     Geometry *Geom; ///< Pointer to another Geometry instance (if needed).
-    SimOpGeometryConstruction
+    OpSimGeometryConstruction
         *SimGeometry;     ///< Pointer to main simulation geometry.
     G4Material *Material; ///< Default material used in volumes.
     G4LogicalVolume

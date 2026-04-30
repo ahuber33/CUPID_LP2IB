@@ -1,9 +1,9 @@
-#ifndef SimOpSteppingAction_h
-#define SimOpSteppingAction_h
+#ifndef OpSimSteppingAction_h
+#define OpSimSteppingAction_h
 
 /**
- * @class SimOpSteppingAction
- * @brief Implements the Geant4 stepping action for the SimOp
+ * @class OpSimSteppingAction
+ * @brief Implements the Geant4 stepping action for the OpSim
  * project.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
@@ -18,21 +18,21 @@
 #include "G4GenericMessenger.hh"
 #include "G4OpBoundaryProcess.hh"
 #include "G4UserSteppingAction.hh"
-#include "SimOpRunAction.hh"
+#include "OpSimRunAction.hh"
 
-class SimOpSteppingAction : public G4UserSteppingAction {
+class OpSimSteppingAction : public G4UserSteppingAction {
   public:
     /**
      * @brief Constructor.
      *
      * Initializes the stepping action and messenger.
      */
-    SimOpSteppingAction();
+    OpSimSteppingAction();
 
     /**
      * @brief Destructor.
      */
-    ~SimOpSteppingAction() override;
+    ~OpSimSteppingAction() override;
 
     /**
      * @brief Store the initial particle information at the beginning of an
@@ -40,18 +40,18 @@ class SimOpSteppingAction : public G4UserSteppingAction {
      *
      * @param evtac Pointer to the event action where data will be stored.
      */
-    void SetInputInformations(SimOpEventAction *evtac) const;
+    void SetInputInformations(OpSimEventAction *evtac) const;
     void PrintOpticalProperties(const G4Step *);
     void CheckAndPrintSurface(const G4Step *);
-    void CheckBoundaryStatus(const G4Step *, SimOpEventAction *);
-    void CountScintillation(const G4Step *, SimOpEventAction *);
-    void CountReemission(const G4Step *, SimOpEventAction *);
-    void CountCerenkov(const G4Step *, SimOpEventAction *);
+    void CheckBoundaryStatus(const G4Step *, OpSimEventAction *);
+    void CountScintillation(const G4Step *, OpSimEventAction *);
+    void CountReemission(const G4Step *, OpSimEventAction *);
+    void CountCerenkov(const G4Step *, OpSimEventAction *);
     void SetPhotonBirthInformation(const G4Step *,
-                                   SimOpEventAction *);
+                                   OpSimEventAction *);
     void SetPhotonDetectedInformation(const G4Step *,
-                                   SimOpEventAction *);
-    void SetInitialInformations(const G4Step *, SimOpEventAction *);
+                                   OpSimEventAction *);
+    void SetInitialInformations(const G4Step *, OpSimEventAction *);
 
     /**
      * @brief Stepping action executed at each Geant4 step.
@@ -111,4 +111,4 @@ class SimOpSteppingAction : public G4UserSteppingAction {
     G4bool PhotonTrackStatus = true;
 };
 
-#endif // SimOpSteppingAction_h
+#endif // OpSimSteppingAction_h

@@ -1,4 +1,4 @@
-# 📊 SimOp for Simulation Optique (CUPID experiment)
+# 📊 OpSim for Optical Simulation (CUPID experiment)
 
 **Simulation optique des détecteurs de l'expérience CUPID**
 
@@ -40,31 +40,31 @@ Simuler les processus optiques dans un cristal de LMO, incluant :
 
 ```
 Projet_Instru_Contaminametre_AlphaBeta/
-├── SimOp.cc              ← Exécutable principal
+├── OpSim.cc              ← Exécutable principal
 ├── CMakeLists.txt                    ← Configuration build
 ├── Doxyfile                          ← Documentation Doxygen
 │
 ├── include/                          ← Headers (.hh)
-│   ├── SimOpGeometryConstruction.hh
-│   ├── SimOpEventAction.hh
-│   ├── SimOpSteppingAction.hh
-│   ├── SimOpRunAction.hh
-│   ├── SimOpPhysics.hh
-│   ├── SimOpMaterials.hh
+│   ├── OpSimGeometryConstruction.hh
+│   ├── OpSimEventAction.hh
+│   ├── OpSimSteppingAction.hh
+│   ├── OpSimRunAction.hh
+│   ├── OpSimPhysics.hh
+│   ├── OpSimMaterials.hh
 │   ├── Geometry.hh
 │   └─�� ...
 │
 ├── src/                              ← Implémentation (.cc)
-│   ├── SimOpGeometryConstruction.cc
-│   ├── SimOpEventAction.cc
-│   ├── SimOpSteppingAction.cc
-│   ├── SimOpRunAction.cc
-│   ├── SimOpMaterials.cc
+│   ├── OpSimGeometryConstruction.cc
+│   ├── OpSimEventAction.cc
+│   ├── OpSimSteppingAction.cc
+│   ├── OpSimRunAction.cc
+│   ├── OpSimMaterials.cc
 │   ├── Geometry.cc
 │   └── ...
 │
 ├── bin/                              ← Exécutables & macros
-│   ├── SimOp             (généré)
+│   ├── OpSim             (généré)
 │   ├── vis.mac                       (visualisation interactive)
 │   └── vrml.mac                      (batch sans GUI)
 │
@@ -114,7 +114,7 @@ make -j$(nproc)
 # Cette commande utilise tous les cores disponibles
 ```
 
-**Résultat**: L'exécutable `SimOp` est généré dans `bin/`
+**Résultat**: L'exécutable `OpSim` est généré dans `bin/`
 
 ---
 
@@ -124,7 +124,7 @@ make -j$(nproc)
 
 ```bash
 cd build
-./SimOp output
+./OpSim output
 # Exécute bin/vis.mac
 # → Ouvre interface OpenGL interactive
 # → Permet de visualiser la géométrie et les trajectoires
@@ -142,7 +142,7 @@ cd build
 
 ```bash
 cd build
-./SimOp output 1000 vrml.mac ON 4
+./OpSim output 1000 vrml.mac ON 4
 # Paramètres:
 # - output          : Nom du fichier ROOT (sans extension)
 # - 1000            : Nombre d'événements à simuler
@@ -157,7 +157,7 @@ cd build
 ### Mode 3: Batch Mono-thread
 
 ```bash
-./SimOp output 100 vrml.mac OFF
+./OpSim output 100 vrml.mac OFF
 # Plus lent mais déterministe (reproductible)
 ```
 
@@ -191,11 +191,11 @@ Les fichiers macro (`.mac`) sont des scripts de commandes qui configurent la sim
 
 **Configuration Géométrie** (Lignes 36-49):
 ```bash
-/SimOp/geometry/setLMOSurfaceModel glisur                    # Modèle optique pour surface : glisur, unified
-/SimOp/geometry/setLMOSurfaceType dielectric_dielectric      # Type de surface : dielectric-dielectric, dielectric-metal
-/SimOp/geometry/setLMOSurfaceFinish ground                   # Finition de surface : ground, polished
-/SimOp/geometry/setLMOSurfacePolish 1.0                      # Avec le moèle glisur : Définit la proportion de surface polie/dépolie [0 ; 1]
-/SimOp/geometry/setLMOSurfaceSigmaAlpha 0.1                  # Avec le modèle unified : Définit le RMS de l'angle des microfacettes
+/OpSim/geometry/setLMOSurfaceModel glisur                    # Modèle optique pour surface : glisur, unified
+/OpSim/geometry/setLMOSurfaceType dielectric_dielectric      # Type de surface : dielectric-dielectric, dielectric-metal
+/OpSim/geometry/setLMOSurfaceFinish ground                   # Finition de surface : ground, polished
+/OpSim/geometry/setLMOSurfacePolish 1.0                      # Avec le moèle glisur : Définit la proportion de surface polie/dépolie [0 ; 1]
+/OpSim/geometry/setLMOSurfaceSigmaAlpha 0.1                  # Avec le modèle unified : Définit le RMS de l'angle des microfacettes
 
 # OBLIGATOIRE : Réappliquer la géométrie après modifications
 /run/reinitializeGeometry
@@ -204,8 +204,8 @@ Les fichiers macro (`.mac`) sont des scripts de commandes qui configurent la sim
 
 **Suivi Optique** (Lignes 56-60):
 ```bash
-/SimOp/step/setVerbose 0              # Verbosité: 0=silence
-/SimOp/step/setPhotonTrackStatus true # Tracker les photons optiques
+/OpSim/step/setVerbose 0              # Verbosité: 0=silence
+/OpSim/step/setPhotonTrackStatus true # Tracker les photons optiques
 /tracking/verbose 0                               # Verbosité Geant4 tracking
 /run/verbose 1                                    # Verbosité du run
 ```
@@ -231,19 +231,19 @@ Les fichiers macro (`.mac`) sont des scripts de commandes qui configurent la sim
 **Contenu** :
 
 ```bash
-/SimOp/geometry/setLMOSurfaceModel glisur                    # Modèle optique pour surface : glisur, unified
-/SimOp/geometry/setLMOSurfaceType dielectric_dielectric      # Type de surface : dielectric-dielectric, dielectric-metal
-/SimOp/geometry/setLMOSurfaceFinish ground                   # Finition de surface : ground, polished
-/SimOp/geometry/setLMOSurfacePolish 1.0                      # Avec le moèle glisur : Définit la proportion de surface polie/dépolie [0 ; 1]
-/SimOp/geometry/setLMOSurfaceSigmaAlpha 0.1                  # Avec le modèle unified : Définit le RMS de l'angle des microfacettes
+/OpSim/geometry/setLMOSurfaceModel glisur                    # Modèle optique pour surface : glisur, unified
+/OpSim/geometry/setLMOSurfaceType dielectric_dielectric      # Type de surface : dielectric-dielectric, dielectric-metal
+/OpSim/geometry/setLMOSurfaceFinish ground                   # Finition de surface : ground, polished
+/OpSim/geometry/setLMOSurfacePolish 1.0                      # Avec le moèle glisur : Définit la proportion de surface polie/dépolie [0 ; 1]
+/OpSim/geometry/setLMOSurfaceSigmaAlpha 0.1                  # Avec le modèle unified : Définit le RMS de l'angle des microfacettes
 
 /run/reinitializeGeometry
 /run/physicsModified
 
 # Photon Tracking (Batch, pas de VIS)
 /tracking/storeTrajectory 1
-/SimOp/step/setVerbose 0
-/SimOp/step/setPhotonTrackStatus true
+/OpSim/step/setVerbose 0
+/OpSim/step/setPhotonTrackStatus true
 
 /tracking/verbose 0
 /run/verbose 1
@@ -262,7 +262,7 @@ Les fichiers macro (`.mac`) sont des scripts de commandes qui configurent la sim
 cd build
 
 # Batch automatique (4 threads, 1000 événements)
-./SimOp output 1000 vrml.mac ON 4
+./OpSim output 1000 vrml.mac ON 4
 # → Résultat: Resultats/output.root
 ```
 
@@ -304,7 +304,7 @@ cd build
 
 ## 🔧 Composants Core
 
-### 1. **SimOpGeometryConstruction.cc**  [!!!! TO UPDATE !!!!]
+### 1. **OpSimGeometryConstruction.cc**  [!!!! TO UPDATE !!!!]
 
 **Responsabilité**: Construire la géométrie complète du détecteur
 
@@ -359,7 +359,7 @@ void ConstructPMTGlass() & CreateDetectionOpticalProperties()
 
 ---
 
-### 2. **SimOpEventAction.cc** [!!!! TO UPDATE !!!!]
+### 2. **OpSimEventAction.cc** [!!!! TO UPDATE !!!!]
 
 **Responsabilité**: Agrégation des statistiques par événement
 
@@ -388,7 +388,7 @@ void EndOfEventAction(const G4Event *evt)
 
 ---
 
-### 3. **SimOpSteppingAction.cc** [!!!! TO UPDATE !!!!]
+### 3. **OpSimSteppingAction.cc** [!!!! TO UPDATE !!!!]
 
 **Responsabilité**: Suivi détaillé particule à chaque étape
 
@@ -419,7 +419,7 @@ volumeNamePostStep    // Nom volume suivant
 ```
 
 ```cpp
-void CheckBoundaryStatus(const G4Step *aStep, SimOpEventAction *evtac)
+void CheckBoundaryStatus(const G4Step *aStep, OpSimEventAction *evtac)
 ```
 
 **Processus optiques trackés**:
@@ -431,7 +431,7 @@ void CheckBoundaryStatus(const G4Step *aStep, SimOpEventAction *evtac)
 
 ---
 
-### 4. **SimOpRunAction.cc** [!!!! TO UPDATE !!!!]
+### 4. **OpSimRunAction.cc** [!!!! TO UPDATE !!!!]
 
 **Responsabilité**: Agrégation statistiques au niveau du run
 
@@ -443,7 +443,7 @@ void CheckBoundaryStatus(const G4Step *aStep, SimOpEventAction *evtac)
 
 ---
 
-### 5. **SimOpMaterials.cc** [!!!! TO UPDATE !!!!]
+### 5. **OpSimMaterials.cc** [!!!! TO UPDATE !!!!]
 
 **Responsabilité**: Base de données matériaux et propriétés optiques
 
@@ -517,7 +517,7 @@ void CheckBoundaryStatus(const G4Step *aStep, SimOpEventAction *evtac)
 
 **Fichier**: `Resultats/output.root`
 
-**Contenu**: Arbre TTree `SimOp`
+**Contenu**: Arbre TTree `OpSim`
 
 ```cpp
 // Branches disponibles
@@ -537,7 +537,7 @@ Float_t efficiency;                // [%]
 ```cpp
 // Charger et analyser les résultats
 root [0] TFile *f = TFile::Open("Resultats/output.root");
-root [1] TTree *t = (TTree*)f->Get("SimOp");
+root [1] TTree *t = (TTree*)f->Get("OpSim");
 
 // Afficher statistiques basiques
 root [2] t->Print();
@@ -578,7 +578,7 @@ Les fichiers partiels sont automatiquement fusionnés avec `hadd` à la fin.
 |----------|-------|----------|
 | "Error opening file" (matériaux) | Fichiers matériaux manquants | Vérifier `simulation_input_files/` exists & accessible |
 | Erreur compilation Geant4 | Geant4 compilé sans GDML | Recompiler: `cmake -DGEANT4_USE_GDML=ON` |
-| Performance très lente | Suivi photons optiques activé | Batch mode: `/SimOp/step/setPhotonTrackStatus false` |
+| Performance très lente | Suivi photons optiques activé | Batch mode: `/OpSim/step/setPhotonTrackStatus false` |
 | Aucun photon détecté | QE fichier incorrect | Vérifier `QE_ham_GA0154.txt` path |
 | Géométrie ne s'affiche pas | Drivers OpenGL manquants | Installer dépendances: `libgl1-mesa-dev` (Linux) |
 | Crash multi-threading | Conflit données partagées | Utiliser mono-thread d'abord pour déboguer |
@@ -611,13 +611,13 @@ doxygen Doxyfile
 
 | Fichier | Type | Responsabilité |
 |---------|------|-----------------|
-| `SimOp.cc` | Main | Entrée point, argument parsing, threading |
-| `SimOpGeometryConstruction.cc` | Geometry | Géométrie détecteur |
-| `SimOpMaterials.cc` | Materials | Base données matériaux |
-| `SimOpEventAction.cc` | Action | Agrégation événement |
-| `SimOpSteppingAction.cc` | Action | Suivi détaillé étape |
-| `SimOpRunAction.cc` | Action | Agrégation run, sortie ROOT |
-| `SimOpPhysics.cc` | Physics | Liste processus physiques |
+| `OpSim.cc` | Main | Entrée point, argument parsing, threading |
+| `OpSimGeometryConstruction.cc` | Geometry | Géométrie détecteur |
+| `OpSimMaterials.cc` | Materials | Base données matériaux |
+| `OpSimEventAction.cc` | Action | Agrégation événement |
+| `OpSimSteppingAction.cc` | Action | Suivi détaillé étape |
+| `OpSimRunAction.cc` | Action | Agrégation run, sortie ROOT |
+| `OpSimPhysics.cc` | Physics | Liste processus physiques |
 | `Geometry.cc` | Utilities | Utilitaires géométrie |
 | `bin/vis.mac` | Macro | Visualisation interactive |
 | `bin/vrml.mac` | Macro | Batch sans GUI |
@@ -629,16 +629,16 @@ doxygen Doxyfile
 ### Pour Développement
 ```bash
 # Visualisation interactive pour déboguer géométrie
-./SimOp debug_output vis.mac
+./OpSim debug_output vis.mac
 
 # Single-thread pour reproductibilité
-./SimOp output 100 vrml.mac OFF
+./OpSim output 100 vrml.mac OFF
 ```
 
 ### Pour Production
 ```bash
 # Multi-threading pour vitesse
-./SimOp production_run 10000 vrml.mac ON 8
+./OpSim production_run 10000 vrml.mac ON 8
 
 ```
 

@@ -1,13 +1,13 @@
 /**
- * @file SimOpSteppingAction.cc
+ * @file OpSimSteppingAction.cc
  * @brief Implements step-level tracking, data extraction, and event updates for
  * the Optical simulation.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  *
  * This file contains the method definitions for the
- * `SimOpSteppingAction` class declared in
- * `SimOpSteppingAction.hh`. It manages:
+ * `OpSimSteppingAction` class declared in
+ * `OpSimSteppingAction.hh`. It manages:
  *  - Extraction of particle positions, momentum, energy, and track metadata at
  * each Geant4 step
  *
@@ -17,7 +17,7 @@
  * fine-grained tracking information suitable for later beamline analysis.
  */
 
-#include "SimOpSteppingAction.hh"
+#include "OpSimSteppingAction.hh"
 
 /**
  * @brief Constructor.
@@ -25,8 +25,8 @@
  * Initializes the Geant4 generic messenger and declares user commands
  * for controlling tracking status (global and for collimators).
  */
-SimOpSteppingAction::SimOpSteppingAction() {
-    sMessenger = new G4GenericMessenger(this, "/SimOp/step/",
+OpSimSteppingAction::OpSimSteppingAction() {
+    sMessenger = new G4GenericMessenger(this, "/OpSim/step/",
                                         "Control commands for my application");
 
     sMessenger->DeclareProperty("setVerbose", VerbosityLevel)
@@ -45,7 +45,7 @@ SimOpSteppingAction::SimOpSteppingAction() {
  *
  * Cleans up the allocated messenger.
  */
-SimOpSteppingAction::~SimOpSteppingAction() {
+OpSimSteppingAction::~OpSimSteppingAction() {
     delete sMessenger;
 }
 
@@ -54,8 +54,8 @@ SimOpSteppingAction::~SimOpSteppingAction() {
  *
  * @param evtac Pointer to the event action where the values are stored.
  */
-void SimOpSteppingAction::SetInputInformations(
-    SimOpEventAction *evtac) const {
+void OpSimSteppingAction::SetInputInformations(
+    OpSimEventAction *evtac) const {
     evtac->SetXStart(preStep.x);
     evtac->SetXpStart(preStep.px);
     evtac->SetYStart(preStep.y);
@@ -65,8 +65,8 @@ void SimOpSteppingAction::SetInputInformations(
     evtac->SetEnergyStart(energy);
 }
 
-void SimOpSteppingAction::CheckBoundaryStatus(
-    const G4Step *aStep, SimOpEventAction *evtac) {
+void OpSimSteppingAction::CheckBoundaryStatus(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING CheckBoundaryStatus-----"<<G4endl;
     }
@@ -102,7 +102,7 @@ void SimOpSteppingAction::CheckBoundaryStatus(
     }
 
     if (endproc == "OpRayleigh") {
-        //((SimOpTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountRayleighScattering();
+        //((OpSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountRayleighScattering();
         // G4cout << "Rayleigh scattering" << G4endl;
         // G4cout << "Number of scattering = " <<
         // ((ENLOpticalSimTrackInformation*)
@@ -190,13 +190,13 @@ void SimOpSteppingAction::CheckBoundaryStatus(
             break;
 
         case SpikeReflection:
-            //((SimOpTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountReflections();
+            //((OpSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountReflections();
             if (VerbosityLevel > 1)
                 G4cout << "Reflection" << G4endl;
             break;
 
         case TotalInternalReflection:
-            //((SimOpTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountTotalInternalReflections();
+            //((OpSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountTotalInternalReflections();
             if (VerbosityLevel > 1)
                 G4cout << "Reflection totale" << G4endl;
             break;
@@ -210,8 +210,8 @@ void SimOpSteppingAction::CheckBoundaryStatus(
     }
 }
 
-void SimOpSteppingAction::CountScintillation(
-    const G4Step *aStep, SimOpEventAction *evtac) {
+void OpSimSteppingAction::CountScintillation(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING CountScintillation-----"<<G4endl;
     }
@@ -227,8 +227,8 @@ void SimOpSteppingAction::CountScintillation(
     }
 }
 
-void SimOpSteppingAction::CountCerenkov(
-    const G4Step *aStep, SimOpEventAction *evtac) {
+void OpSimSteppingAction::CountCerenkov(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING CountCerenkov-----"<<G4endl;
     }
@@ -245,8 +245,8 @@ void SimOpSteppingAction::CountCerenkov(
     }
 }
 
-void SimOpSteppingAction::CountReemission(
-    const G4Step *aStep, SimOpEventAction *evtac) {
+void OpSimSteppingAction::CountReemission(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING CountReemission-----"<<G4endl;
     }
@@ -262,8 +262,8 @@ void SimOpSteppingAction::CountReemission(
     }
 }
 
-void SimOpSteppingAction::SetPhotonBirthInformation(
-    const G4Step *aStep, SimOpEventAction *evtac) {
+void OpSimSteppingAction::SetPhotonBirthInformation(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING SetPhotonBirthInformation-----"<<G4endl;
     }
@@ -281,8 +281,8 @@ void SimOpSteppingAction::SetPhotonBirthInformation(
     }
 }
 
-void SimOpSteppingAction::SetPhotonDetectedInformation(
-    const G4Step *aStep, SimOpEventAction *evtac) {
+void OpSimSteppingAction::SetPhotonDetectedInformation(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING SetPhotonDetectedInformation-----"<<G4endl;
     }
@@ -360,14 +360,14 @@ void UpdateSc(RunTallySc &tally, G4float x, G4float y, G4float z,
  *
  * @param aStep Pointer to the current Geant4 step.
  */
-void SimOpSteppingAction::UserSteppingAction(const G4Step *aStep) {
+void OpSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
     
     if (VerbosityLevel>2){
         G4cout<<"---------ENTERING UserSteppingAction---------"<<G4endl;
     }
     
     // --- Preparation of variables ---
-    auto evtac = static_cast<SimOpEventAction *>(
+    auto evtac = static_cast<OpSimEventAction *>(
         G4EventManager::GetEventManager()->GetUserEventAction());
     theTrack = aStep->GetTrack();
     auto pre = aStep->GetPreStepPoint();
@@ -421,9 +421,9 @@ void SimOpSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
     // YAG screens
     static const std::map<std::string,
-                          RunTallySc &(SimOpEventAction::*)()>
+                          RunTallySc &(OpSimEventAction::*)()>
         ScMap = {
-            {"LMO", &SimOpEventAction::GetLMO},
+            {"LMO", &OpSimEventAction::GetLMO},
         };
 
     auto it = ScMap.find(volumeNamePreStep);

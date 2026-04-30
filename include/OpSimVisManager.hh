@@ -1,9 +1,9 @@
-#ifndef SimOpVisManager_h
-#define SimOpVisManager_h 1
+#ifndef OpSimVisManager_h
+#define OpSimVisManager_h 1
 
 /**
- * @brief Custom visualization manager for the SimOp project.
- * @class SimOpVisManager
+ * @brief Custom visualization manager for the OpSim project.
+ * @class OpSimVisManager
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  *
@@ -18,10 +18,10 @@
 
 #include "G4VisManager.hh"
 
-class SimOpVisManager : public G4VisManager {
+class OpSimVisManager : public G4VisManager {
   public:
     /// Constructor: prepares the visualization manager
-    SimOpVisManager();
+    OpSimVisManager();
 
   private:
     /**
@@ -33,4 +33,4 @@ class SimOpVisManager : public G4VisManager {
     void RegisterGraphicsSystems() override;
 };
 
-#endif // SimOpVisManager_h
+#endif // OpSimVisManager_h
