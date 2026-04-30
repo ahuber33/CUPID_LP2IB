@@ -1,9 +1,9 @@
-#ifndef SimOpPhysics_h
-#define SimOpPhysics_h 1
+#ifndef OpSimPhysics_h
+#define OpSimPhysics_h 1
 
 /**
- * @class SimOpPhysics
- * @brief Custom physics list for the SimOp project.
+ * @class OpSimPhysics
+ * @brief Custom physics list for the OpSim project.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  * This class defines a modular physics list for Geant4 simulations
@@ -70,11 +70,11 @@
 #include "G4OpticalPhysics.hh"
 
 // =============================
-// SimOpPhysics Class
+// OpSimPhysics Class
 // =============================
 
 /**
- * @class SimOpPhysics
+ * @class OpSimPhysics
  * @brief Modular physics list for PALLAS simulations.
  *
  * This class registers the set of physics processes used in the simulation.
@@ -83,17 +83,17 @@
  *
  * Example usage:
  * @code
- * auto physicsList = new SimOpPhysics();
+ * auto physicsList = new OpSimPhysics();
  * runManager->SetUserInitialization(physicsList);
  * @endcode
  */
-class SimOpPhysics final : public G4VModularPhysicsList {
+class OpSimPhysics final : public G4VModularPhysicsList {
   public:
     /// Constructor: registers the selected physics modules
-    SimOpPhysics();
+    OpSimPhysics();
 
     /// Destructor
-    ~SimOpPhysics() override;
+    ~OpSimPhysics() override;
 };
 
-#endif // SimOpPhysics_h
+#endif // OpSimPhysics_h

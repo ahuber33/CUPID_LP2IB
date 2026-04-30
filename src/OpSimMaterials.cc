@@ -1,5 +1,5 @@
 /**
- * @file SimOpMaterials.cc
+ * @file OpSimMaterials.cc
  * @brief Implementation of the Materials class for the Optical
  * simulation.
  *
@@ -9,15 +9,15 @@
  * @date 2026
  */
 
-#include "SimOpMaterials.hh"
+#include "OpSimMaterials.hh"
 #include "G4OpticalParameters.hh"
 
 using namespace CLHEP;
 
-const G4String SimOpMaterials::path = "../simulation_input_files/";
-const G4String SimOpMaterials::path2 = "../optical_input/";
+const G4String OpSimMaterials::path = "../simulation_input_files/";
+const G4String OpSimMaterials::path2 = "../optical_input/";
 
-SimOpMaterials::SimOpMaterials() : fMaterialsList{} {
+OpSimMaterials::OpSimMaterials() : fMaterialsList{} {
 
     // #######################################################################################################################################
     // #######################################################################################################################################
@@ -507,9 +507,9 @@ SimOpMaterials::SimOpMaterials() : fMaterialsList{} {
     // #######################################################################################################################################
 }
 
-SimOpMaterials::~SimOpMaterials() {}
+OpSimMaterials::~OpSimMaterials() {}
 
-G4Material *SimOpMaterials::getMaterial(const char *materialId) {
+G4Material *OpSimMaterials::getMaterial(const char *materialId) {
     for (int i = 0; i < (int)fMaterialsList.size(); i++) {
         if (fMaterialsList[i]->GetName() == materialId) {
             G4cout << "Material : " << materialId << " found" << G4endl;
@@ -521,7 +521,7 @@ G4Material *SimOpMaterials::getMaterial(const char *materialId) {
     return NULL;
 }
 
-void SimOpMaterials::printMaterialProperties(G4Material *material) {
+void OpSimMaterials::printMaterialProperties(G4Material *material) {
     std::cout << "\nMaterial name: " << material->GetName() << std::endl;
     G4MaterialPropertiesTable *mpt = material->GetMaterialPropertiesTable();
     if (!mpt)
@@ -588,7 +588,7 @@ void SimOpMaterials::printMaterialProperties(G4Material *material) {
     }
 }
 
-void SimOpMaterials::printMaterialProperties(
+void OpSimMaterials::printMaterialProperties(
     const char *materialId) {
     G4Material *material = getMaterial(materialId);
     if (material == NULL)
@@ -596,15 +596,15 @@ void SimOpMaterials::printMaterialProperties(
     printMaterialProperties(material);
 }
 
-SimOpMaterials *SimOpMaterials::getInstance() {
-    static G4ThreadLocal SimOpMaterials* instance = nullptr;
+OpSimMaterials *OpSimMaterials::getInstance() {
+    static G4ThreadLocal OpSimMaterials* instance = nullptr;
     if (!instance) {
-        instance = new SimOpMaterials();
+        instance = new OpSimMaterials();
     }
     return instance;
 }
 
-G4double SimOpMaterials::wavelengthNmToEnergy(G4double wavelength) {
+G4double OpSimMaterials::wavelengthNmToEnergy(G4double wavelength) {
     G4double hc = 1239.84193;
     return hc / wavelength * eV; // E (eV) = 1239.8 / l (nm)
 }

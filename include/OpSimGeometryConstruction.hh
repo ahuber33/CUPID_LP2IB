@@ -1,9 +1,9 @@
-#ifndef SimOpGeometryConstruction_h
-#define SimOpGeometryConstruction_h 1
+#ifndef OpSimGeometryConstruction_h
+#define OpSimGeometryConstruction_h 1
 
 /**
- * @class SimOpGeometryConstruction
- * @brief Defines the detector geometry for the SimOp
+ * @class OpSimGeometryConstruction
+ * @brief Defines the detector geometry for the OpSim
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  *
@@ -26,8 +26,8 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "G4VisAttributes.hh"
 #include "Geometry.hh"
-#include "SimOpGeometryMessenger.hh"
-#include "SimOpMaterials.hh"
+#include "OpSimGeometryMessenger.hh"
+#include "OpSimMaterials.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4VSolid.hh"
@@ -44,17 +44,17 @@
 
 class Geometry;
 class G4FieldManager;
-class SimOpGeometryMessenger;
-class SimOpMagneticField;
+class OpSimGeometryMessenger;
+class OpSimMagneticField;
 
-class SimOpGeometryConstruction final
+class OpSimGeometryConstruction final
     : public G4VUserDetectorConstruction {
   public:
     /** @brief Default constructor. */
-    SimOpGeometryConstruction();
+    OpSimGeometryConstruction();
 
     /** @brief Destructor. */
-    ~SimOpGeometryConstruction() override;
+    ~OpSimGeometryConstruction() override;
 
     /** @name Geometry Construction */
     ///@{
@@ -352,7 +352,7 @@ class SimOpGeometryConstruction final
     std::unique_ptr<Geometry> Geom;
 
     /** @brief UI messenger for runtime commands. */
-    std::unique_ptr<SimOpGeometryMessenger> fGeometryMessenger;
+    std::unique_ptr<OpSimGeometryMessenger> fGeometryMessenger;
 
     /** @brief Default materials. */
     G4Material *Vacuum;

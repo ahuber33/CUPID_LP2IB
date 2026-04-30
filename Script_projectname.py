@@ -76,9 +76,9 @@ def remplacer_ligne_et_renommer(dossiers, ligne_a_remplacer, nouvelle_ligne, anc
 dossiers_cibles = ["src", "include", "bin"]  # Liste des dossiers relatifs au script
 remplacer_ligne_et_renommer(
     dossiers=dossiers_cibles,
-    ligne_a_remplacer="OpticalSimulation",
-    nouvelle_ligne="SimOp",
-    ancien_motif="OpticalSimulation",
-    nouveau_motif="SimOp",
+    ligne_a_remplacer="SimOp",
+    nouvelle_ligne="OpSim",
+    ancien_motif="SimOp",
+    nouveau_motif="OpSim",
     extensions=["cpp", "hh", "txt", "cc", "cfg"]
 )
