@@ -1,9 +1,9 @@
 /**
- * @file SimOpPrimaryGeneratorAction.cc
+ * @file OpSimPrimaryGeneratorAction.cc
  * @brief Implementation of the primary generator action for the Optical
  * simulation.
  *
- * This file implements the `SimOpPrimaryGeneratorAction` class,
+ * This file implements the `OpSimPrimaryGeneratorAction` class,
  * which handles the generation of primary particles for Geant4 events in
  * optical simulation.
  *
@@ -24,7 +24,7 @@
  * @date 2026
  */
 
-#include "SimOpPrimaryGeneratorAction.hh"
+#include "OpSimPrimaryGeneratorAction.hh"
 
 /// Global counter of generated particles (atomic to support multithreading).
 std::atomic<size_t> currentParticleNumber{0};
@@ -42,8 +42,8 @@ G4UImanager *UI = G4UImanager::GetUIpointer();
  * @param numThreads Number of threads used for multithreaded execution.
  * @param pMT Flag indicating whether multithreading is enabled.
  */
-SimOpPrimaryGeneratorAction::
-    SimOpPrimaryGeneratorAction(size_t N, size_t numThreads,
+OpSimPrimaryGeneratorAction::
+    OpSimPrimaryGeneratorAction(size_t N, size_t numThreads,
                                             G4bool pMT)
     : NEventsGenerated(N), numThreads(numThreads),
       G4VUserPrimaryGeneratorAction(), flag_MT(pMT) {
@@ -55,8 +55,8 @@ SimOpPrimaryGeneratorAction::
  *
  * Cleans up allocated resources such as the particle gun and particle source.
  */
-SimOpPrimaryGeneratorAction::
-    ~SimOpPrimaryGeneratorAction() {
+OpSimPrimaryGeneratorAction::
+    ~OpSimPrimaryGeneratorAction() {
     delete particleSource;
 }
 
@@ -69,7 +69,7 @@ SimOpPrimaryGeneratorAction::
  * @param progress Fraction of events completed (between 0 and 1).
  * @param startTime Start time of the simulation.
  */
-void SimOpPrimaryGeneratorAction::ShowProgress(
+void OpSimPrimaryGeneratorAction::ShowProgress(
     const double progress,
     std::chrono::high_resolution_clock::time_point startTime) {
     int barWidth = 70;
@@ -111,7 +111,7 @@ void SimOpPrimaryGeneratorAction::ShowProgress(
  * @param anEvent Pointer to the Geant4 event where primary particles are
  * generated.
  */
-void SimOpPrimaryGeneratorAction::GeneratePrimaries(
+void OpSimPrimaryGeneratorAction::GeneratePrimaries(
     G4Event *anEvent) {
     if (!isStartTimeInitialized) {
         startTime = std::chrono::high_resolution_clock::now();

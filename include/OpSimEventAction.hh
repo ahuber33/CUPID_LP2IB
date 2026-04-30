@@ -1,11 +1,11 @@
-#ifndef SimOpEventAction_h
-#define SimOpEventAction_h 1
+#ifndef OpSimEventAction_h
+#define OpSimEventAction_h 1
 
 /**
- * @class SimOpEventAction
+ * @class OpSimEventAction
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
- * @brief Header file for event-level actions in SimOp, including
+ * @brief Header file for event-level actions in OpSim, including
  * per-event statistics structures.
  */
 
@@ -140,18 +140,18 @@ struct RunTallySc {
 };
 
 /**
- * @brief Event action class for SimOp
+ * @brief Event action class for OpSim
  *
  * Implements G4UserEventAction interface to handle per-event statistics,
  * including input particle, collimator, quadrupole, and detector data.
  */
-class SimOpEventAction : public G4UserEventAction {
+class OpSimEventAction : public G4UserEventAction {
   public:
     /** Constructor */
-    SimOpEventAction(const char *);
+    OpSimEventAction(const char *);
 
     /** Destructor */
-    ~SimOpEventAction();
+    ~OpSimEventAction();
 
     /** Called at the beginning of each event */
     void BeginOfEventAction(const G4Event *);

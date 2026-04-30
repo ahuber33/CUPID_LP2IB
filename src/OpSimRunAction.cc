@@ -1,13 +1,13 @@
 /**
- * @file SimOpRunAction.cc
+ * @file OpSimRunAction.cc
  * @brief Implements run-level setup, data collection, and output handling for
  * the Optical simulation.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  *
  * This file contains the method definitions for the
- * `SimOpRunAction` class declared in
- * `SimOpRunAction.hh`. It manages:
+ * `OpSimRunAction` class declared in
+ * `OpSimRunAction.hh`. It manages:
  *  - Initialization of run-wide ROOT files and trees
  *  - Thread-safe data collection in multi-threaded runs
  *  - Branch creation for all recorded statistics
@@ -37,31 +37,31 @@
  */
 
 // Include class header
-#include "SimOpRunAction.hh"
+#include "OpSimRunAction.hh"
 
 // --- Static member initialization ---
-std::atomic<int> SimOpRunAction::activeThreads(
+std::atomic<int> OpSimRunAction::activeThreads(
     0); ///< Counter for active threads
-G4Mutex SimOpRunAction::fileMutex =
+G4Mutex OpSimRunAction::fileMutex =
     G4MUTEX_INITIALIZER; ///< Mutex for file protection
 
 // --- Constructor ---
-SimOpRunAction::SimOpRunAction(const char *suff,
+OpSimRunAction::OpSimRunAction(const char *suff,
                                                        size_t N, G4bool pMT)
     : suffixe(suff), NEventsGenerated(N), flag_MT(pMT) {}
 
 // --- Destructor ---
-SimOpRunAction::~SimOpRunAction() {}
+OpSimRunAction::~OpSimRunAction() {}
 
 // --- Primary generator reference setter ---
-void SimOpRunAction::SetPrimaryGenerator(
-    SimOpPrimaryGeneratorAction *gen) {
+void OpSimRunAction::SetPrimaryGenerator(
+    OpSimPrimaryGeneratorAction *gen) {
     fPrimaryGenerator = gen;
 }
 
 // --- Geometry reference setter ---
-void SimOpRunAction::SetGeometry(
-    SimOpGeometryConstruction *geom) {
+void OpSimRunAction::SetGeometry(
+    OpSimGeometryConstruction *geom) {
     fGeometry = geom;
 }
 
@@ -160,7 +160,7 @@ static void CreateOpticalBranches(TTree *tree, RunTallyOptical &stats) {
  * @param tree ROOT tree to fill
  */
 template <typename T>
-void SimOpRunAction::UpdateStatistics(T &stats, const T &newStats,
+void OpSimRunAction::UpdateStatistics(T &stats, const T &newStats,
                                                   TTree *tree) {
     std::lock_guard<std::mutex> lock(fileMutex);
     stats = newStats;
@@ -171,13 +171,13 @@ void SimOpRunAction::UpdateStatistics(T &stats, const T &newStats,
 }
 
 // --- Specific statistics update wrappers ---
-void SimOpRunAction::UpdateStatisticsInput(RunTallyInput a) {
+void OpSimRunAction::UpdateStatisticsInput(RunTallyInput a) {
     UpdateStatistics(StatsInput, a, Tree_Input);
 }
-void SimOpRunAction::UpdateStatisticsLMO(RunTallySc a) {
+void OpSimRunAction::UpdateStatisticsLMO(RunTallySc a) {
     UpdateStatistics(StatsLMO, a, Tree_LMO);
 }
-void SimOpRunAction::UpdateStatisticsOptical(RunTallyOptical a) {
+void OpSimRunAction::UpdateStatisticsOptical(RunTallyOptical a) {
     UpdateStatistics(StatsOptical, a, Tree_Optical);
 }
 
@@ -189,7 +189,7 @@ void SimOpRunAction::UpdateStatisticsOptical(RunTallyOptical a) {
  * initialize state.
  * @param aRun Pointer to the current G4Run
  */
-void SimOpRunAction::BeginOfRunAction(const G4Run *aRun) {
+void OpSimRunAction::BeginOfRunAction(const G4Run *aRun) {
     // Populate branches for each TTree...
     G4AutoLock lock(&fileMutex); // Automatic mutex lock
 
@@ -254,7 +254,7 @@ void SimOpRunAction::BeginOfRunAction(const G4Run *aRun) {
  * and clean up.
  * @param aRun Pointer to the current G4Run
  */
-void SimOpRunAction::EndOfRunAction(const G4Run *aRun) {
+void OpSimRunAction::EndOfRunAction(const G4Run *aRun) {
     G4AutoLock lock(&fileMutex);
 
     // Write all trees to ROOT file

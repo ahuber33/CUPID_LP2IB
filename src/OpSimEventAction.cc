@@ -1,38 +1,38 @@
 /**
- * @file SimOpEventAction.cc
- * @brief Implementation of the EventAction class for the SimOp of
+ * @file OpSimEventAction.cc
+ * @brief Implementation of the EventAction class for the OpSim of
  * an alpha/beta contamineter.
  *
- * This file defines the SimOpEventAction class, which handles
- * per-event actions in the Geant4 simulation of the SimOp setup.
+ * This file defines the OpSimEventAction class, which handles
+ * per-event actions in the Geant4 simulation of the OpSim setup.
  *
  * The class works in conjunction with:
- *  - SimOpSteppingAction: for per-step updates within an event.
- *  - SimOpRunAction: to accumulate run-level statistics.
+ *  - OpSimSteppingAction: for per-step updates within an event.
+ *  - OpSimRunAction: to accumulate run-level statistics.
  *
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  */
 
-#include "SimOpEventAction.hh" ///< Event action header
-#include "SimOpRunAction.hh" ///< Run action header (for statistics accumulation)
-#include "SimOpSteppingAction.hh" ///< Stepping action header (per-step updates)
+#include "OpSimEventAction.hh" ///< Event action header
+#include "OpSimRunAction.hh" ///< Run action header (for statistics accumulation)
+#include "OpSimSteppingAction.hh" ///< Stepping action header (per-step updates)
 
 /**
- * @brief Constructor for SimOpEventAction
+ * @brief Constructor for OpSimEventAction
  * @param suff Suffix used for naming ROOT branches or output files
  *
  * Initializes the event action and stores the provided suffix.
  */
-SimOpEventAction::SimOpEventAction(const char *suff)
+OpSimEventAction::OpSimEventAction(const char *suff)
     : suffixe(suff) {}
 
 /**
- * @brief Destructor for SimOpEventAction
+ * @brief Destructor for OpSimEventAction
  *
  * Cleans up any resources used by the event action.
  */
-SimOpEventAction::~SimOpEventAction() {}
+OpSimEventAction::~OpSimEventAction() {}
 
 /**
  * @brief Called at the beginning of each event
@@ -45,7 +45,7 @@ SimOpEventAction::~SimOpEventAction() {}
  * - LMO Statistics
  * - Scintillator statistics
  */
-void SimOpEventAction::BeginOfEventAction(const G4Event *evt) {
+void OpSimEventAction::BeginOfEventAction(const G4Event *evt) {
     /** Reset input statistics */
     StatsInput = {};
     StatsOptical = {};
@@ -59,17 +59,17 @@ void SimOpEventAction::BeginOfEventAction(const G4Event *evt) {
  * @param evt Pointer to the current G4Event
  *
  * Updates run-level statistics by passing the per-event data to the
- * SimOpRunAction. Only non-empty or relevant data are updated
+ * OpSimRunAction. Only non-empty or relevant data are updated
  * for input, BS YAG, and BSPEC YAG statistics, while quadrupole and
  * collimator statistics are always updated.
  */
-void SimOpEventAction::EndOfEventAction(const G4Event *evt) {
+void OpSimEventAction::EndOfEventAction(const G4Event *evt) {
     /** Get pointer to current run action */
-    SimOpRunAction *runac =
-        (SimOpRunAction *)(G4RunManager::GetRunManager()
+    OpSimRunAction *runac =
+        (OpSimRunAction *)(G4RunManager::GetRunManager()
                                            ->GetUserRunAction());
 
-    //G4cout<<"-/-/-/-/-/-/-/-/-/-/-/- Energy deposit in LD = "<<SimOpEventAction::GetEnergyDepositLD()<<" keV -/-/-/-/-/-/-/-/-/-/-/-"<<G4endl;
+    //G4cout<<"-/-/-/-/-/-/-/-/-/-/-/- Energy deposit in LD = "<<OpSimEventAction::GetEnergyDepositLD()<<" keV -/-/-/-/-/-/-/-/-/-/-/-"<<G4endl;
 
     /** Update input energy statistics if valid */
     if (StatsInput.energy > 0)
