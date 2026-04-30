@@ -1,8 +1,8 @@
 void LD1_multimodels(){
 
-    const char *models[] = {"glisur"};
+    const char *models[] = {"unified"};
     int i, j;
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 1; i++) {
         for (j = 0; j <= 10; j++) {
             char filename[50];
             double polish = j * 0.1;
@@ -10,7 +10,7 @@ void LD1_multimodels(){
             //std::cout<<"------------------------------------------------------------------"<<std::endl;
             //std::cout<<"opening file "<<filename<<std::endl;
 
-            TString filepath = "../Resultats/";
+            TString filepath = "../Resultats/n_1_secLMO/";
             filepath += filename;
             filepath += ".root";
             TFile *f = TFile::Open(filepath);
@@ -42,7 +42,8 @@ void LD1_multimodels(){
             double mean_gauss = f1->GetParameter(1);
             double mean_gauss_error = f1->GetParError(1);
 
-            std::cout<<models[i]<<" polish="<<polish<<" | "<<mean_gauss<<" +- "<<mean_gauss_error<<" | "<<h1->GetMean(1)<<std::endl;
+            std::cout<<models[i]<<" polish="<<polish<<" | MEAN GAUSS = "<<mean_gauss<<" +- "<<mean_gauss_error<<
+            " | MEAN = "<<h1->GetMean(1)<<" +- "<<h1->GetMeanError(1)<<std::endl;
 
        }
     }

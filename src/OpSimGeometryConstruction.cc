@@ -110,7 +110,7 @@ void OpSimGeometryConstruction::SetLogicalVolumeColor(
     orange->SetForceSolid(true);
     orange->SetVisibility(true);
 
-    yellow = new G4VisAttributes(G4Colour(1, 1, 0, 1));
+    yellow = new G4VisAttributes(G4Colour(1, 1, 0, 0.5));
     yellow->SetForceSolid(true);
     yellow->SetVisibility(true);
 
@@ -1106,7 +1106,7 @@ void OpSimGeometryConstruction::ConstructLMO() {
 
     // Secondary LMOs
 
-    G4bool constructSecLMO = true;
+    G4bool constructSecLMO = false;
 
     if (constructSecLMO){
         LogicalLMOsec1 = Geom->GetBoxVolume("LMOsec1", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
@@ -1117,6 +1117,15 @@ void OpSimGeometryConstruction::ConstructLMO() {
         LogicalLMOsec6 = Geom->GetBoxVolume("LMOsec6", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
         LogicalLMOsec7 = Geom->GetBoxVolume("LMOsec7", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
         LogicalLMOsec8 = Geom->GetBoxVolume("LMOsec8", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+
+        SetLogicalVolumeColor(LogicalLMOsec1, "blue");
+        SetLogicalVolumeColor(LogicalLMOsec2, "blue");
+        SetLogicalVolumeColor(LogicalLMOsec3, "blue");
+        SetLogicalVolumeColor(LogicalLMOsec4, "blue");
+        SetLogicalVolumeColor(LogicalLMOsec5, "blue");
+        SetLogicalVolumeColor(LogicalLMOsec6, "blue");
+        SetLogicalVolumeColor(LogicalLMOsec7, "blue");
+        SetLogicalVolumeColor(LogicalLMOsec8, "blue");
 
         G4double side_offset =  15. * mm;
 
@@ -1144,9 +1153,9 @@ void OpSimGeometryConstruction::ConstructLMO() {
  * @brief Construct the Light Detector part.
  */
 void OpSimGeometryConstruction::ConstructLD() {
-    auto Germanium = OpSimMaterials::getInstance()->getMaterial("Germanium");
+    auto matLD = OpSimMaterials::getInstance()->getMaterial("Silicon");
 
-    G4MaterialPropertiesTable *mptLD = Germanium->GetMaterialPropertiesTable();
+    G4MaterialPropertiesTable *mptLD = matLD->GetMaterialPropertiesTable();
 
     // Octogonal Germanium LD dimensions
 
@@ -1163,8 +1172,8 @@ void OpSimGeometryConstruction::ConstructLD() {
     LDPolygon.push_back( G4TwoVector( -24.3 * mm, -15.7 * mm ) );
     LDThickness = 0.5 * mm;
 
-    LogicalLD1 = Geom->GetOctogonalVolume("LD1", Germanium, LDPolygon, LDThickness);
-    LogicalLD2 = Geom->GetOctogonalVolume("LD2", Germanium, LDPolygon, LDThickness);
+    LogicalLD1 = Geom->GetOctogonalVolume("LD1", matLD, LDPolygon, LDThickness);
+    LogicalLD2 = Geom->GetOctogonalVolume("LD2", matLD, LDPolygon, LDThickness);
 
     // Assign colors
     SetLogicalVolumeColor(LogicalLD1, "yellow");
@@ -1261,13 +1270,16 @@ G4VPhysicalVolume *OpSimGeometryConstruction::Construct() {
     //  DEFINE GEOMETRY VOLUMES
     // #########################################################################
 
+    G4bool buildStructure = true; //build structure volumes
+
     /// Create the world and main holder volume
     CreateWorldAndHolder();
     ConstructLMO();
     ConstructLD();
-    ConstructPTFE();
-    ConstructCopperFrame();
-
+    if (buildStructure){
+        ConstructPTFE();
+        ConstructCopperFrame();
+    }
 
     G4cout << "END OF THE DETECTOR CONSTRUCTION" << G4endl;
 

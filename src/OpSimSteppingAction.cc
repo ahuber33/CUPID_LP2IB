@@ -281,13 +281,30 @@ void OpSimSteppingAction::SetPhotonBirthInformation(
     }
 }
 
-void OpSimSteppingAction::SetPhotonDetectedInformation(
+void OpSimSteppingAction::SetPhotonDetectedInformationLD1(
     const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING SetPhotonDetectedInformation-----"<<G4endl;
     }
 
-    evtac->FillDetectedWavelength(1240 / (theTrack->GetTotalEnergy() / eV));
+    evtac->FillDetectedWavelengthLD1(1240 / (theTrack->GetTotalEnergy() / eV));
+    if (VerbosityLevel > 0) {
+        G4cout << "Detected Photon Wavelength = "
+               << 1240 / (theTrack->GetTotalEnergy() / eV) << G4endl;
+    }
+
+    if (VerbosityLevel>2){
+        G4cout<<"-----LEAVING SetPhotonDetectedInformation-----"<<G4endl;
+    }
+}
+
+void OpSimSteppingAction::SetPhotonDetectedInformationLD2(
+    const G4Step *aStep, OpSimEventAction *evtac) {
+    if (VerbosityLevel>2){
+        G4cout<<"-----ENTERING SetPhotonDetectedInformation-----"<<G4endl;
+    }
+
+    evtac->FillDetectedWavelengthLD2(1240 / (theTrack->GetTotalEnergy() / eV));
     if (VerbosityLevel > 0) {
         G4cout << "Detected Photon Wavelength = "
                << 1240 / (theTrack->GetTotalEnergy() / eV) << G4endl;
@@ -494,7 +511,7 @@ void OpSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
             evtac->CountDetectedLD1();
         
             
-            SetPhotonDetectedInformation(aStep, evtac);
+            SetPhotonDetectedInformationLD1(aStep, evtac);
             theTrack->SetTrackStatus(fStopAndKill);
             
             if (VerbosityLevel > 1){
@@ -510,7 +527,7 @@ void OpSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
             evtac->CountDetectedLD2();
             
-            SetPhotonDetectedInformation(aStep, evtac);
+            SetPhotonDetectedInformationLD2(aStep, evtac);
             theTrack->SetTrackStatus(fStopAndKill);
             
             if (VerbosityLevel > 1){

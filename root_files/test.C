@@ -1,6 +1,6 @@
 void test(){
 
-    TFile *f = TFile::Open("../Resultats");
+    TFile *f = TFile::Open("../Resultats/output_unified_ground.root");
     TTree *Optical_tree = (TTree*)f->Get("Optical");
 
 
@@ -71,35 +71,42 @@ void test(){
         hMean3->SetBinContent(bin, newMean3);
    }
 
-    c1->SetWindowSize(1350, 450);
+    c1->SetWindowSize(950, 450);
     c1->SetWindowPosition(0,0);
-    c1->DivideSquare(3);
+    c1->DivideSquare(2);
+    c1->GetPad(1)->SetRightMargin(.13);
+    c1->GetPad(1)->SetLeftMargin(.13);
+    c1->GetPad(2)->SetRightMargin(.13);
+    c1->GetPad(2)->SetLeftMargin(.13);
     c1->cd(1);
 
     hMean1->SetStats(0);
-    hMean1->Draw("COLZ");
+    hMean1->SetMinimum(50);
+    hMean1->Draw();
     hMean1->GetXaxis()->SetTitle("x [mm]");
     hMean1->GetYaxis()->SetTitle("z [mm]");
 
     std::cout<<hMean1->GetMaximum()<<" | "<<hMean1->GetMinimumBin()<<std::endl;
 
     c1->cd(2);
-
     hMean2->SetStats(0);
+    hMean2->SetMinimum(50);
+    hMean2->SetMaximum(hMean1->GetMaximum());
     hMean2->Draw("COLZ");
     hMean2->GetXaxis()->SetTitle("x [mm]");
     hMean2->GetYaxis()->SetTitle("z [mm]");
+    hMean2->GetZaxis()->SetTitle("LY [photons/MeV]");
 
-    c1->cd(3);
+    //c1->cd(3);
 
-    hMean3->SetStats(0);
-    hMean3->Draw("COLZ");
-    hMean3->GetXaxis()->SetTitle("x [mm]");
-    hMean3->GetYaxis()->SetTitle("z [mm]");
+    //hMean3->SetStats(0);
+    //hMean3->Draw("COLZ");
+    //hMean3->GetXaxis()->SetTitle("x [mm]");
+    //hMean3->GetYaxis()->SetTitle("z [mm]");
 
-    c2->SetWindowSize(1350, 450);
+    c2->SetWindowSize(950, 450);
     c2->SetWindowPosition(0,505);
-    c2->DivideSquare(3);
+    c2->DivideSquare(2);
     c2->cd(1);
 
     h1->Draw();
@@ -112,9 +119,9 @@ void test(){
     h2->GetXaxis()->SetTitle("yield [photons/MeV]");
     h2->GetYaxis()->SetTitle("events");
 
-    c2->cd(3);
+    //c2->cd(3);
 
-    h3->Draw();
-    h3->GetXaxis()->SetTitle("yield [photons/MeV]");
-    h3->GetYaxis()->SetTitle("events");
+    //h3->Draw();
+    //h3->GetXaxis()->SetTitle("yield [photons/MeV]");
+    //h3->GetYaxis()->SetTitle("events");
 }

@@ -14,7 +14,7 @@ TCanvas *c4b = new TCanvas("c4b", "Yield [photons/MeV]");
 TCanvas *c5 = new TCanvas("c5", "Scintillation");
 
 TH1* h1 = new TH1F("h1", "birth_wavelength", 100.0, 200.0, 1000);
-TH1* h2 = new TH1F("h2", "detected_wavelength", 100.0, 200.0, 1000);
+TH1* h2 = new TH1F("h2", "detected_wavelength_LD1", 100.0, 200.0, 1000);
 
 TH1* h1b = new TH1F("h1b", "birth_energy", 100.0, 1240/200.0, 1240/1000);
 TH1* h2b = new TH1F("h2b", "detected_energy", 100.0, 1240/200.0, 1240/1000);
@@ -40,14 +40,14 @@ int escaped;
 int absorbed;
 int reemitted;
 vector<float>* birth_wavelength = nullptr;
-vector<float>* detected_wavelength = nullptr;
+vector<float>* detected_wavelength_LD1 = nullptr;
 double xmin;
 double xmax;
 
 
 Optical_tree->SetBranchAddress("deposited_energy_event", &E_dep_event_LMO);
 Optical_tree->SetBranchAddress("birth_wavelength", &birth_wavelength);
-Optical_tree->SetBranchAddress("detected_wavelength", &detected_wavelength);
+Optical_tree->SetBranchAddress("detected_wavelength_LD1", &detected_wavelength_LD1);
 Optical_tree->SetBranchAddress("scintillation_LMO", &scintillated);
 Optical_tree->SetBranchAddress("detected_LD1", &detected);
 Optical_tree->SetBranchAddress("escaped", &escaped);
@@ -73,15 +73,15 @@ for (int i = 0; i < Optical_tree->GetEntries(); i++)
         }
     }
 
-    for(int j=0;j<(detected_wavelength->size());j++)
+    for(int j=0;j<(detected_wavelength_LD1->size());j++)
     {
-        E_dep_eV += (1240 / detected_wavelength->at(j));
-        h2->Fill(detected_wavelength->at(j));
-        h2b->Fill(1240/detected_wavelength->at(j));
-        if (detected_wavelength->at(j) < xmin){
+        E_dep_eV += (1240 / detected_wavelength_LD1->at(j));
+        h2->Fill(detected_wavelength_LD1->at(j));
+        h2b->Fill(1240/detected_wavelength_LD1->at(j));
+        if (detected_wavelength_LD1->at(j) < xmin){
             xmin = birth_wavelength->at(j);
         }
-        if (detected_wavelength->at(j) > xmax){
+        if (detected_wavelength_LD1->at(j) > xmax){
             xmax = birth_wavelength->at(j);
         }
     }

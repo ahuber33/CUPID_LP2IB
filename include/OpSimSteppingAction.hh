@@ -49,7 +49,9 @@ class OpSimSteppingAction : public G4UserSteppingAction {
     void CountCerenkov(const G4Step *, OpSimEventAction *);
     void SetPhotonBirthInformation(const G4Step *,
                                    OpSimEventAction *);
-    void SetPhotonDetectedInformation(const G4Step *,
+    void SetPhotonDetectedInformationLD1(const G4Step *,
+                                   OpSimEventAction *);
+    void SetPhotonDetectedInformationLD2(const G4Step *,
                                    OpSimEventAction *);
     void SetInitialInformations(const G4Step *, OpSimEventAction *);
 

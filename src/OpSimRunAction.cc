@@ -136,8 +136,10 @@ static void CreateOpticalBranches(TTree *tree, RunTallyOptical &stats) {
     tree->Branch("detector_position_z", "vector<float>",
                  &stats.DetectorPositionZ);
     tree->Branch("birth_wavelength", "vector<float>", &stats.BirthWavelength);
-    tree->Branch("detected_wavelength", "vector<float>",
-                 &stats.DetectedWavelength);
+    tree->Branch("detected_wavelength_LD1", "vector<float>",
+                 &stats.DetectedWavelengthLD1);
+    tree->Branch("detected_wavelength_LD2", "vector<float>",
+                 &stats.DetectedWavelengthLD2);
     tree->Branch("time", "vector<float>", &stats.Time);
     // tree->Branch("rayleigh", "vector<int>", &stats.Rayleigh);
     // tree->Branch("total_reflections", "vector<int>",
