@@ -1,8 +1,8 @@
-#ifndef OpSimGeometryMessenger_H
-#define OpSimGeometryMessenger_H
+#ifndef SCOPSimGeometryMessenger_H
+#define SCOPSimGeometryMessenger_H
 
 /**
- * @class OpSimGeometryMessenger
+ * @class SCOPSimGeometryMessenger
  * @brief UI messenger for the Geometry construction in optical simulation
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
@@ -17,7 +17,7 @@
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithoutParameter.hh"   // for G4UIcmdWithoutParameter
 #include "G4UIdirectory.hh"             // for G4UIdirectory
-#include "OpSimGeometryConstruction.hh" // for OpSimGeometryConstruction
+#include "SCOPSimGeometryConstruction.hh" // for SCOPSimGeometryConstruction
 
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
@@ -25,12 +25,12 @@ class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWithoutParameter;
 class G4UIdirectory;
-class OpSimGeometryConstruction;
+class SCOPSimGeometryConstruction;
 
-class OpSimGeometryMessenger : public G4UImessenger {
+class SCOPSimGeometryMessenger : public G4UImessenger {
   public:
-    OpSimGeometryMessenger(OpSimGeometryConstruction *);
-    ~OpSimGeometryMessenger();
+    SCOPSimGeometryMessenger(SCOPSimGeometryConstruction *);
+    ~SCOPSimGeometryMessenger();
 
     /// Invokes appropriate methods based on the typed command
     virtual void SetNewValue(G4UIcommand *, G4String) final;
@@ -39,14 +39,14 @@ class OpSimGeometryMessenger : public G4UImessenger {
 
   private:
     /// Detector construction to setup
-    OpSimGeometryConstruction *fGeometry = nullptr;
+    SCOPSimGeometryConstruction *fGeometry = nullptr;
     /// Command to set the directory common to all messengers in this example
     /// /Par04
     G4UIdirectory *fExampleDir = nullptr;
     /// Command to set the directory for detector settings
-    /// /OpSim/geometry
+    /// /SCOPSim/geometry
     G4UIdirectory *fGeometryDir = nullptr;
-    /// /OpSim/materials
+    /// /SCOPSim/materials
     G4UIdirectory *fMaterialsDir = nullptr;
     /// Command printing current settings
     G4UIcmdWithoutParameter *fPrintCmd;

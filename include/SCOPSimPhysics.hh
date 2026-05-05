@@ -1,9 +1,9 @@
-#ifndef OpSimPhysics_h
-#define OpSimPhysics_h 1
+#ifndef SCOPSimPhysics_h
+#define SCOPSimPhysics_h 1
 
 /**
- * @class OpSimPhysics
- * @brief Custom physics list for the OpSim project.
+ * @class SCOPSimPhysics
+ * @brief Custom physics list for the SCOPSim project.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  * This class defines a modular physics list for Geant4 simulations
@@ -70,11 +70,11 @@
 #include "G4OpticalPhysics.hh"
 
 // =============================
-// OpSimPhysics Class
+// SCOPSimPhysics Class
 // =============================
 
 /**
- * @class OpSimPhysics
+ * @class SCOPSimPhysics
  * @brief Modular physics list for PALLAS simulations.
  *
  * This class registers the set of physics processes used in the simulation.
@@ -83,17 +83,17 @@
  *
  * Example usage:
  * @code
- * auto physicsList = new OpSimPhysics();
+ * auto physicsList = new SCOPSimPhysics();
  * runManager->SetUserInitialization(physicsList);
  * @endcode
  */
-class OpSimPhysics final : public G4VModularPhysicsList {
+class SCOPSimPhysics final : public G4VModularPhysicsList {
   public:
     /// Constructor: registers the selected physics modules
-    OpSimPhysics();
+    SCOPSimPhysics();
 
     /// Destructor
-    ~OpSimPhysics() override;
+    ~SCOPSimPhysics() override;
 };
 
-#endif // OpSimPhysics_h
+#endif // SCOPSimPhysics_h

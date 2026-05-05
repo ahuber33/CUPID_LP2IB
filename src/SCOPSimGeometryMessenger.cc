@@ -1,18 +1,18 @@
-#include "OpSimGeometryMessenger.hh"
+#include "SCOPSimGeometryMessenger.hh"
 
 /**
- * @file OpSimGeometryMessenger.cc
+ * @file SCOPSimGeometryMessenger.cc
  * @brief Implementation of the GeometryMessenger class for the
- * OpSim.
+ * SCOPSim.
  *
- * This file defines the OpSimGeometryMessenger class, which
+ * This file defines the SCOPSimGeometryMessenger class, which
  * inherits from G4UImessenger. It provides an interface for the Geant4 UI to
- * control geometry and field parameters for the OpSim simulation.
+ * control geometry and field parameters for the SCOPSim simulation.
  *
  * Responsibilities include:
  *  - Creating UI directories and commands for geometry, and materials
  *  - Setting geometry parameters such as LMO & Scintillator dimensions
- *  - Passing user-specified values to the OpSimGeometryConstruction
+ *  - Passing user-specified values to the SCOPSimGeometryConstruction
  * class.
  *
  * Each UI command is linked to a setter function in the geometry construction
@@ -30,32 +30,32 @@
 
 /**
  * @brief Constructor
- * @param aDetector Pointer to the OpSim geometry construction class
+ * @param aDetector Pointer to the SCOPSim geometry construction class
  *
  * This constructor initializes all UI commands and directories for geometry,
  * display, and field control.
  */
-OpSimGeometryMessenger::OpSimGeometryMessenger(
-    OpSimGeometryConstruction *aDetector)
+SCOPSimGeometryMessenger::SCOPSimGeometryMessenger(
+    SCOPSimGeometryConstruction *aDetector)
     : G4UImessenger(), fGeometry(aDetector) {
-    // Create a main directory for all UI commands related to OpSim
-    fExampleDir = new G4UIdirectory("/OpSim/");
+    // Create a main directory for all UI commands related to SCOPSim
+    fExampleDir = new G4UIdirectory("/SCOPSim/");
     fExampleDir->SetGuidance("UI commands specific to this example");
 
     // Create sub-directory for geometry-related commands
-    fGeometryDir = new G4UIdirectory("/OpSim/geometry/");
+    fGeometryDir = new G4UIdirectory("/SCOPSim/geometry/");
     fGeometryDir->SetGuidance("Geometry construction UI commands");
 
     // Create sub-directory for materials-related commands
-    fMaterialsDir = new G4UIdirectory("/OpSim/materials/");
+    fMaterialsDir = new G4UIdirectory("/SCOPSim/materials/");
     fMaterialsDir->SetGuidance("Materials construction UI commands");
 
     // Create sub-directory for surface finish commands
-    fMaterialsDir = new G4UIdirectory("/OpSim/geometry/");
+    fMaterialsDir = new G4UIdirectory("/SCOPSim/geometry/");
     fMaterialsDir->SetGuidance("Surface finish UI commands");
 
     // Command to print current geometry and field settings
-    fPrintCmd = new G4UIcmdWithoutParameter("/OpSim/print", this);
+    fPrintCmd = new G4UIcmdWithoutParameter("/SCOPSim/print", this);
     fPrintCmd->SetGuidance("Print current settings.");
 
     //=====================================
@@ -68,7 +68,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: LMOLength (double) unit
      */
     fGeometryLMOLengthCmd = new G4UIcmdWithADoubleAndUnit(
-        "/OpSim/geometry/setLMOLength", this);
+        "/SCOPSim/geometry/setLMOLength", this);
     fGeometryLMOLengthCmd->SetGuidance("Set LMO Length");
     fGeometryLMOLengthCmd->SetParameterName("LMOLength", false);
     fGeometryLMOLengthCmd->SetRange("LMOLength>0.");
@@ -82,7 +82,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: LMOWidth (double) unit
      */
     fGeometryLMOWidthCmd = new G4UIcmdWithADoubleAndUnit(
-        "/OpSim/geometry/setLMOWidth", this);
+        "/SCOPSim/geometry/setLMOWidth", this);
     fGeometryLMOWidthCmd->SetGuidance("Set LMO Width");
     fGeometryLMOWidthCmd->SetParameterName("LMOWidth", false);
     fGeometryLMOWidthCmd->SetRange("LMOWidth>0.");
@@ -96,7 +96,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: LMOThickness (double) unit
      */
     fGeometryLMOThicknessCmd = new G4UIcmdWithADoubleAndUnit(
-        "/OpSim/geometry/setLMOThickness", this);
+        "/SCOPSim/geometry/setLMOThickness", this);
     fGeometryLMOThicknessCmd->SetGuidance("Set LMO Thickness");
     fGeometryLMOThicknessCmd->SetParameterName("LMOThickness", false);
     fGeometryLMOThicknessCmd->SetRange("LMOThickness>0.");
@@ -110,7 +110,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: LMO Surface Finish Model
      */
     fGeometryLMOModelCmd = new G4UIcmdWithAString(
-        "/OpSim/geometry/setLMOSurfaceModel", this);
+        "/SCOPSim/geometry/setLMOSurfaceModel", this);
     fGeometryLMOModelCmd->SetParameterName("LMOSurfaceModel", false);
 
     /**
@@ -119,7 +119,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: LMO Surface Finish Polish
      */
     fGeometryLMOPolishCmd = new G4UIcmdWithADouble(
-        "/OpSim/geometry/setLMOSurfacePolish", this);
+        "/SCOPSim/geometry/setLMOSurfacePolish", this);
     fGeometryLMOPolishCmd->SetParameterName("LMOSurfacePolish", false);
 
     /**
@@ -128,7 +128,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: LMO Surface Finish Type
      */
     fGeometryLMOTypeCmd = new G4UIcmdWithAString(
-        "/OpSim/geometry/setLMOSurfaceType", this);
+        "/SCOPSim/geometry/setLMOSurfaceType", this);
     fGeometryLMOTypeCmd->SetParameterName("LMOSurfaceType", false);
 
     /**
@@ -137,7 +137,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: LMO Surface Finish Type
      */
     fGeometryLMOFinishCmd = new G4UIcmdWithAString(
-        "/OpSim/geometry/setLMOSurfaceFinish", this);
+        "/SCOPSim/geometry/setLMOSurfaceFinish", this);
     fGeometryLMOFinishCmd->SetParameterName("LMOSurfaceFinish", false);
 
     /**
@@ -146,7 +146,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: LMO Surface Finish SigmaAlpha
      */
     fGeometryLMOSigmaAlphaCmd = new G4UIcmdWithADouble(
-        "/OpSim/geometry/setLMOSurfaceSigmaAlpha", this);
+        "/SCOPSim/geometry/setLMOSurfaceSigmaAlpha", this);
     fGeometryLMOSigmaAlphaCmd->SetParameterName("LMOSurfaceSigmaAlpha", false);
 
     /**
@@ -155,7 +155,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: DetectorDistance (double) unit
      */
     fGeometryDetectorDistanceCmd = new G4UIcmdWithADoubleAndUnit(
-        "/OpSim/geometry/setDetectorDistance", this);
+        "/SCOPSim/geometry/setDetectorDistance", this);
     fGeometryDetectorDistanceCmd->SetGuidance("Set Detector Distance");
     fGeometryDetectorDistanceCmd->SetParameterName("DetectorDistance", false);
     fGeometryDetectorDistanceCmd->SetRange("DetectorDistance>0.");
@@ -174,7 +174,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
      * Parameter: Lightyield LMO:Ag (double)
      */
     fGeometryLMOLYCmd =
-        new G4UIcmdWithADouble("/OpSim/materials/setLMOLY", this);
+        new G4UIcmdWithADouble("/SCOPSim/materials/setLMOLY", this);
     fGeometryLMOLYCmd->SetGuidance("Set Scintillator LMO (photons/MeV)");
     fGeometryLMOLYCmd->SetParameterName("LMOLY", false);
     fGeometryLMOLYCmd->SetRange("LMOLY>0.");
@@ -188,7 +188,7 @@ OpSimGeometryMessenger::OpSimGeometryMessenger(
  *
  * Deletes all UI commands to free memory.
  */
-OpSimGeometryMessenger::~OpSimGeometryMessenger() {
+SCOPSimGeometryMessenger::~SCOPSimGeometryMessenger() {
     delete fPrintCmd;
     delete fGeometryLMOLengthCmd;
     delete fGeometryLMOWidthCmd;
@@ -213,7 +213,7 @@ OpSimGeometryMessenger::~OpSimGeometryMessenger() {
  * Converts the string to the appropriate type and sets it in the
  * geometry construction.
  */
-void OpSimGeometryMessenger::SetNewValue(G4UIcommand *aCommand,
+void SCOPSimGeometryMessenger::SetNewValue(G4UIcommand *aCommand,
                                                      G4String aNewValue) {
     if (aCommand == fPrintCmd) {
         fGeometry->Print();
@@ -255,7 +255,7 @@ void OpSimGeometryMessenger::SetNewValue(G4UIcommand *aCommand,
  * converts it to a string for display in the UI.
  */
 G4String
-OpSimGeometryMessenger::GetCurrentValue(G4UIcommand *aCommand) {
+SCOPSimGeometryMessenger::GetCurrentValue(G4UIcommand *aCommand) {
     G4String cv;
 
     if (aCommand == fGeometryLMOLengthCmd) {
