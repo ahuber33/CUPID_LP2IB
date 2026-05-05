@@ -1,9 +1,9 @@
-#ifndef OpSimVisManager_h
-#define OpSimVisManager_h 1
+#ifndef SCOPSimVisManager_h
+#define SCOPSimVisManager_h 1
 
 /**
- * @brief Custom visualization manager for the OpSim project.
- * @class OpSimVisManager
+ * @brief Custom visualization manager for the SCOPSim project.
+ * @class SCOPSimVisManager
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  *
@@ -18,10 +18,10 @@
 
 #include "G4VisManager.hh"
 
-class OpSimVisManager : public G4VisManager {
+class SCOPSimVisManager : public G4VisManager {
   public:
     /// Constructor: prepares the visualization manager
-    OpSimVisManager();
+    SCOPSimVisManager();
 
   private:
     /**
@@ -33,4 +33,4 @@ class OpSimVisManager : public G4VisManager {
     void RegisterGraphicsSystems() override;
 };
 
-#endif // OpSimVisManager_h
+#endif // SCOPSimVisManager_h

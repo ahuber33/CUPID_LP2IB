@@ -1,11 +1,11 @@
 /**
- * @file OpSimActionInitialization.cc
+ * @file SCOPSimActionInitialization.cc
  * @brief Implementation of the ActionInitialization class for the Optical
  * simulation.
  *
- * This file defines the OpSimActionInitialization class, which is
+ * This file defines the SCOPSimActionInitialization class, which is
  * responsible for setting up all user actions required for a Geant4 simulation
- * of the OpSim. It manages the creation and assignment of the
+ * of the SCOPSim. It manages the creation and assignment of the
  * following actions:
  *   - Primary generator action
  *   - Run action
@@ -24,7 +24,7 @@
  * @date 2026
  */
 
-#include "OpSimActionInitialization.hh"
+#include "SCOPSimActionInitialization.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -36,9 +36,9 @@
  * @param pMT Flag indicating whether multithreading is enabled
  * @param geometry Pointer to the simulation geometry
  */
-OpSimActionInitialization::OpSimActionInitialization(
+SCOPSimActionInitialization::SCOPSimActionInitialization(
     const char *suff, size_t N, size_t Ncores, G4bool pMT,
-    OpSimGeometryConstruction *geometry)
+    SCOPSimGeometryConstruction *geometry)
     : G4VUserActionInitialization(), suffixe(suff), NEventsGenerated(N),
       numThreads(Ncores), flag_MT(pMT), fGeometry(geometry) {}
 
@@ -47,8 +47,8 @@ OpSimActionInitialization::OpSimActionInitialization(
 /**
  * @brief Destructor for ActionInitialization class
  */
-OpSimActionInitialization::
-    ~OpSimActionInitialization() {}
+SCOPSimActionInitialization::
+    ~SCOPSimActionInitialization() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -58,9 +58,9 @@ OpSimActionInitialization::
  * This function is called in multithreaded mode to define actions
  * that are executed only in the master thread, such as RunAction.
  */
-void OpSimActionInitialization::BuildForMaster() const {
+void SCOPSimActionInitialization::BuildForMaster() const {
     SetUserAction(
-        new OpSimRunAction(suffixe, NEventsGenerated, flag_MT));
+        new SCOPSimRunAction(suffixe, NEventsGenerated, flag_MT));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -75,17 +75,17 @@ void OpSimActionInitialization::BuildForMaster() const {
  * - EventAction
  * - SteppingAction
  */
-void OpSimActionInitialization::Build() const {
+void SCOPSimActionInitialization::Build() const {
     // Create primary generator action
-    auto *generator = new OpSimPrimaryGeneratorAction(
+    auto *generator = new SCOPSimPrimaryGeneratorAction(
         NEventsGenerated, numThreads, flag_MT);
 
     // Create run action
     auto *runAction =
-        new OpSimRunAction(suffixe, NEventsGenerated, flag_MT);
+        new SCOPSimRunAction(suffixe, NEventsGenerated, flag_MT);
 
     // Create event action
-    auto *eventAction = new OpSimEventAction(suffixe);
+    auto *eventAction = new SCOPSimEventAction(suffixe);
 
     // Provide the run action with pointers to the primary generator and
     // geometry
@@ -96,5 +96,5 @@ void OpSimActionInitialization::Build() const {
     SetUserAction(generator);
     SetUserAction(runAction);
     SetUserAction(eventAction);
-    SetUserAction(new OpSimSteppingAction());
+    SetUserAction(new SCOPSimSteppingAction());
 }

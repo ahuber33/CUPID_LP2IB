@@ -1,8 +1,8 @@
-#ifndef OpSimPrimaryGeneratorAction_h
-#define OpSimPrimaryGeneratorAction_h 1
+#ifndef SCOPSimPrimaryGeneratorAction_h
+#define SCOPSimPrimaryGeneratorAction_h 1
 
 /**
- * @class OpSimPrimaryGeneratorAction
+ * @class SCOPSimPrimaryGeneratorAction
  * @brief Defines the primary generator action for the simulation.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
@@ -13,13 +13,13 @@
 
 #include "G4GeneralParticleSource.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "OpSimRunAction.hh"
+#include "SCOPSimRunAction.hh"
 
 // Forward declarations
 class G4ParticleGun;
 class G4Event;
 
-class OpSimPrimaryGeneratorAction
+class SCOPSimPrimaryGeneratorAction
     : public G4VUserPrimaryGeneratorAction {
   public:
     /**
@@ -28,13 +28,13 @@ class OpSimPrimaryGeneratorAction
      * @param numThreads Number of threads in multithreaded mode.
      * @param pMT Flag to enable multithreading.
      */
-    OpSimPrimaryGeneratorAction(size_t N, size_t numThreads,
+    SCOPSimPrimaryGeneratorAction(size_t N, size_t numThreads,
                                             bool pMT);
 
     /**
      * @brief Destructor.
      */
-    ~OpSimPrimaryGeneratorAction();
+    ~SCOPSimPrimaryGeneratorAction();
 
     /**
      * @brief Generate primary particles for the event.

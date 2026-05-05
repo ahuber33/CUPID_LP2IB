@@ -1,8 +1,8 @@
 /**
- * @file OpSimPhysics.cc
- * @brief Implementation of the OpSimPhysics custom physics list.
+ * @file SCOPSimPhysics.cc
+ * @brief Implementation of the SCOPSimPhysics custom physics list.
  *
- * This file implements the `OpSimPhysics` class, a custom physics
+ * This file implements the `SCOPSimPhysics` class, a custom physics
  * list derived from Geant4's `G4VModularPhysicsList`. It defines the set of
  * physics processes to be used in the Optical simulation, tailored for
  * both electromagnetic and hadronic interactions, including ions, neutrons, and
@@ -22,7 +22,7 @@
  * particles.
  *
  * Usage:
- *  - Instantiate `OpSimPhysics` and set it as the physics list in
+ *  - Instantiate `SCOPSimPhysics` and set it as the physics list in
  *    the Geant4 run manager.
  *
  * @note The constructor automatically registers all physics modules.
@@ -31,7 +31,7 @@
  * @date 2026
  */
 
-#include "OpSimPhysics.hh"
+#include "SCOPSimPhysics.hh"
 
 // ============================================================
 // Constructor
@@ -47,7 +47,7 @@
  *  - Adds electromagnetic physics with high-accuracy settings.
  *  - Includes decay and radioactive decay processes.
  */
-OpSimPhysics::OpSimPhysics() {
+SCOPSimPhysics::SCOPSimPhysics() {
     // Verbosity level for physics processes
     G4int verb = 1;
     SetVerboseLevel(verb);
@@ -115,4 +115,4 @@ OpSimPhysics::OpSimPhysics() {
  * @brief Destructor (no manual cleanup required, Geant4 handles physics
  * constructors).
  */
-OpSimPhysics::~OpSimPhysics() {}
+SCOPSimPhysics::~SCOPSimPhysics() {}

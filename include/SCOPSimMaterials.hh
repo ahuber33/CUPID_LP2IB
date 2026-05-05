@@ -1,8 +1,8 @@
-#ifndef OpSimMaterials_h
-#define OpSimMaterials_h
+#ifndef SCOPSimMaterials_h
+#define SCOPSimMaterials_h
 
 /**
- * @class OpSimMaterials
+ * @class SCOPSimMaterials
  * @brief Describe optical simulation materials
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
@@ -23,17 +23,17 @@
 
 class G4Material;
 
-class OpSimMaterials {
+class SCOPSimMaterials {
   public:
-    static OpSimMaterials *getInstance();
-    virtual ~OpSimMaterials();
+    static SCOPSimMaterials *getInstance();
+    virtual ~SCOPSimMaterials();
 
     G4Material *getMaterial(const char *);
     void printMaterialProperties(const char *);
     void printMaterialProperties(G4Material *material);
 
   protected:
-    OpSimMaterials();
+    SCOPSimMaterials();
 
   private:
     static const G4String path;

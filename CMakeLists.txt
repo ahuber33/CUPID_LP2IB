@@ -2,7 +2,7 @@
 # Setup the project
 #----------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.16...3.21)
-project(OpSim)
+project(SCOPSim)
 
 #----------------------------------------------------------------------------
 # Options
@@ -41,43 +41,43 @@ include_directories(
 # Project sources and headers
 #----------------------------------------------------------------------------
 set(PROJECT_SRC
-    src/OpSimPhysics.cc
+    src/SCOPSimPhysics.cc
     src/Geometry.cc
-    src/OpSimEventAction.cc
-    src/OpSimVisManager.cc
-    src/OpSimGeometryMessenger.cc
-    src/OpSimGeometryConstruction.cc
-    src/OpSimPrimaryGeneratorAction.cc
-    src/OpSimRunAction.cc
-    src/OpSimSteppingAction.cc
-    src/OpSimActionInitialization.cc
-    src/OpSimMaterials.cc
+    src/SCOPSimEventAction.cc
+    src/SCOPSimVisManager.cc
+    src/SCOPSimGeometryMessenger.cc
+    src/SCOPSimGeometryConstruction.cc
+    src/SCOPSimPrimaryGeneratorAction.cc
+    src/SCOPSimRunAction.cc
+    src/SCOPSimSteppingAction.cc
+    src/SCOPSimActionInitialization.cc
+    src/SCOPSimMaterials.cc
 )
 
 set(PROJECT_HEADER
-    include/OpSimPhysics.hh
+    include/SCOPSimPhysics.hh
     include/Geometry.hh
-    include/OpSimEventAction.hh
-    include/OpSimVisManager.hh
-    include/OpSimGeometryMessenger.hh
-    include/OpSimGeometryConstruction.hh
-    include/OpSimPrimaryGeneratorAction.hh
-    include/OpSimRunAction.hh
-    include/OpSimSteppingAction.hh
-    include/OpSimActionInitialization.hh
-    include/OpSimMaterials.hh
+    include/SCOPSimEventAction.hh
+    include/SCOPSimVisManager.hh
+    include/SCOPSimGeometryMessenger.hh
+    include/SCOPSimGeometryConstruction.hh
+    include/SCOPSimPrimaryGeneratorAction.hh
+    include/SCOPSimRunAction.hh
+    include/SCOPSimSteppingAction.hh
+    include/SCOPSimActionInitialization.hh
+    include/SCOPSimMaterials.hh
 )
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(OpSim OpSim.cc ${PROJECT_HEADER} ${PROJECT_SRC})
+add_executable(SCOPSim SCOPSim.cc ${PROJECT_HEADER} ${PROJECT_SRC})
 #
-target_link_libraries(OpSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} )
+target_link_libraries(SCOPSim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} )
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
 set(EXECUTABLE_OUTPUT_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-install(TARGETS OpSim DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+install(TARGETS SCOPSim DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 message("Directory :" ${CMAKE_CURRENT_SOURCE_DIR}/bin)
