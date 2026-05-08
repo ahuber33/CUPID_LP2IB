@@ -94,6 +94,7 @@ void OpSimSteppingAction::CheckBoundaryStatus(
     if (endproc == "OpAbsorption") {
         if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "LMO") {
             evtac->CountBulkAbsLMO();
+            evtac->FillAbsorbedTrackLength(aStep->GetTrack()->GetTrackLength());
         }
 
         if (VerbosityLevel > 1)
@@ -172,6 +173,9 @@ void OpSimSteppingAction::CheckBoundaryStatus(
         case LambertianReflection:
             if (VerbosityLevel > 1)
                 G4cout << "Reflection L" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                evtac->CountReflectedLMO();
+            }
             break;
 
         case FresnelRefraction:
@@ -182,23 +186,35 @@ void OpSimSteppingAction::CheckBoundaryStatus(
         case FresnelReflection:
             if (VerbosityLevel > 1)
                 G4cout << "Fresnel Reflection" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                evtac->CountReflectedLMO();
+            }
             break;
 
         case LobeReflection:
             if (VerbosityLevel > 1)
                 G4cout << "Reflection Lobe" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                evtac->CountReflectedLMO();
+            }
             break;
 
         case SpikeReflection:
             //((OpSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountReflections();
             if (VerbosityLevel > 1)
                 G4cout << "Reflection" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                evtac->CountReflectedLMO();
+            }
             break;
 
         case TotalInternalReflection:
             //((OpSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountTotalInternalReflections();
             if (VerbosityLevel > 1)
                 G4cout << "Reflection totale" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                evtac->CountReflectedLMO();
+            }
             break;
 
         default:
@@ -288,6 +304,7 @@ void OpSimSteppingAction::SetPhotonDetectedInformationLD1(
     }
 
     evtac->FillDetectedWavelengthLD1(1240 / (theTrack->GetTotalEnergy() / eV));
+    evtac->FillDetectedTrackLengthLD1(aStep->GetTrack()->GetTrackLength());
     if (VerbosityLevel > 0) {
         G4cout << "Detected Photon Wavelength = "
                << 1240 / (theTrack->GetTotalEnergy() / eV) << G4endl;
@@ -305,6 +322,7 @@ void OpSimSteppingAction::SetPhotonDetectedInformationLD2(
     }
 
     evtac->FillDetectedWavelengthLD2(1240 / (theTrack->GetTotalEnergy() / eV));
+    evtac->FillDetectedTrackLengthLD2(aStep->GetTrack()->GetTrackLength());
     if (VerbosityLevel > 0) {
         G4cout << "Detected Photon Wavelength = "
                << 1240 / (theTrack->GetTotalEnergy() / eV) << G4endl;
@@ -505,7 +523,8 @@ void OpSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
         if ((volumeNamePostStep== "LD1" && volumeNamePreStep == "Holder")
              && !(boundaryStatus == FresnelReflection
             || boundaryStatus == TotalInternalReflection || boundaryStatus == LambertianReflection 
-            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection) ) { // photon detected in the LD
+            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection
+            || boundaryStatus == CoatedDielectricReflection) ) { // photon detected in the LD
 
 
             evtac->CountDetectedLD1();
@@ -522,7 +541,8 @@ void OpSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
         if ((volumeNamePostStep== "LD2" && volumeNamePreStep == "Holder")
              && !(boundaryStatus == FresnelReflection
             || boundaryStatus == TotalInternalReflection || boundaryStatus == LambertianReflection 
-            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection) ) { // photon detected in the LD
+            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection
+            || boundaryStatus == CoatedDielectricReflection) ) { // photon detected in the LD
 
 
             evtac->CountDetectedLD2();
@@ -548,7 +568,6 @@ void OpSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
                     CountCerenkov(aStep, evtac);
             }
         }
-        
     }
 
     // TPSimTrackInformation *info = static_cast<TPSimTrackInformation

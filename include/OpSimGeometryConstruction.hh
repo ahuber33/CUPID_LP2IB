@@ -362,6 +362,9 @@ class OpSimGeometryConstruction final
     G4double fLMOLength = 45 * CLHEP::mm;
     G4double fLMOWidth = 45 * CLHEP::mm;
     G4double fLMOThickness = 45 * CLHEP::mm;
+    G4double fLMOx = 0 * CLHEP::mm;
+    G4double fLMOy = 0 * CLHEP::mm;
+    G4double fLMOz = 0 * CLHEP::mm;
     G4double fDistanceLMOtoLD1 = 0.5 * CLHEP::mm;
     G4double fDistanceLMOtoLD2 = 3 * CLHEP::mm;
     G4double fDetectorDistance = 100 * CLHEP::mm;
@@ -404,6 +407,12 @@ class OpSimGeometryConstruction final
     G4LogicalVolume *LogicalLMOsec6 = nullptr;
     G4LogicalVolume *LogicalLMOsec7 = nullptr;
     G4LogicalVolume *LogicalLMOsec8 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf1 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf2 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf3 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf4 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf5 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf6 = nullptr;
 
     
 
@@ -428,6 +437,12 @@ class OpSimGeometryConstruction final
     G4VPhysicalVolume *PhysicalLMOsec6 = nullptr;
     G4VPhysicalVolume *PhysicalLMOsec7 = nullptr;
     G4VPhysicalVolume *PhysicalLMOsec8 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf1 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf2 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf3 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf4 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf5 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf6 = nullptr;
 
     /** @brief Rotation matrices for component orientation. */
     G4RotationMatrix DontRotate;

@@ -98,6 +98,9 @@ class OpSimSteppingAction : public G4UserSteppingAction {
     G4String volumeNamePreStep;  ///< Volume name at pre-step point
     G4String volumeNamePostStep; ///< Volume name at post-step point
     G4double angle = 0.0;
+    G4double angle_x;
+    G4double angle_y;
+    G4double angle_z;
     G4double time = 0.0;
 
     // --- Energy ---

@@ -57,46 +57,35 @@ Optical_tree->SetBranchAddress("reemission_LMO", &reemitted);
 for (int i = 0; i < Optical_tree->GetEntries(); i++)
 {
     Optical_tree->GetEntry(i);
-    E_dep_eV = 0;
-    xmin = birth_wavelength->at(0);
-    xmax = birth_wavelength->at(0);
+    //std::cout<<"i = "<<i<<" | "<<detected_wavelength_LD2->size()<<" | "<<birth_wavelength->size()<<std::endl;
+    if (detected_wavelength_LD2->size() != 0){
+        E_dep_eV = 0;
 
-    for(int j=0;j<(birth_wavelength->size());j++)
-    {
-        h1->Fill(birth_wavelength->at(j));
-        h1b->Fill(1240/birth_wavelength->at(j));
-        if (birth_wavelength->at(j) < xmin){
-            xmin = birth_wavelength->at(j);
+        for(int j=0;j<(birth_wavelength->size());j++)
+        {
+            h1->Fill(birth_wavelength->at(j));
+            h1b->Fill(1240/birth_wavelength->at(j));
         }
-        if (birth_wavelength->at(j) > xmax){
-            xmax = birth_wavelength->at(j);
+
+        for(int j=0;j<(detected_wavelength_LD2->size());j++)
+        {
+            E_dep_eV += (1240 / detected_wavelength_LD2->at(j));
+            h2->Fill(detected_wavelength_LD2->at(j));
+            h2b->Fill(1240/detected_wavelength_LD2->at(j));
         }
+
+        h3->Fill(scintillated);
+        h4->Fill(detected);
+        h5->Fill(escaped);
+        h6->Fill(absorbed);
+        h7->Fill(reemitted);
+
+        h8->Fill(E_dep_eV);
+        h9->Fill(E_dep_event_LMO);
+
+        h10->Fill(E_dep_eV/E_dep_event_LMO);
+        h10b->Fill(detected/(E_dep_event_LMO/1000));
     }
-
-    for(int j=0;j<(detected_wavelength_LD2->size());j++)
-    {
-        E_dep_eV += (1240 / detected_wavelength_LD2->at(j));
-        h2->Fill(detected_wavelength_LD2->at(j));
-        h2b->Fill(1240/detected_wavelength_LD2->at(j));
-        if (detected_wavelength_LD2->at(j) < xmin){
-            xmin = birth_wavelength->at(j);
-        }
-        if (detected_wavelength_LD2->at(j) > xmax){
-            xmax = birth_wavelength->at(j);
-        }
-    }
-
-    h3->Fill(scintillated);
-    h4->Fill(detected);
-    h5->Fill(escaped);
-    h6->Fill(absorbed);
-    h7->Fill(reemitted);
-
-    h8->Fill(E_dep_eV);
-    h9->Fill(E_dep_event_LMO);
-
-    h10->Fill(E_dep_eV/E_dep_event_LMO);
-    h10b->Fill(detected/(E_dep_event_LMO/1000));
     
 
 }

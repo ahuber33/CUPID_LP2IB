@@ -1,6 +1,6 @@
 void test(){
 
-    TFile *f = TFile::Open("../Resultats/output_unified_ground.root");
+    TFile *f = TFile::Open("../Resultats/output.root");
     TTree *Optical_tree = (TTree*)f->Get("Optical");
 
 
