@@ -1223,7 +1223,7 @@ void OpSimGeometryConstruction::ConstructLMO() {
  * @brief Construct the Light Detector part.
  */
 void OpSimGeometryConstruction::ConstructLD() {
-    auto matLD = OpSimMaterials::getInstance()->getMaterial("Germanium");
+    auto matLD = OpSimMaterials::getInstance()->getMaterial(fLDMaterial);
 
     // Octogonal Germanium LD dimensions
 
@@ -1263,10 +1263,10 @@ void OpSimGeometryConstruction::ConstructLD() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////
 
     G4MaterialPropertiesTable *mptLDcoating = new G4MaterialPropertiesTable();
-    std::vector<G4double> refractive_index_coating = {2.48, 2.48}; // 2.48
+    std::vector<G4double> refractive_index_coating = {fLDCoatingRINDEX, fLDCoatingRINDEX}; // 2.48
     std::vector<G4double> energy_coating = {0.1 * eV, 50 * eV};
     mptLDcoating->AddProperty("COATEDRINDEX", energy_coating, refractive_index_coating);
-    mptLDcoating->AddConstProperty("COATEDTHICKNESS", 60 * nm);
+    mptLDcoating->AddConstProperty("COATEDTHICKNESS", fLDCoatingThickness * nm);
     mptLDcoating->AddConstProperty("COATEDFRUSTRATEDTRANSMISSION", 1);
     
     auto opLDSurface = new G4OpticalSurface("LDSurface");
