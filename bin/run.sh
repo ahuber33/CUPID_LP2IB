@@ -1,7 +1,11 @@
-for model in "glisur"
+for THICKNESS in 30 60 90 120 150 180
 do
-    for polish in 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+    for RINDEX in 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5
     do
-        ./OpticalSimulation output_"$model"_dielectric_dielectric_ground_"$polish" 1000 vrml.mac OFF "$model" dielectric_dielectric ground "$polish"
+    	until [ -e ../Resultats/coating_Si/output_"$THICKNESS"nm_n="$RINDEX".root ]
+    	do
+		./OpSim output_"$THICKNESS"nm_n="$RINDEX" 1000 vrml.mac OFF LDCoatThickness="$THICKNESS" LDCoatRINDEX="$RINDEX" LDMat=Silicon
+		mv ../Resultats/output_"$THICKNESS"nm_n="$RINDEX".root ../Resultats/coating_Si/
+	done
     done
 done

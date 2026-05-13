@@ -53,6 +53,8 @@ struct RunTallyOptical {
     G4int DetectedLD1;
     G4int DetectedLD2;
     G4int DetectedTotal;
+    G4int ReflectedLMOTopBot;
+    G4int ReflectedLMOSides;
     std::vector<float> ExitLightPositionX;
     std::vector<float> ExitLightPositionY;
     std::vector<float> ExitLightPositionZ;
@@ -60,7 +62,14 @@ struct RunTallyOptical {
     std::vector<float> DetectorPositionY;
     std::vector<float> DetectorPositionZ;
     std::vector<float> BirthWavelength;
-    std::vector<float> DetectedWavelength;
+    std::vector<float> DetectedWavelengthLD1;
+    std::vector<float> DetectedWavelengthLD2;
+    std::vector<float> DetectedTrackLengthLD1;
+    std::vector<float> DetectedTrackLengthLD2;
+    std::vector<float> AbsorbedTrackLength;
+    std::vector<float> IncidentAngleSurfx;
+    std::vector<float> IncidentAngleSurfy;
+    std::vector<float> IncidentAngleSurfz;
     std::vector<float> Time;
     std::vector<int> Rayleigh;
     std::vector<int> Total_Reflections;
@@ -192,6 +201,8 @@ class SCOPSimEventAction : public G4UserEventAction {
     void CountEscaped() { StatsOptical.Escaped++; }
     int GetEscaped() { return StatsOptical.Escaped; }
     void CountFailed() { StatsOptical.Failed++; }
+    void CountReflectedLMOTopBot() { StatsOptical.ReflectedLMOTopBot++; }
+    void CountReflectedLMOSides() { StatsOptical.ReflectedLMOSides++; }
     int GetFailed() { return StatsOptical.Failed; }
     void FillPhotonExitLightPositionX(float e) {
         StatsOptical.ExitLightPositionX.push_back(e);
@@ -215,8 +226,29 @@ class SCOPSimEventAction : public G4UserEventAction {
     void FillBirthWavelength(float e) {
         StatsOptical.BirthWavelength.push_back(e);
     }
-    void FillDetectedWavelength(float e) {
-        StatsOptical.DetectedWavelength.push_back(e);
+    void FillDetectedWavelengthLD1(float e) {
+        StatsOptical.DetectedWavelengthLD1.push_back(e);
+    }
+    void FillDetectedWavelengthLD2(float e) {
+        StatsOptical.DetectedWavelengthLD2.push_back(e);
+    }
+    void FillDetectedTrackLengthLD1(float e) {
+        StatsOptical.DetectedTrackLengthLD1.push_back(e);
+    }
+    void FillDetectedTrackLengthLD2(float e) {
+        StatsOptical.DetectedTrackLengthLD2.push_back(e);
+    }
+    void FillAbsorbedTrackLength(float e) {
+        StatsOptical.AbsorbedTrackLength.push_back(e);
+    }
+    void FillIncidentAngleSurfx(float e) {
+        StatsOptical.IncidentAngleSurfx.push_back(e);
+    }
+    void FillIncidentAngleSurfy(float e) {
+        StatsOptical.IncidentAngleSurfy.push_back(e);
+    }
+    void FillIncidentAngleSurfz(float e) {
+        StatsOptical.IncidentAngleSurfz.push_back(e);
     }
     void FillPhotonTime(float e) { StatsOptical.Time.push_back(e); }
     void FillRayleigh(int e) { StatsOptical.Rayleigh.push_back(e); }

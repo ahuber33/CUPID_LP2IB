@@ -57,16 +57,16 @@
 ###################################################################
 /gps/number 1                                                     # Generate 1 particle
 /gps/particle e-                                              # Set particle type
-/gps/pos/type Point                                               # Particle generated at a point
+#/gps/pos/type Point                                               # Particle generated at a point
 
-#/gps/pos/type Volume
-#/gps/pos/shape Para
-#/gps/pos/halfx 22.5 mm
-#/gps/pos/halfy 22.5 mm
-#/gps/pos/halfz 22.5 mm
+/gps/pos/type Volume
+/gps/pos/shape Para
+/gps/pos/halfx 22.5 mm
+/gps/pos/halfy 22.5 mm
+/gps/pos/halfz 22.5 mm
 
-/gps/pos/centre 0.0 0.0 15.0 mm                                      # Particle start position
+/gps/pos/centre 0.0 0.0 0.0 mm                                      # Particle start position
 
 #/gps/direction 0.0 0.0 1.0                                        # Particle direction along Y-axis
 /gps/ang/type iso                                                # Particle isotropic direction
-/gps/energy 1. MeV                                              # Particle energy
+/gps/energy 1 MeV                                              # Particle energy

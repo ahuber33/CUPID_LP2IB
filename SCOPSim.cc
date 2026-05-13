@@ -9,6 +9,7 @@
 #include "G4UImanager.hh"
 #include "G4PhysicalVolumeStore.hh"
 #include "G4LogicalVolumeStore.hh"
+#include "G4Exception.hh"
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -60,6 +61,48 @@ int main(int argc, char **argv) {
         }
         if (G4String(argv[5])=="glisur"){
             GeomCons->SetLMOSurfacePolish(G4double(atof(argv[8])));
+        }
+    }
+
+    // Enter optical parameters in shell
+
+    if (argc >= 5){
+        for (int i=5; i<argc; i++){
+            std::string str = argv[i];
+            std::string param = str.substr(0, str.find('='));
+            std::string var = str.substr(str.find('=') + 1);
+            if (param=="LMOModel"){
+                GeomCons->SetLMOSurfaceModel(G4String(var));
+            }
+            else if (param=="LMOType"){
+                GeomCons->SetLMOSurfaceType(G4String(var));
+            }
+            else if (param=="LMOFinish"){
+                GeomCons->SetLMOSurfaceFinish(G4String(var));
+            }
+            else if (param=="LMOSigmaAlpha"){
+                GeomCons->SetLMOSurfaceSigmaAlpha(G4double(stod(var)));
+            }
+            else if (param=="LMOPolish"){
+                GeomCons->SetLMOSurfacePolish(G4double(stod(var)));
+            }
+            else if (param=="LDMat"){
+                GeomCons->SetLDMaterial(G4String(var));
+            }
+            else if (param=="LDCoatRINDEX"){
+                GeomCons->SetLDCoatingRINDEX(G4double(stod(var)));
+            }
+            else if (param=="LDCoatThickness"){
+                GeomCons->SetLDCoatingThickness(G4double(stod(var)));
+            }
+            else {
+                G4Exception(
+                    argv[0],
+                    "UnknownShellInput",
+                    FatalException,
+                    (G4String("Unknown shell input parameter: ") + param).c_str()
+                );
+            }
         }
     }
 
