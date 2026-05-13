@@ -1,5 +1,5 @@
 /**
- * @file OpSimMaterials.cc
+ * @file SCOPSimMaterials.cc
  * @brief Implementation of the Materials class for the Optical
  * simulation.
  *
@@ -9,15 +9,15 @@
  * @date 2026
  */
 
-#include "OpSimMaterials.hh"
+#include "SCOPSimMaterials.hh"
 #include "G4OpticalParameters.hh"
 
 using namespace CLHEP;
 
-const G4String OpSimMaterials::path = "../simulation_input_files/";
-const G4String OpSimMaterials::path2 = "../optical_input/";
+const G4String SCOPSimMaterials::path = "../simulation_input_files/";
+const G4String SCOPSimMaterials::path2 = "../optical_input/";
 
-OpSimMaterials::OpSimMaterials() : fMaterialsList{} {
+SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
 
     // #######################################################################################################################################
     // #######################################################################################################################################
@@ -564,9 +564,9 @@ OpSimMaterials::OpSimMaterials() : fMaterialsList{} {
     // #######################################################################################################################################
 }
 
-OpSimMaterials::~OpSimMaterials() {}
+SCOPSimMaterials::~SCOPSimMaterials() {}
 
-G4Material *OpSimMaterials::getMaterial(const char *materialId) {
+G4Material *SCOPSimMaterials::getMaterial(const char *materialId) {
     for (int i = 0; i < (int)fMaterialsList.size(); i++) {
         if (fMaterialsList[i]->GetName() == materialId) {
             G4cout << "Material : " << materialId << " found" << G4endl;
@@ -578,7 +578,7 @@ G4Material *OpSimMaterials::getMaterial(const char *materialId) {
     return NULL;
 }
 
-void OpSimMaterials::printMaterialProperties(G4Material *material) {
+void SCOPSimMaterials::printMaterialProperties(G4Material *material) {
     std::cout << "\nMaterial name: " << material->GetName() << std::endl;
     G4MaterialPropertiesTable *mpt = material->GetMaterialPropertiesTable();
     if (!mpt)
@@ -645,7 +645,7 @@ void OpSimMaterials::printMaterialProperties(G4Material *material) {
     }
 }
 
-void OpSimMaterials::printMaterialProperties(
+void SCOPSimMaterials::printMaterialProperties(
     const char *materialId) {
     G4Material *material = getMaterial(materialId);
     if (material == NULL)
@@ -653,15 +653,15 @@ void OpSimMaterials::printMaterialProperties(
     printMaterialProperties(material);
 }
 
-OpSimMaterials *OpSimMaterials::getInstance() {
-    static G4ThreadLocal OpSimMaterials* instance = nullptr;
+SCOPSimMaterials *SCOPSimMaterials::getInstance() {
+    static G4ThreadLocal SCOPSimMaterials* instance = nullptr;
     if (!instance) {
-        instance = new OpSimMaterials();
+        instance = new SCOPSimMaterials();
     }
     return instance;
 }
 
-G4double OpSimMaterials::wavelengthNmToEnergy(G4double wavelength) {
+G4double SCOPSimMaterials::wavelengthNmToEnergy(G4double wavelength) {
     G4double hc = 1239.84193;
     return hc / wavelength * eV; // E (eV) = 1239.8 / l (nm)
 }

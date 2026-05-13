@@ -1,14 +1,14 @@
-#ifndef OpSimRunAction_h
-#define OpSimRunAction_h 1
+#ifndef SCOPSimRunAction_h
+#define SCOPSimRunAction_h 1
 
 /**
- * @class OpSimRunAction
+ * @class SCOPSimRunAction
  * @brief Defines the run-level actions and statistics handling for the PALLAS
  * simulation.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  *
- * This header declares the `OpSimRunAction` class, which inherits
+ * This header declares the `SCOPSimRunAction` class, which inherits
  * from Geant4's `G4UserRunAction` to manage actions at the beginning and end of
  * each run. It handles:
  *  - Collection and storage of run-wide statistics
@@ -23,8 +23,8 @@
  *  - Optical Informations for LMO & Scintillator
  *
  * @note This class interacts closely with:
- *       - `OpSimPrimaryGeneratorAction`
- *       - `OpSimGeometryConstruction`
+ *       - `SCOPSimPrimaryGeneratorAction`
+ *       - `SCOPSimGeometryConstruction`
  */
 
 // Include base classes and Geant4 utilities
@@ -33,23 +33,23 @@
 #include "G4UImanager.hh"     // UI manager (for commands)
 #include "G4UserRunAction.hh" // Base class for user-defined run actions
 #include "G4VVisManager.hh"   // Visualization manager
-#include "OpSimEventAction.hh"
-#include "OpSimGeometryConstruction.hh"
-#include "OpSimPrimaryGeneratorAction.hh"
+#include "SCOPSimEventAction.hh"
+#include "SCOPSimGeometryConstruction.hh"
+#include "SCOPSimPrimaryGeneratorAction.hh"
 #include "TBranch.h"
 #include "TFile.h" // ROOT file I/O
 #include "TTree.h"
 #include <mutex>
 
 // Forward declarations
-class OpSimPrimaryGeneratorAction;
-class OpSimGeometryConstruction;
+class SCOPSimPrimaryGeneratorAction;
+class SCOPSimGeometryConstruction;
 
 /**
- * @class OpSimRunAction
+ * @class SCOPSimRunAction
  * @brief Manages run-level actions, statistics, and ROOT output.
  */
-class OpSimRunAction : public G4UserRunAction {
+class SCOPSimRunAction : public G4UserRunAction {
   public:
     /**
      * @brief Constructor
@@ -57,11 +57,11 @@ class OpSimRunAction : public G4UserRunAction {
      * @param nEventsGenerated Number of events to process
      * @param multithreaded True if running with multithreading
      */
-    OpSimRunAction(const char *fileName, size_t nEventsGenerated,
+    SCOPSimRunAction(const char *fileName, size_t nEventsGenerated,
                                G4bool multithreaded);
 
     /// Destructor
-    ~OpSimRunAction();
+    ~SCOPSimRunAction();
 
     /// Called at the start of each run
     void BeginOfRunAction(const G4Run *run) override;
@@ -79,10 +79,10 @@ class OpSimRunAction : public G4UserRunAction {
     void UpdateStatisticsOptical(RunTallyOptical);
 
     /// Set the primary generator reference
-    void SetPrimaryGenerator(OpSimPrimaryGeneratorAction *gen);
+    void SetPrimaryGenerator(SCOPSimPrimaryGeneratorAction *gen);
 
     /// Set the geometry reference
-    void SetGeometry(OpSimGeometryConstruction *geom);
+    void SetGeometry(SCOPSimGeometryConstruction *geom);
 
   private:
     // --- Output configuration ---
@@ -111,10 +111,10 @@ class OpSimRunAction : public G4UserRunAction {
     static G4Mutex fileMutex;
 
   protected:
-    OpSimPrimaryGeneratorAction *fPrimaryGenerator =
+    SCOPSimPrimaryGeneratorAction *fPrimaryGenerator =
         nullptr; ///< Primary generator reference
-    OpSimGeometryConstruction *fGeometry =
+    SCOPSimGeometryConstruction *fGeometry =
         nullptr; ///< Geometry reference
 };
 
-#endif // OpSimRunAction_h
+#endif // SCOPSimRunAction_h

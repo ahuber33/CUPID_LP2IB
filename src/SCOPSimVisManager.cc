@@ -1,10 +1,10 @@
 /**
- * @file OpSimVisManager.cc
- * @brief Implementation of the OpSimVisManager visualization
+ * @file SCOPSimVisManager.cc
+ * @brief Implementation of the SCOPSimVisManager visualization
  * manager.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
- * This file defines the methods for the `OpSimVisManager` class,
+ * This file defines the methods for the `SCOPSimVisManager` class,
  * which is responsible for registering the desired visualization
  * drivers for the PALLAS simulation.
  * @note This implementation is only compiled if `G4VIS_USE` is defined.
@@ -14,7 +14,7 @@
 
 #ifdef G4VIS_USE
 
-#include "OpSimVisManager.hh"
+#include "SCOPSimVisManager.hh"
 
 // ===== Optional Geant4 Visualization Drivers =====
 // Uncomment the includes and registration lines as needed.
@@ -52,7 +52,7 @@
 // ============================================================
 // Constructor
 // ============================================================
-OpSimVisManager::OpSimVisManager() {}
+SCOPSimVisManager::SCOPSimVisManager() {}
 
 // ============================================================
 // RegisterGraphicsSystems
@@ -68,7 +68,7 @@ OpSimVisManager::OpSimVisManager() {}
  *  - Uncomment both its `#include` line and its `RegisterGraphicsSystem(...)`
  * call.
  */
-void OpSimVisManager::RegisterGraphicsSystems() {
+void SCOPSimVisManager::RegisterGraphicsSystems() {
 // === HepRep (hierarchical event representation) ===
 // RegisterGraphicsSystem(new G4HepRepFile);
 // RegisterGraphicsSystem(new G4HepRep);

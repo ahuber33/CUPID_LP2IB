@@ -2,9 +2,9 @@
 #include "G4UIExecutive.hh"
 #include "G4VisExecutive.hh"
 #include "Geometry.hh"
-#include "OpSimActionInitialization.hh"
-#include "OpSimPhysics.hh"
-#include "OpSimGeometryConstruction.hh"
+#include "SCOPSimActionInitialization.hh"
+#include "SCOPSimPhysics.hh"
+#include "SCOPSimGeometryConstruction.hh"
 #include <thread>
 #include "G4UImanager.hh"
 #include "G4PhysicalVolumeStore.hh"
@@ -14,7 +14,7 @@
 int main(int argc, char **argv) {
     if (argc < 2) {
         G4Exception("Main", "main0004", FatalException,
-                    "Insufficient input arguments. Usage: ./OpSim [ROOT file name] [events] [macro] [MT ON/OFF] [threads]");
+                    "Insufficient input arguments. Usage: ./SCOPSim [ROOT file name] [events] [macro] [MT ON/OFF] [threads]");
         return 1;
     }
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 
     // Geometry and physics
     Geometry *Geom = new Geometry();
-    OpSimGeometryConstruction *GeomCons = new OpSimGeometryConstruction;
+    SCOPSimGeometryConstruction *GeomCons = new SCOPSimGeometryConstruction;
 
     // Surface Finish inputs
     if (argc == 9) {
@@ -108,8 +108,8 @@ int main(int argc, char **argv) {
 
 
     runManager->SetUserInitialization(GeomCons);
-    runManager->SetUserInitialization(new OpSimPhysics);
-    runManager->SetUserInitialization(new OpSimActionInitialization(
+    runManager->SetUserInitialization(new SCOPSimPhysics);
+    runManager->SetUserInitialization(new SCOPSimActionInitialization(
         outputFile, TotalNParticles, Ncores, flag_MT, GeomCons));
 
     // --- Initialize visualization manager silently (no real window) ---

@@ -1,8 +1,8 @@
-#ifndef OpSimActionInitialization_h
-#define OpSimActionInitialization_h 1
+#ifndef SCOPSimActionInitialization_h
+#define SCOPSimActionInitialization_h 1
 
 /**
- * @class OpSimActionInitialization
+ * @class SCOPSimActionInitialization
  * @brief Class to initialize user actions in the Optical simulation.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
@@ -15,16 +15,16 @@
  */
 
 #include "G4VUserActionInitialization.hh"
-#include "OpSimEventAction.hh"
-#include "OpSimGeometryConstruction.hh"
-#include "OpSimPrimaryGeneratorAction.hh"
-#include "OpSimRunAction.hh"
-#include "OpSimSteppingAction.hh"
+#include "SCOPSimEventAction.hh"
+#include "SCOPSimGeometryConstruction.hh"
+#include "SCOPSimPrimaryGeneratorAction.hh"
+#include "SCOPSimRunAction.hh"
+#include "SCOPSimSteppingAction.hh"
 
-class OpSimGeometryConstruction;
-class OpSimPrimaryGeneratorAction;
+class SCOPSimGeometryConstruction;
+class SCOPSimPrimaryGeneratorAction;
 
-class OpSimActionInitialization
+class SCOPSimActionInitialization
     : public G4VUserActionInitialization {
   public:
     /**
@@ -35,12 +35,12 @@ class OpSimActionInitialization
      * @param flagMT True if multithreading is enabled
      * @param geometry Pointer to the geometry construction object
      */
-    OpSimActionInitialization(
+    SCOPSimActionInitialization(
         const char *name, size_t nEvents, size_t nThreads, bool flagMT,
-        OpSimGeometryConstruction *geometry);
+        SCOPSimGeometryConstruction *geometry);
 
     /// @brief Destructor
-    virtual ~OpSimActionInitialization();
+    virtual ~SCOPSimActionInitialization();
 
     /**
      * @brief Build actions for master thread (multithreading mode)
@@ -74,7 +74,7 @@ class OpSimActionInitialization
 
   private:
     /// @brief Pointer to the geometry construction object
-    OpSimGeometryConstruction *fGeometry;
+    SCOPSimGeometryConstruction *fGeometry;
 };
 
 #endif
