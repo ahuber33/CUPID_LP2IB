@@ -85,5 +85,7 @@ class SCOPSimMaterials {
 
     G4double lightyield = 0.0;
     G4double lightyieldLMO = 0.0;
+
+    void SetProperty(const G4String propName, const G4String propFile);
 };
 #endif

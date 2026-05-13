@@ -14,217 +14,9 @@
 
 using namespace CLHEP;
 
-const G4String SCOPSimMaterials::path = "../simulation_input_files/";
-const G4String SCOPSimMaterials::path2 = "../optical_input/";
+const G4String SCOPSimMaterials::path = "../optical_input/";
 
 SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
-
-    // #######################################################################################################################################
-    // #######################################################################################################################################
-
-    // ███████╗░█████╗░██╗░░██╗███████╗  ██╗░░░██╗░█████╗░░█████╗░██╗░░░██╗██╗░░░██╗███╗░░░███╗
-    // ██╔════╝██╔══██╗██║░██╔╝██╔════╝  ██║░░░██║██╔══██╗██╔══██╗██║░░░██║██║░░░██║████╗░████║
-    // █████╗░░███████║█████═╝░█████╗░░  ╚██╗░██╔╝███████║██║░░╚═╝██║░░░██║██║░░░██║██╔████╔██║
-    // ██╔══╝░░██╔══██║██╔═██╗░██╔══╝░░  ░╚████╔╝░██╔══██║██║░░██╗██║░░░██║██║░░░██║██║╚██╔╝██║
-    // ██║░░░░░██║░░██║██║░╚██╗███████╗  ░░╚██╔╝░░██║░░██║╚█████╔╝╚██████╔╝╚██████╔╝██║░╚═╝░██║
-    // ╚═╝░░░░░╚═╝░░╚═╝╚═╝░░╚═╝╚══════╝  ░░░╚═╝░░░╚═╝░░╚═╝░╚════╝░░╚═════╝░░╚═════╝░╚═╝░░░░░╚═╝
-
-    // Be careful of this vacuum definition.  This is only used to define
-    // a refractive index so that the detector boundaries are defined.
-
-    auto VacuumWorld =
-        new G4Material("VacuumWorld", 1., 1. * g / mole, 1.e-20 * g / cm3,
-                       kStateGas, 0.1 * kelvin, 1.e-20 * bar);
-
-    fMaterialsList.push_back(VacuumWorld);
-
-    // #######################################################################################################################################
-    // #######################################################################################################################################
-
-    // ███████╗░░░░░██╗░░░░░░██████╗░░░███╗░░██████╗░
-    // ██╔════╝░░░░░██║░░░░░░╚════██╗░████║░░╚════██╗
-    // █████╗░░░░░░░██║█████╗░░███╔═╝██╔██║░░░░███╔═╝
-    // ██╔══╝░░██╗░░██║╚════╝██╔══╝░░╚═╝██║░░██╔══╝░░
-    // ███████╗╚█████╔╝░░░░░░███████╗███████╗███████╗
-    // ╚══════╝░╚════╝░░░░░░░╚══════╝╚══════╝╚══════╝
-
-    auto EJ212 =
-        new G4Material("EJ212",
-                       1.032 * g / cm3, // 1.053
-                       2, kStateSolid, 273.15 * kelvin, 1.0 * atmosphere);
-
-    EJ212->AddElement(G4NistManager::Instance()->FindOrBuildElement("H"), 10);
-    EJ212->AddElement(G4NistManager::Instance()->FindOrBuildElement("C"), 9);
-
-    {
-        Read.clear();
-        Readabsorb.clear();
-        Readindex.clear();
-        Emission_Energy.clear();
-        Emission_Ratio.clear();
-        Absorption_Energy.clear();
-        Absorption_Long.clear();
-        Index_Energy.clear();
-        Index_Value.clear();
-
-        auto EJ212MPT = new G4MaterialPropertiesTable();
-
-        // Read primary emission spectrum
-        file = path + "EJ-212.cfg";
-
-        Read.open(file);
-        if (Read.is_open()) {
-            while (!Read.eof()) {
-                Read >> pWavelength >> filler >> var;
-                // G4cout << "Wavelength = " << 1240./pWavelength << " &
-                // emission = "<< var << G4endl;
-                Emission_Energy.push_back((1240. / pWavelength) *
-                                          eV); // convert wavelength to eV
-                Emission_Ratio.push_back(var);
-            }
-        } else {
-            G4cout << "Error opening file: " << file << G4endl;
-        }
-        Read.close();
-
-        // // Read primary bulk absorption
-
-        file = path + "PSTBulkAbsorb_reverse.cfg";
-
-        Readabsorb.open(file);
-        if (Readabsorb.is_open()) {
-            while (!Readabsorb.eof()) {
-                Readabsorb >> pWavelength >> filler >> var;
-                //G4cout << "Wavelength = " << pWavelength << " & absorption = "<< var << " & filler = " << filler << "."  <<G4endl;
-                Absorption_Energy.push_back((1240. / pWavelength) * eV);
-                Absorption_Long.push_back(1. * var * m);
-            }
-        } else
-
-            G4cout << "Error opening file: " << file << G4endl;
-
-        Readabsorb.close();
-
-        // Read WLS absorption
-        //
-        // wlsAbEntries = 0;
-        // std::ifstream ReadWLSa;
-        // G4String WLSabsorb = path+"UPS923.cfg";
-        //
-        // ReadWLSa.open(WLSabsorb);
-        // if (ReadWLSa.is_open()){
-        //  while(!ReadWLSa.eof()){
-        // 	 G4String filler;
-        // 	 ReadWLSa>>pWavelength>>filler>>wlsabsorblength;
-        // 	 wlsEnergy[wlsAbEntries] = (1240/pWavelength)*eV;
-        //
-        //
-        // 	 if (wlsAbEntries < 200){
-        // wlsAbsorb[wlsAbEntries] = wlsabsorblength*m;
-        // 	 }
-        // 	 else{
-        // wlsAbsorb[wlsAbEntries] = wlsabsorblength*m;
-        // 	 }
-        //
-        // 	 wlsAbEntries++;
-        //  }
-        // }
-        // else
-        //  {
-        // 	 G4cout << "Error opening file: " << WLSabsorb << G4endl;
-        //  }
-        //
-        // ReadWLSa.close();
-
-        // Read WLS emission
-        // wlsEmEntries = 0;
-        // std::ifstream ReadWLSe;
-        // G4String WLSemit = path+"full_popop_emission.cfg";
-        // ReadWLSe.open(WLSemit);
-        // if(ReadWLSe.is_open()){
-        //  while(!ReadWLSe.eof()){
-        // 	 G4String filler;
-        // 	 ReadWLSe >> pWavelength >> filler >> wlsEmit[wlsEmEntries];
-        // 	 wlsEnergy[wlsEmEntries] = (1240/pWavelength)*eV;
-        // 	 wlsEmEntries++;
-        //  }
-        // }
-        // else
-        //  G4cout << "Error opening file: " << WLSemit << G4endl;
-        // ReadWLSe.close();
-
-        // Read scintillator refractive index
-
-        // G4String ref_index_emit = path+"PST_ref_index.dat";
-        file = path + "PS_index_geant_reverse.cfg";
-
-        Readindex.open(file);
-        if (Readindex.is_open()) {
-            while (!Readindex.eof()) {
-                Readindex >> pWavelength >> filler >> var;
-                // ref_index_value[ref_index_Entries]=1.59;
-                Index_Energy.push_back((1240 / pWavelength) * eV);
-                Index_Value.push_back(var);
-                // EJ212_Index_Value.push_back(1.59);
-            }
-        } else
-            G4cout << "Error opening file: " << file << G4endl;
-        Readindex.close();
-
-        // Now apply the properties table
-
-        // scintMPT->AddProperty("WLSCOMPONENT",wlsEnergy,wlsEmit,wlsEmEntries);
-        // scintMPT->AddProperty("WLSABSLENGTH",wlsEnergy,wlsAbsorb,wlsAbEntries);
-        // // the WLS absorption spectrum
-        // scintMPT->AddConstProperty("WLSTIMECONSTANT",12*ns);
-        EJ212MPT->AddProperty("RINDEX", Index_Energy, Index_Value);
-
-        EJ212MPT->AddProperty("ABSLENGTH", Absorption_Energy,
-                              Absorption_Long); // the bulk absorption spectrum
-        EJ212MPT->AddProperty("SCINTILLATIONCOMPONENT1", Emission_Energy,
-                              Emission_Ratio);
-        // scintMPT->AddProperty("SCINTILLATIONCOMPONENT1",scintEnergy,scintEmit,scintEntries);
-        // scintMPT->AddProperty("SCINTILLATIONCOMPONENT2",scintEnergy,scintEmit,scintEntries);
-        // // if slow component
-
-        // G4double efficiency = 1.0;
-        // scintMPT->AddConstProperty("EFFICIENCY",efficiency);
-
-        G4double electron[2] = {10000.*1e-6, 10000.*100}; //e- yield factor
-        G4double energy_LY[2] = {1. * eV, 100. * MeV};
-
-        EJ212MPT->AddProperty("ELECTRONSCINTILLATIONYIELD", energy_LY, electron, 2);
-        // scintMPT->AddConstProperty("ALPHASCINTILLATIONYIELD",0.01*lightyield/MeV);
-        Res = 1;
-        EJ212MPT->AddConstProperty("RESOLUTIONSCALE", Res);
-        Fastconst = 2.1 * ns;
-        EJ212MPT->AddConstProperty("SCINTILLATIONTIMECONSTANT1", Fastconst);
-        Slowconst = 10 * ns;
-        EJ212MPT->AddConstProperty("SCINTILLATIONTIMECONSTANT2",
-                                   Slowconst); // if slow component
-        EJ212MPT->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
-        EJ212MPT->AddConstProperty("SCINTILLATIONYIELD2", 0.0);
-
-        EJ212->SetMaterialPropertiesTable(EJ212MPT);
-        // scintillator->GetIonisation()->SetBirksConstant(0.0872*mm/MeV);
-        // //0.126->base; 0.0872->article BiPO
-        // scintillator->GetIonisation()->SetBirksConstant(0.25*mm/MeV); //
-        // Choisi pour validation modÃ¨le avec LY 11737!!!
-        // scintillator->GetIonisation()->SetBirksConstant(0.22*mm/MeV);
-        // scintillator->GetIonisation()->SetBirksConstant(0.01*mm/MeV); // TEST
-        // ELECTRONS !!! => Maxime
-    }
-
-    // printMaterialProperties(EJ212);
-    fMaterialsList.push_back(EJ212);
-
-    // #######################################################################################################################################
-    // #######################################################################################################################################
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////// MATERIAL FOR CUPID //////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////
 
     // --------
     // Elements
@@ -265,14 +57,8 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     // Elemental materials
     // -------------------
 
-
-    G4Material* Vacuum   = new G4Material("Vacuum",
-            1.,
-            1.01*g/mole,
-            universe_mean_density,// From PhyscialConstants.h
-            kStateGas,
-            2.73*kelvin,
-            3.e-18*pascal );
+    G4Material* Vacuum   = new G4Material("Vacuum", 1., 1.01*g/mole, universe_mean_density, kStateGas, 2.73*kelvin, 3.e-18*pascal );
+    G4Material* VacuumWorld = new G4Material("VacuumWorld", 1., 1. * g/mole, 1.e-20 * g/cm3, kStateGas, 0.1 * kelvin, 1.e-20 * bar);
     G4Material* Germanium = new G4Material( elGe->GetName(), elGe->GetZ(), elGe->GetAtomicMassAmu() * g/mole, 5.323  * g/cm3 );
     G4Material* Silicon   = new G4Material( elSi->GetName(), elSi->GetZ(), elSi->GetAtomicMassAmu() * g/mole, 2.3290 * g/cm3 );
 
@@ -311,25 +97,63 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
 
     // LMO
 
-    {
+    SetProperty("EMISSION", "LMO_EMISSION_eV.txt");
+    SetProperty("ABSORPTION", "LMO_ABSORPTION_eV_mm.txt");
+    SetProperty("RINDEX", "LMO_RINDEX_eV.txt");
+    SetProperty("ELECTRONLY", "LMO_ELECTRONLY_eV_photon.txt");
+    SetProperty("ALPHALY", "LMO_ALPHALY_eV_photon.txt");
+
+    auto mptLi2MoO4 = new G4MaterialPropertiesTable();
+    mptLi2MoO4->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
+    mptLi2MoO4->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
+    mptLi2MoO4->AddProperty("ELECTRONSCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
+    mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2); // no quenching
+    mptLi2MoO4->AddProperty("SCINTILLATIONCOMPONENT1", EMISSION_energy, EMISSION_var);
+    mptLi2MoO4->AddConstProperty("RESOLUTIONSCALE", 1.0);
+    mptLi2MoO4->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
+    mptLi2MoO4->AddConstProperty("SCINTILLATIONTIMECONSTANT1", 84.5 * us); // https://doi.org/10.1140/epjc/s10052-019-7242-1
+
+    Li2MoO4->SetMaterialPropertiesTable(mptLi2MoO4);
+
+    // Germanium
+
+    SetProperty("ABSORPTION", "Ge_ABSORPTION_eV_cm.txt");
+    SetProperty("RINDEX", "Ge_RINDEX_eV.txt");
+
+    auto mptGermanium = new G4MaterialPropertiesTable();
+    mptGermanium->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
+    mptGermanium->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
+
+    Germanium->SetMaterialPropertiesTable(mptGermanium);
+
+    // Silicon
+
+    SetProperty("ABSORPTION", "Si_ABSORPTION_eV_cm.txt");
+    SetProperty("RINDEX", "Si_RINDEX_eV.txt");
+
+    auto mptSilicon = new G4MaterialPropertiesTable();
+    mptSilicon->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
+    mptSilicon->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
+
+    Silicon->SetMaterialPropertiesTable(mptSilicon);
+
+    fMaterialsList.push_back(Vacuum);
+    fMaterialsList.push_back(VacuumWorld);
+    fMaterialsList.push_back(Li2MoO4);
+    fMaterialsList.push_back(Germanium);
+    fMaterialsList.push_back(Silicon);
+}
+
+SCOPSimMaterials::~SCOPSimMaterials() {}
+
+void SCOPSimMaterials::SetProperty(const G4String propName, const G4String propFile) {
+
+    if (propName=="EMISSION"){ // READ EMISSION SPECTRUM
+        file = path + propFile;
+
         ReadEMISSION.clear();
-        ReadABSORPTION.clear();
-        ReadRINDEX.clear();
-        ReadELECTRONLY.clear();
-        ReadALPHALY.clear();
         EMISSION_energy.clear();
         EMISSION_var.clear();
-        ABSORPTION_energy.clear();
-        ABSORPTION_var.clear();
-        RINDEX_energy.clear();
-        RINDEX_var.clear();
-        ELECTRONLY_energy.clear();
-        ELECTRONLY_var.clear();
-        ALPHALY_energy.clear();
-        ALPHALY_var.clear();
-
-        // READ EMISSION SPECTRUM
-        file = path2 + "LMO_EMISSION_eV.txt";
 
         ReadEMISSION.open(file);
         if (ReadEMISSION.is_open()) {
@@ -342,9 +166,13 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
             G4cout << "Error opening file: " << file << G4endl;
         }
         ReadEMISSION.close();
+    }
+    if (propName=="ABSORPTION"){ // READ ABSORPTION SPECTRUM
+        file = path + propFile;
 
-        // READ ABSORPTION SPECTRUM
-        file = path2 + "LMO_ABSORPTION_eV_mm.txt";
+        ReadABSORPTION.clear();
+        ABSORPTION_energy.clear();
+        ABSORPTION_var.clear();
 
         ReadABSORPTION.open(file);
         if (ReadABSORPTION.is_open()) {
@@ -357,9 +185,13 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
             G4cout << "Error opening file: " << file << G4endl;
         }
         ReadABSORPTION.close();
+    }
+    if (propName=="RINDEX"){ // READ RINDEX
+        file = path + propFile;
 
-        // READ REFRACTIVE INDEX
-        file = path2 + "LMO_RINDEX_eV.txt";
+        ReadRINDEX.clear();
+        RINDEX_energy.clear();
+        RINDEX_var.clear();
 
         ReadRINDEX.open(file);
         if (ReadRINDEX.is_open()) {
@@ -372,9 +204,13 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
             G4cout << "Error opening file: " << file << G4endl;
         }
         ReadRINDEX.close();
+    }
+    if (propName=="ELECTRONLY"){ // READ ELECTRONLY
+        file = path + propFile;
 
-        // READ ELECTRON LIGHT YIELD
-        file = path2 + "LMO_ELECTRONLY_eV_photon.txt";
+        ReadELECTRONLY.clear();
+        ELECTRONLY_energy.clear();
+        ELECTRONLY_var.clear();
 
         ReadELECTRONLY.open(file);
         if (ReadELECTRONLY.is_open()) {
@@ -387,9 +223,13 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
             G4cout << "Error opening file: " << file << G4endl;
         }
         ReadELECTRONLY.close();
+    }
+    if (propName=="ALPHALY"){ // READ ALPHALY
+        file = path + propFile;
 
-        // READ ALPHA LIGHT YIELD
-        file = path2 + "LMO_ALPHALY_eV_photon.txt";
+        ReadALPHALY.clear();
+        ALPHALY_energy.clear();
+        ALPHALY_var.clear();
 
         ReadALPHALY.open(file);
         if (ReadALPHALY.is_open()) {
@@ -404,167 +244,7 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
         ReadALPHALY.close();
     }
 
-    auto mptLi2MoO4 = new G4MaterialPropertiesTable();
-    mptLi2MoO4->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
-    mptLi2MoO4->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
-
-    //mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
-    //mptLi2MoO4->AddProperty("TRITONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
-    //mptLi2MoO4->AddProperty("ELECTRONSCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
-    //mptLi2MoO4->AddProperty("IONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
-    //mptLi2MoO4->AddProperty("PROTONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
-    //mptLi2MoO4->AddProperty("DEUTERONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
-    mptLi2MoO4->AddProperty("ELECTRONSCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
-    mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
-
-    mptLi2MoO4->AddConstProperty("RESOLUTIONSCALE", 1.0);
-    mptLi2MoO4->AddProperty("SCINTILLATIONCOMPONENT1", EMISSION_energy, EMISSION_var);
-    mptLi2MoO4->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
-    mptLi2MoO4->AddConstProperty("SCINTILLATIONTIMECONSTANT1", 84.5 * us); // https://doi.org/10.1140/epjc/s10052-019-7242-1
-
-    Li2MoO4->SetMaterialPropertiesTable(mptLi2MoO4);
-
-
-    // Germanium LD
-
-    {
-        ReadEMISSION.clear();
-        ReadABSORPTION.clear();
-        ReadRINDEX.clear();
-        ReadELECTRONLY.clear();
-        ReadALPHALY.clear();
-        EMISSION_energy.clear();
-        EMISSION_var.clear();
-        ABSORPTION_energy.clear();
-        ABSORPTION_var.clear();
-        RINDEX_energy.clear();
-        RINDEX_var.clear();
-        ELECTRONLY_energy.clear();
-        ELECTRONLY_var.clear();
-        ALPHALY_energy.clear();
-        ALPHALY_var.clear();
-
-        // READ ABSORPTION SPECTRUM
-        file = path2 + "Ge_ABSORPTION_eV_cm.txt";
-
-        ReadABSORPTION.open(file);
-        if (ReadABSORPTION.is_open()) {
-            while (!ReadABSORPTION.eof()) {
-                ReadABSORPTION >> energy >> filler >> var;
-                ABSORPTION_energy.push_back(energy * eV);
-                ABSORPTION_var.push_back(var * mm);
-            }
-        } else {
-            G4cout << "Error opening file: " << file << G4endl;
-        }
-        ReadABSORPTION.close();
-
-        // READ REFRACTIVE INDEX
-        file = path2 + "Ge_RINDEX_eV.txt";
-
-        ReadRINDEX.open(file);
-        if (ReadRINDEX.is_open()) {
-            while (!ReadRINDEX.eof()) {
-                ReadRINDEX >> energy >> filler >> var;
-                RINDEX_energy.push_back(energy * eV);
-                RINDEX_var.push_back(var);
-            }
-        } else {
-            G4cout << "Error opening file: " << file << G4endl;
-        }
-        ReadRINDEX.close();
-    }
-
-    auto mptGermanium = new G4MaterialPropertiesTable();
-    mptGermanium->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
-    mptGermanium->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
-
-    Germanium->SetMaterialPropertiesTable(mptGermanium);
-
-    // Silicon LD
-
-    {
-        ReadEMISSION.clear();
-        ReadABSORPTION.clear();
-        ReadRINDEX.clear();
-        ReadELECTRONLY.clear();
-        ReadALPHALY.clear();
-        EMISSION_energy.clear();
-        EMISSION_var.clear();
-        ABSORPTION_energy.clear();
-        ABSORPTION_var.clear();
-        RINDEX_energy.clear();
-        RINDEX_var.clear();
-        ELECTRONLY_energy.clear();
-        ELECTRONLY_var.clear();
-        ALPHALY_energy.clear();
-        ALPHALY_var.clear();
-
-        // READ ABSORPTION SPECTRUM
-        file = path2 + "Si_ABSORPTION_eV_cm.txt";
-
-        ReadABSORPTION.open(file);
-        if (ReadABSORPTION.is_open()) {
-            while (!ReadABSORPTION.eof()) {
-                ReadABSORPTION >> energy >> filler >> var;
-                ABSORPTION_energy.push_back(energy * eV);
-                ABSORPTION_var.push_back(var * mm);
-            }
-        } else {
-            G4cout << "Error opening file: " << file << G4endl;
-        }
-        ReadABSORPTION.close();
-
-        // READ REFRACTIVE INDEX
-        file = path2 + "Si_RINDEX_eV.txt";
-
-        ReadRINDEX.open(file);
-        if (ReadRINDEX.is_open()) {
-            while (!ReadRINDEX.eof()) {
-                ReadRINDEX >> energy >> filler >> var;
-                RINDEX_energy.push_back(energy * eV);
-                RINDEX_var.push_back(var);
-            }
-        } else {
-            G4cout << "Error opening file: " << file << G4endl;
-        }
-        ReadRINDEX.close();
-    }
-
-    auto mptSilicon = new G4MaterialPropertiesTable();
-    mptSilicon->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
-    mptSilicon->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
-
-    Silicon->SetMaterialPropertiesTable(mptSilicon);
-
-    // SiO coating
-    // https://doi.org/10.1051/epjconf/20136504003
-    // Erin was using 1.94
-    
-    std::vector<G4double> refractive_index_coating = {2.48, 2.48}; // 2.48
-    std::vector<G4double> energy_coating = {1.5 * eV, 5.0 * eV};
-    std::vector<G4double> absorption_coating = {10. *cm, 10. *cm}; // IDK IDC?
-
-
-    auto mptSiO = new G4MaterialPropertiesTable();
-    mptSiO->AddProperty("RINDEX", energy_coating, refractive_index_coating);
-    mptSiO->AddProperty("ABSLENGTH", energy_coating, absorption_coating);
-
-    SiO->SetMaterialPropertiesTable(mptSiO);
-
-
-    fMaterialsList.push_back(Vacuum);
-    fMaterialsList.push_back(Li2MoO4);
-    fMaterialsList.push_back(Germanium);
-    fMaterialsList.push_back(SiO);
-    fMaterialsList.push_back(Silicon);
-
-
-    // #######################################################################################################################################
-    // #######################################################################################################################################
 }
-
-SCOPSimMaterials::~SCOPSimMaterials() {}
 
 G4Material *SCOPSimMaterials::getMaterial(const char *materialId) {
     for (int i = 0; i < (int)fMaterialsList.size(); i++) {
