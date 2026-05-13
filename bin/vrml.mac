@@ -13,21 +13,21 @@
 ###################################################################
 
 
-#/OpSim/geometry/setLMOSurfaceModel glisur
-#/OpSim/geometry/setLMOSurfaceType dielectric_dielectric
-#/OpSim/geometry/setLMOSurfaceFinish ground
-#/OpSim/geometry/setLMOSurfacePolish 1.0
-#/OpSim/geometry/setLMOSurfaceSigmaAlpha 0.1
+#/SCOPSim/geometry/setLMOSurfaceModel glisur
+#/SCOPSim/geometry/setLMOSurfaceType dielectric_dielectric
+#/SCOPSim/geometry/setLMOSurfaceFinish ground
+#/SCOPSim/geometry/setLMOSurfacePolish 1.0
+#/SCOPSim/geometry/setLMOSurfaceSigmaAlpha 0.1
 
-#/OpSim/geometry/setDetectorDistance 100 mm             # Set Detector Distance
+#/SCOPSim/geometry/setDetectorDistance 100 mm             # Set Detector Distance
 
 /run/reinitializeGeometry                                           # Apply geometry changes
 /run/physicsModified                                                # Notify Geant4 physics has changed
 
 # ------------------------- PHOTON TRACKING (Batch, no VIS) ------------------
 /tracking/storeTrajectory 1                                         # Force storage of all trajectories
-/OpSim/step/setVerbose 0 
-/OpSim/step/setPhotonTrackStatus true                               # Track optical photons
+/SCOPSim/step/setVerbose 0 
+/SCOPSim/step/setPhotonTrackStatus true                               # Track optical photons
 
 /tracking/verbose 0                                                 # Step-by-step tracking output
 /run/verbose 1                                                      # Run output
