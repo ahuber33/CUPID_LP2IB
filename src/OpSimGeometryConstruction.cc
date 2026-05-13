@@ -1082,7 +1082,7 @@ void OpSimGeometryConstruction::ConstructLMO() {
 
     // Surface properties
 
-    G4bool diffLMOsurfaces = false;
+    G4bool diffLMOsurfaces = true;
 
     auto opLMOSurface = new G4OpticalSurface("LMOSurface");
 
@@ -1149,23 +1149,23 @@ void OpSimGeometryConstruction::ConstructLMO() {
 
         opLMOSurfaceRough->SetType(dielectric_dielectric);
         opLMOSurfaceRough->SetModel(unified);
-        opLMOSurfaceRough->SetFinish(polished);
+        opLMOSurfaceRough->SetFinish(ground);
         opLMOSurfacePolished->SetType(dielectric_dielectric);
         opLMOSurfacePolished->SetModel(unified);
-        opLMOSurfacePolished->SetFinish(ground);
+        opLMOSurfacePolished->SetFinish(polished);
 
-        auto LMOSurfBorder1 = new G4LogicalBorderSurface("LMOSurfBorder1", PhysicalLMO, PhysicalLMOSurf1, opLMOSurfacePolished);
-        auto LMOSurfBorder2 = new G4LogicalBorderSurface("LMOSurfBorder2", PhysicalLMO, PhysicalLMOSurf2, opLMOSurfacePolished);
-        auto LMOSurfBorder3 = new G4LogicalBorderSurface("LMOSurfBorder3", PhysicalLMO, PhysicalLMOSurf3, opLMOSurfaceRough);
-        auto LMOSurfBorder4 = new G4LogicalBorderSurface("LMOSurfBorder4", PhysicalLMO, PhysicalLMOSurf4, opLMOSurfaceRough);
-        auto LMOSurfBorder5 = new G4LogicalBorderSurface("LMOSurfBorder5", PhysicalLMO, PhysicalLMOSurf5, opLMOSurfaceRough);
-        auto LMOSurfBorder6 = new G4LogicalBorderSurface("LMOSurfBorder6", PhysicalLMO, PhysicalLMOSurf6, opLMOSurfaceRough);
-        auto SurfLMOBorder1 = new G4LogicalBorderSurface("SurfLMOBorder1", PhysicalLMOSurf1, PhysicalLMO, opLMOSurfacePolished);
-        auto SurfLMOBorder2 = new G4LogicalBorderSurface("SurfLMOBorder2", PhysicalLMOSurf2, PhysicalLMO, opLMOSurfacePolished);
-        auto SurfLMOBorder3 = new G4LogicalBorderSurface("SurfLMOBorder3", PhysicalLMOSurf3, PhysicalLMO, opLMOSurfaceRough);
-        auto SurfLMOBorder4 = new G4LogicalBorderSurface("SurfLMOBorder4", PhysicalLMOSurf4, PhysicalLMO, opLMOSurfaceRough);
-        auto SurfLMOBorder5 = new G4LogicalBorderSurface("SurfLMOBorder5", PhysicalLMOSurf5, PhysicalLMO, opLMOSurfaceRough);
-        auto SurfLMOBorder6 = new G4LogicalBorderSurface("SurfLMOBorder6", PhysicalLMOSurf6, PhysicalLMO, opLMOSurfaceRough);
+        auto LMOSurfBorder1 = new G4LogicalBorderSurface("LMOSurfBorder1", PhysicalLMO, PhysicalLMOSurf1, opLMOSurfaceRough);
+        auto LMOSurfBorder2 = new G4LogicalBorderSurface("LMOSurfBorder2", PhysicalLMO, PhysicalLMOSurf2, opLMOSurfaceRough);
+        auto LMOSurfBorder3 = new G4LogicalBorderSurface("LMOSurfBorder3", PhysicalLMO, PhysicalLMOSurf3, opLMOSurfacePolished);
+        auto LMOSurfBorder4 = new G4LogicalBorderSurface("LMOSurfBorder4", PhysicalLMO, PhysicalLMOSurf4, opLMOSurfacePolished);
+        auto LMOSurfBorder5 = new G4LogicalBorderSurface("LMOSurfBorder5", PhysicalLMO, PhysicalLMOSurf5, opLMOSurfacePolished);
+        auto LMOSurfBorder6 = new G4LogicalBorderSurface("LMOSurfBorder6", PhysicalLMO, PhysicalLMOSurf6, opLMOSurfacePolished);
+        auto SurfLMOBorder1 = new G4LogicalBorderSurface("SurfLMOBorder1", PhysicalLMOSurf1, PhysicalLMO, opLMOSurfaceRough);
+        auto SurfLMOBorder2 = new G4LogicalBorderSurface("SurfLMOBorder2", PhysicalLMOSurf2, PhysicalLMO, opLMOSurfaceRough);
+        auto SurfLMOBorder3 = new G4LogicalBorderSurface("SurfLMOBorder3", PhysicalLMOSurf3, PhysicalLMO, opLMOSurfacePolished);
+        auto SurfLMOBorder4 = new G4LogicalBorderSurface("SurfLMOBorder4", PhysicalLMOSurf4, PhysicalLMO, opLMOSurfacePolished);
+        auto SurfLMOBorder5 = new G4LogicalBorderSurface("SurfLMOBorder5", PhysicalLMOSurf5, PhysicalLMO, opLMOSurfacePolished);
+        auto SurfLMOBorder6 = new G4LogicalBorderSurface("SurfLMOBorder6", PhysicalLMOSurf6, PhysicalLMO, opLMOSurfacePolished);
     }
     
     
@@ -1263,6 +1263,8 @@ void OpSimGeometryConstruction::ConstructLD() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////
 
     G4MaterialPropertiesTable *mptLDcoating = new G4MaterialPropertiesTable();
+    G4cout<<"fLDCoatingRINDEX = "<<fLDCoatingRINDEX<<G4endl;
+    G4cout<<"fLDCoatingThickness = "<<fLDCoatingThickness<<G4endl;
     std::vector<G4double> refractive_index_coating = {fLDCoatingRINDEX, fLDCoatingRINDEX}; // 2.48
     std::vector<G4double> energy_coating = {0.1 * eV, 50 * eV};
     mptLDcoating->AddProperty("COATEDRINDEX", energy_coating, refractive_index_coating);
@@ -1318,7 +1320,7 @@ G4VPhysicalVolume *OpSimGeometryConstruction::Construct() {
     //  DEFINE GEOMETRY VOLUMES
     // #########################################################################
 
-    G4bool buildStructure = true; //build structure volumes
+    G4bool buildStructure = false; //build structure volumes
 
     /// Create the world and main holder volume
     CreateWorldAndHolder();

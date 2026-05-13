@@ -53,7 +53,8 @@ struct RunTallyOptical {
     G4int DetectedLD1;
     G4int DetectedLD2;
     G4int DetectedTotal;
-    G4int ReflectedLMO;
+    G4int ReflectedLMOTopBot;
+    G4int ReflectedLMOSides;
     std::vector<float> ExitLightPositionX;
     std::vector<float> ExitLightPositionY;
     std::vector<float> ExitLightPositionZ;
@@ -200,7 +201,8 @@ class OpSimEventAction : public G4UserEventAction {
     void CountEscaped() { StatsOptical.Escaped++; }
     int GetEscaped() { return StatsOptical.Escaped; }
     void CountFailed() { StatsOptical.Failed++; }
-    void CountReflectedLMO() { StatsOptical.ReflectedLMO++; }
+    void CountReflectedLMOTopBot() { StatsOptical.ReflectedLMOTopBot++; }
+    void CountReflectedLMOSides() { StatsOptical.ReflectedLMOSides++; }
     int GetFailed() { return StatsOptical.Failed; }
     void FillPhotonExitLightPositionX(float e) {
         StatsOptical.ExitLightPositionX.push_back(e);

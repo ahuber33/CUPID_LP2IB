@@ -174,7 +174,16 @@ void OpSimSteppingAction::CheckBoundaryStatus(
             if (VerbosityLevel > 1)
                 G4cout << "Reflection L" << G4endl;
             if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
-                evtac->CountReflectedLMO();
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
             }
             break;
 
@@ -187,7 +196,16 @@ void OpSimSteppingAction::CheckBoundaryStatus(
             if (VerbosityLevel > 1)
                 G4cout << "Fresnel Reflection" << G4endl;
             if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
-                evtac->CountReflectedLMO();
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
             }
             break;
 
@@ -195,7 +213,16 @@ void OpSimSteppingAction::CheckBoundaryStatus(
             if (VerbosityLevel > 1)
                 G4cout << "Reflection Lobe" << G4endl;
             if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
-                evtac->CountReflectedLMO();
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
             }
             break;
 
@@ -204,7 +231,16 @@ void OpSimSteppingAction::CheckBoundaryStatus(
             if (VerbosityLevel > 1)
                 G4cout << "Reflection" << G4endl;
             if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
-                evtac->CountReflectedLMO();
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
             }
             break;
 
@@ -213,7 +249,16 @@ void OpSimSteppingAction::CheckBoundaryStatus(
             if (VerbosityLevel > 1)
                 G4cout << "Reflection totale" << G4endl;
             if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
-                evtac->CountReflectedLMO();
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
             }
             break;
 

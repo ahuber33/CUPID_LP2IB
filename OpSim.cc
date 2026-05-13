@@ -81,19 +81,19 @@ int main(int argc, char **argv) {
                 GeomCons->SetLMOSurfaceFinish(G4String(var));
             }
             else if (param=="LMOSigmaAlpha"){
-                GeomCons->SetLMOSurfaceSigmaAlpha(G4double(atof(argv[i])));
+                GeomCons->SetLMOSurfaceSigmaAlpha(G4double(stod(var)));
             }
             else if (param=="LMOPolish"){
-                GeomCons->SetLMOSurfacePolish(G4double(atof(argv[i])));
+                GeomCons->SetLMOSurfacePolish(G4double(stod(var)));
             }
             else if (param=="LDMat"){
                 GeomCons->SetLDMaterial(G4String(var));
             }
             else if (param=="LDCoatRINDEX"){
-                GeomCons->SetLDCoatingRINDEX(G4double(atof(argv[i])));
+                GeomCons->SetLDCoatingRINDEX(G4double(stod(var)));
             }
             else if (param=="LDCoatThickness"){
-                GeomCons->SetLDCoatingThickness(G4double(atof(argv[i])));
+                GeomCons->SetLDCoatingThickness(G4double(stod(var)));
             }
             else {
                 G4Exception(

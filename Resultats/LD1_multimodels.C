@@ -3,16 +3,18 @@ void LD1_multimodels(){
     const char *models[] = {"unified"};
     int i, j;
     for (i = 0; i < 1; i++) {
-        for (j = 0; j <= 10; j++) {
+        for (j = 2; j <= 11; j++) {
             char filename[50];
-            double polish = j * 0.1;
-            snprintf(filename, sizeof(filename), "output_%s_dielectric_dielectric_ground_%.1f", models[i], polish);
-            //std::cout<<"------------------------------------------------------------------"<<std::endl;
+            double RINDEX = j * 0.5;
+            snprintf(filename, sizeof(filename), "output_120nm_n=%.1f", RINDEX);
+            //snprintf(filename, sizeof(filename), "output_%s_dielectric_dielectric_ground_%.1f", models[i], polish);
+            //std::cout<<"------------------------------------------------------------------"<<std::endl;output_30nm_n=1.0.root
             //std::cout<<"opening file "<<filename<<std::endl;
 
-            TString filepath = "../Resultats/";
+            TString filepath = "../Resultats/coating_Si/";
             filepath += filename;
             filepath += ".root";
+            //std::cout<<"opening file "<<filepath<<std::endl;
             TFile *f = TFile::Open(filepath);
             TTree *Input_tree = (TTree*)f->Get("Input");
             TTree *Optical_tree = (TTree*)f->Get("Optical");
@@ -56,7 +58,7 @@ void LD1_multimodels(){
             double mean_gauss = f2->GetParameter(1);
             double mean_gauss_error = f2->GetParError(1);
 
-            std::cout<<models[i]<<" polish="<<polish<<" | MEAN GAUSS = "<<mean_gauss<<" +- "<<mean_gauss_error<<
+            std::cout<<models[i]<<" RINDEX="<<RINDEX<<" | MEAN GAUSS = "<<mean_gauss<<" +- "<<mean_gauss_error<<
             " | MEAN = "<<h2->GetMean(1)<<" +- "<<h2->GetMeanError(1)<<std::endl;
 
        }

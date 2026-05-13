@@ -35,7 +35,8 @@ TH1* h11 = new TH1I("h11", "Detected Track length [mm]", 100.0, 0.0, 0.0);
 TH1* h12 = new TH1I("h12", "Absorbed Track length [mm]", 100.0, 0.0, 0.0);
 TH1* h13 = new TH1I("h13", "All Track length [mm]", 100.0, 0.0, 0.0);
 
-TH1* h14 = new TH1I("h14", "LMO Reflections", 100.0, 0.0, 0.0);
+TH1* h14 = new TH1I("h14", "LMO Reflections Top/Bot", 100.0, 0.0, 0.0);
+TH1* h15 = new TH1I("h15", "LMO Reflections Sides", 100.0, 0.0, 0.0);
 
 int scintillated;
 float E_dep_event_LMO;
@@ -45,7 +46,8 @@ int detected;
 int escaped;
 int absorbed;
 int reemitted;
-int reflected_LMO;
+int reflected_LMO_topbot;
+int reflected_LMO_sides;
 vector<float>* birth_wavelength = nullptr;
 vector<float>* detected_wavelength_LD1 = nullptr;
 vector<float>* detected_track_length_LD1 = nullptr;
@@ -61,7 +63,8 @@ Optical_tree->SetBranchAddress("detected_track_length_LD1", &detected_track_leng
 Optical_tree->SetBranchAddress("absorbed_track_length", &absorbed_track_length);
 Optical_tree->SetBranchAddress("scintillation_LMO", &scintillated);
 Optical_tree->SetBranchAddress("detected_LD1", &detected);
-Optical_tree->SetBranchAddress("reflected_LMO", &reflected_LMO);
+Optical_tree->SetBranchAddress("reflected_LMO_topbot", &reflected_LMO_topbot);
+Optical_tree->SetBranchAddress("reflected_LMO_sides", &reflected_LMO_sides);
 Optical_tree->SetBranchAddress("escaped", &escaped);
 Optical_tree->SetBranchAddress("bulk_abs_LMO", &absorbed);
 Optical_tree->SetBranchAddress("reemission_LMO", &reemitted);
@@ -99,7 +102,8 @@ for (int i = 0; i < Optical_tree->GetEntries(); i++)
         h5->Fill(escaped);
         h6->Fill(absorbed);
         h7->Fill(reemitted);
-        h14->Fill(reflected_LMO);
+        h14->Fill(reflected_LMO_topbot);
+        h15->Fill(reflected_LMO_sides);
 
         h8->Fill(E_dep_eV);
         h9->Fill(E_dep_event_LMO);
@@ -208,17 +212,36 @@ h3->SetLineColor(kBlack);
 h3->GetXaxis()->SetTitle("photons");
 h3->GetYaxis()->SetTitle("event");
 h3->Draw();
+
+double Nscint = f3->GetParameter(1);
+double NdetLD1 = f4->GetParameter(1);
+double Nescaped = f5->GetParameter(1);
+double Nabsorbed = f6->GetParameter(1);
+double Nscint_err = f3->GetParameter(2);
+double NdetLD1_err = f4->GetParameter(2);
+double Nescaped_err = f5->GetParameter(2);
+double Nabsorbed_err = f6->GetParameter(2);
+
+double RdetLD1 = 100*(NdetLD1/Nscint);
+double Rescaped  = 100*(Nescaped /Nscint);
+double Rabsorbed = 100*(Nabsorbed/Nscint);
+double RdetLD1_err = RdetLD1*sqrt( pow((NdetLD1_err/NdetLD1), 2) + pow((Nscint_err/Nscint), 2) );
+double Rescaped_err  = Rescaped*sqrt( pow((Nescaped_err/Nescaped), 2) + pow((Nscint_err/Nscint), 2) );
+double Rabsorbed_err = Rabsorbed*sqrt( pow((Nabsorbed_err/Nabsorbed), 2) + pow((Nscint_err/Nscint), 2) );
+
+
 std::cout<<"--------------------------------------------"<<std::endl;
 std::cout<<"----------------- S1 STATS -----------------"<<std::endl;
 std::cout<<"--------------------------------------------"<<std::endl;
 //std::cout<<"Ndetected: "<<h4->GetMean(1)<<" +- "<<h4->GetMeanError(1)<<" photons"<<std::endl;
 std::cout<<"LY: "<<h10->GetMean(1)<<" +- "<<h10->GetMeanError(1)<<" keV/MeV"<<std::endl;
-std::cout<<"Detected: "<<f4->GetParameter(1)*100/f3->GetParameter(1)<<" %"<<std::endl;
-std::cout<<"Escaped: "<<f5->GetParameter(1)*100/f3->GetParameter(1)<<" %"<<std::endl;
-std::cout<<"Absorbed: "<<f6->GetParameter(1)*100/f3->GetParameter(1)<<" %"<<std::endl;
+std::cout<<"Detected S1: "<<RdetLD1<<" +- "<<RdetLD1_err<<" %"<<std::endl;
+std::cout<<"Escaped: "<<Rescaped<<" +- "<<Rescaped_err<<" %"<<std::endl;
+std::cout<<"Absorbed: "<<Rabsorbed<<" +- "<<Rabsorbed_err<<" %"<<std::endl;
 std::cout<<"<Lph>det: "<<h11->GetMean(1)<<" +- "<<h11->GetMeanError(1)<<" mm"<<std::endl;
 std::cout<<"<Lph>abs: "<<h12->GetMean(1)<<" +- "<<h12->GetMeanError(1)<<" mm"<<std::endl;
 std::cout<<"<Lph>all: "<<h13->GetMean(1)<<" +- "<<h13->GetMeanError(1)<<" mm"<<std::endl;
-std::cout<<"<Nreflect>: "<<h14->GetMean(1)<<" +- "<<h14->GetMeanError(1)<<" reflections"<<std::endl;
+std::cout<<"<Nreflect>top/bot: "<<h14->GetMean(1)<<" +- "<<h14->GetMeanError(1)<<" reflections"<<std::endl;
+std::cout<<"<Nreflect>sides: "<<h15->GetMean(1)<<" +- "<<h15->GetMeanError(1)<<" reflections"<<std::endl;
 std::cout<<"--------------------------------------------"<<std::endl;
 }
