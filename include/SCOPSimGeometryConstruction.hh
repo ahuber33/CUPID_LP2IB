@@ -96,12 +96,17 @@ class SCOPSimGeometryConstruction final
     void SetLMOWidth(const G4double Width) { fLMOWidth = Width; };
     void SetLMOThickness(const G4double Thickness) {fLMOThickness = Thickness;};
 
-    // Surface
+    // LMO Surface
     void SetLMOSurfaceModel(const G4String Model) {fLMOSurfaceModel = Model;};
     void SetLMOSurfacePolish(const G4double Polish) {fLMOSurfacePolish = Polish;};
     void SetLMOSurfaceType(const G4String Type) {fLMOSurfaceType = Type;};
     void SetLMOSurfaceFinish(const G4String Finish) {fLMOSurfaceFinish = Finish;};
     void SetLMOSurfaceSigmaAlpha(const G4double SigmaAlpha) {fLMOSurfaceSigmaAlpha = SigmaAlpha;};
+
+    // LD
+    void SetLDMaterial(const G4String LDMaterial) {fLDMaterial = LDMaterial;};
+    void SetLDCoatingRINDEX(const G4double LDCoatingRINDEX) {fLDCoatingRINDEX = LDCoatingRINDEX;};
+    void SetLDCoatingThickness(const G4double LDCoatingThickness) {fLDCoatingThickness = LDCoatingThickness;};
 
     void SetDetectorDistance(const G4double Distance) {fDetectorDistance = Distance;};
 
@@ -362,6 +367,9 @@ class SCOPSimGeometryConstruction final
     G4double fLMOLength = 45 * CLHEP::mm;
     G4double fLMOWidth = 45 * CLHEP::mm;
     G4double fLMOThickness = 45 * CLHEP::mm;
+    G4double fLMOx = 0 * CLHEP::mm;
+    G4double fLMOy = 0 * CLHEP::mm;
+    G4double fLMOz = 0 * CLHEP::mm;
     G4double fDistanceLMOtoLD1 = 0.5 * CLHEP::mm;
     G4double fDistanceLMOtoLD2 = 3 * CLHEP::mm;
     G4double fDetectorDistance = 100 * CLHEP::mm;
@@ -370,9 +378,12 @@ class SCOPSimGeometryConstruction final
     G4String fLMOSurfaceType = "dielectric_dielectric";
     G4String fLMOSurfaceFinish = "ground";
     G4double fLMOSurfaceSigmaAlpha = -1.;
-
-    /** @brief Default Materials values. */
     G4double fLMOLY = 1000 / MeV;
+
+    /** @brief Default LD values. */
+    G4String fLDMaterial = "Germanium";
+    G4double fLDCoatingRINDEX = 2.48;
+    G4double fLDCoatingThickness = 60;
 
     /** @brief Visualization attributes (colors). */
     G4VisAttributes *invis = nullptr; // init all the pointers
@@ -404,6 +415,12 @@ class SCOPSimGeometryConstruction final
     G4LogicalVolume *LogicalLMOsec6 = nullptr;
     G4LogicalVolume *LogicalLMOsec7 = nullptr;
     G4LogicalVolume *LogicalLMOsec8 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf1 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf2 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf3 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf4 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf5 = nullptr;
+    G4LogicalVolume *LogicalLMOSurf6 = nullptr;
 
     
 
@@ -428,6 +445,12 @@ class SCOPSimGeometryConstruction final
     G4VPhysicalVolume *PhysicalLMOsec6 = nullptr;
     G4VPhysicalVolume *PhysicalLMOsec7 = nullptr;
     G4VPhysicalVolume *PhysicalLMOsec8 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf1 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf2 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf3 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf4 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf5 = nullptr;
+    G4VPhysicalVolume *PhysicalLMOSurf6 = nullptr;
 
     /** @brief Rotation matrices for component orientation. */
     G4RotationMatrix DontRotate;

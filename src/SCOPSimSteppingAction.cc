@@ -1,13 +1,13 @@
 /**
- * @file SCOPSimSteppingAction.cc
+ * @file OpSimSteppingAction.cc
  * @brief Implements step-level tracking, data extraction, and event updates for
  * the Optical simulation.
  * @author Arnaud HUBER <huber@lp2ib.in2p3.fr>
  * @date 2026
  *
  * This file contains the method definitions for the
- * `SCOPSimSteppingAction` class declared in
- * `SCOPSimSteppingAction.hh`. It manages:
+ * `OpSimSteppingAction` class declared in
+ * `OpSimSteppingAction.hh`. It manages:
  *  - Extraction of particle positions, momentum, energy, and track metadata at
  * each Geant4 step
  *
@@ -17,7 +17,7 @@
  * fine-grained tracking information suitable for later beamline analysis.
  */
 
-#include "SCOPSimSteppingAction.hh"
+#include "OpSimSteppingAction.hh"
 
 /**
  * @brief Constructor.
@@ -25,8 +25,8 @@
  * Initializes the Geant4 generic messenger and declares user commands
  * for controlling tracking status (global and for collimators).
  */
-SCOPSimSteppingAction::SCOPSimSteppingAction() {
-    sMessenger = new G4GenericMessenger(this, "/SCOPSim/step/",
+OpSimSteppingAction::OpSimSteppingAction() {
+    sMessenger = new G4GenericMessenger(this, "/OpSim/step/",
                                         "Control commands for my application");
 
     sMessenger->DeclareProperty("setVerbose", VerbosityLevel)
@@ -45,7 +45,7 @@ SCOPSimSteppingAction::SCOPSimSteppingAction() {
  *
  * Cleans up the allocated messenger.
  */
-SCOPSimSteppingAction::~SCOPSimSteppingAction() {
+OpSimSteppingAction::~OpSimSteppingAction() {
     delete sMessenger;
 }
 
@@ -54,8 +54,8 @@ SCOPSimSteppingAction::~SCOPSimSteppingAction() {
  *
  * @param evtac Pointer to the event action where the values are stored.
  */
-void SCOPSimSteppingAction::SetInputInformations(
-    SCOPSimEventAction *evtac) const {
+void OpSimSteppingAction::SetInputInformations(
+    OpSimEventAction *evtac) const {
     evtac->SetXStart(preStep.x);
     evtac->SetXpStart(preStep.px);
     evtac->SetYStart(preStep.y);
@@ -65,8 +65,8 @@ void SCOPSimSteppingAction::SetInputInformations(
     evtac->SetEnergyStart(energy);
 }
 
-void SCOPSimSteppingAction::CheckBoundaryStatus(
-    const G4Step *aStep, SCOPSimEventAction *evtac) {
+void OpSimSteppingAction::CheckBoundaryStatus(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING CheckBoundaryStatus-----"<<G4endl;
     }
@@ -94,6 +94,7 @@ void SCOPSimSteppingAction::CheckBoundaryStatus(
     if (endproc == "OpAbsorption") {
         if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "LMO") {
             evtac->CountBulkAbsLMO();
+            evtac->FillAbsorbedTrackLength(aStep->GetTrack()->GetTrackLength());
         }
 
         if (VerbosityLevel > 1)
@@ -102,7 +103,7 @@ void SCOPSimSteppingAction::CheckBoundaryStatus(
     }
 
     if (endproc == "OpRayleigh") {
-        //((SCOPSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountRayleighScattering();
+        //((OpSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountRayleighScattering();
         // G4cout << "Rayleigh scattering" << G4endl;
         // G4cout << "Number of scattering = " <<
         // ((ENLOpticalSimTrackInformation*)
@@ -172,6 +173,18 @@ void SCOPSimSteppingAction::CheckBoundaryStatus(
         case LambertianReflection:
             if (VerbosityLevel > 1)
                 G4cout << "Reflection L" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
+            }
             break;
 
         case FresnelRefraction:
@@ -182,23 +195,71 @@ void SCOPSimSteppingAction::CheckBoundaryStatus(
         case FresnelReflection:
             if (VerbosityLevel > 1)
                 G4cout << "Fresnel Reflection" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
+            }
             break;
 
         case LobeReflection:
             if (VerbosityLevel > 1)
                 G4cout << "Reflection Lobe" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
+            }
             break;
 
         case SpikeReflection:
-            //((SCOPSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountReflections();
+            //((OpSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountReflections();
             if (VerbosityLevel > 1)
                 G4cout << "Reflection" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
+            }
             break;
 
         case TotalInternalReflection:
-            //((SCOPSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountTotalInternalReflections();
+            //((OpSimTrackInformation*)(aStep->GetTrack()->GetUserInformation()))->CountTotalInternalReflections();
             if (VerbosityLevel > 1)
                 G4cout << "Reflection totale" << G4endl;
+            if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName()=="LMO"){
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf1"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf2"){
+                evtac->CountReflectedLMOTopBot();
+                }
+                if (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf3"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf4"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf5"
+                    || aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()=="LMOSurf6"){
+                evtac->CountReflectedLMOSides();
+                }
+            }
             break;
 
         default:
@@ -210,8 +271,8 @@ void SCOPSimSteppingAction::CheckBoundaryStatus(
     }
 }
 
-void SCOPSimSteppingAction::CountScintillation(
-    const G4Step *aStep, SCOPSimEventAction *evtac) {
+void OpSimSteppingAction::CountScintillation(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING CountScintillation-----"<<G4endl;
     }
@@ -227,8 +288,8 @@ void SCOPSimSteppingAction::CountScintillation(
     }
 }
 
-void SCOPSimSteppingAction::CountCerenkov(
-    const G4Step *aStep, SCOPSimEventAction *evtac) {
+void OpSimSteppingAction::CountCerenkov(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING CountCerenkov-----"<<G4endl;
     }
@@ -245,8 +306,8 @@ void SCOPSimSteppingAction::CountCerenkov(
     }
 }
 
-void SCOPSimSteppingAction::CountReemission(
-    const G4Step *aStep, SCOPSimEventAction *evtac) {
+void OpSimSteppingAction::CountReemission(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING CountReemission-----"<<G4endl;
     }
@@ -262,8 +323,8 @@ void SCOPSimSteppingAction::CountReemission(
     }
 }
 
-void SCOPSimSteppingAction::SetPhotonBirthInformation(
-    const G4Step *aStep, SCOPSimEventAction *evtac) {
+void OpSimSteppingAction::SetPhotonBirthInformation(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING SetPhotonBirthInformation-----"<<G4endl;
     }
@@ -281,13 +342,32 @@ void SCOPSimSteppingAction::SetPhotonBirthInformation(
     }
 }
 
-void SCOPSimSteppingAction::SetPhotonDetectedInformation(
-    const G4Step *aStep, SCOPSimEventAction *evtac) {
+void OpSimSteppingAction::SetPhotonDetectedInformationLD1(
+    const G4Step *aStep, OpSimEventAction *evtac) {
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING SetPhotonDetectedInformation-----"<<G4endl;
     }
 
-    evtac->FillDetectedWavelength(1240 / (theTrack->GetTotalEnergy() / eV));
+    evtac->FillDetectedWavelengthLD1(1240 / (theTrack->GetTotalEnergy() / eV));
+    evtac->FillDetectedTrackLengthLD1(aStep->GetTrack()->GetTrackLength());
+    if (VerbosityLevel > 0) {
+        G4cout << "Detected Photon Wavelength = "
+               << 1240 / (theTrack->GetTotalEnergy() / eV) << G4endl;
+    }
+
+    if (VerbosityLevel>2){
+        G4cout<<"-----LEAVING SetPhotonDetectedInformation-----"<<G4endl;
+    }
+}
+
+void OpSimSteppingAction::SetPhotonDetectedInformationLD2(
+    const G4Step *aStep, OpSimEventAction *evtac) {
+    if (VerbosityLevel>2){
+        G4cout<<"-----ENTERING SetPhotonDetectedInformation-----"<<G4endl;
+    }
+
+    evtac->FillDetectedWavelengthLD2(1240 / (theTrack->GetTotalEnergy() / eV));
+    evtac->FillDetectedTrackLengthLD2(aStep->GetTrack()->GetTrackLength());
     if (VerbosityLevel > 0) {
         G4cout << "Detected Photon Wavelength = "
                << 1240 / (theTrack->GetTotalEnergy() / eV) << G4endl;
@@ -360,14 +440,14 @@ void UpdateSc(RunTallySc &tally, G4float x, G4float y, G4float z,
  *
  * @param aStep Pointer to the current Geant4 step.
  */
-void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
+void OpSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
     
     if (VerbosityLevel>2){
         G4cout<<"---------ENTERING UserSteppingAction---------"<<G4endl;
     }
     
     // --- Preparation of variables ---
-    auto evtac = static_cast<SCOPSimEventAction *>(
+    auto evtac = static_cast<OpSimEventAction *>(
         G4EventManager::GetEventManager()->GetUserEventAction());
     theTrack = aStep->GetTrack();
     auto pre = aStep->GetPreStepPoint();
@@ -421,9 +501,9 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
     // YAG screens
     static const std::map<std::string,
-                          RunTallySc &(SCOPSimEventAction::*)()>
+                          RunTallySc &(OpSimEventAction::*)()>
         ScMap = {
-            {"LMO", &SCOPSimEventAction::GetLMO},
+            {"LMO", &OpSimEventAction::GetLMO},
         };
 
     auto it = ScMap.find(volumeNamePreStep);
@@ -488,13 +568,14 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
         if ((volumeNamePostStep== "LD1" && volumeNamePreStep == "Holder")
              && !(boundaryStatus == FresnelReflection
             || boundaryStatus == TotalInternalReflection || boundaryStatus == LambertianReflection 
-            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection) ) { // photon detected in the LD
+            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection
+            || boundaryStatus == CoatedDielectricReflection) ) { // photon detected in the LD
 
 
             evtac->CountDetectedLD1();
         
             
-            SetPhotonDetectedInformation(aStep, evtac);
+            SetPhotonDetectedInformationLD1(aStep, evtac);
             theTrack->SetTrackStatus(fStopAndKill);
             
             if (VerbosityLevel > 1){
@@ -505,12 +586,13 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
         if ((volumeNamePostStep== "LD2" && volumeNamePreStep == "Holder")
              && !(boundaryStatus == FresnelReflection
             || boundaryStatus == TotalInternalReflection || boundaryStatus == LambertianReflection 
-            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection) ) { // photon detected in the LD
+            || boundaryStatus == LobeReflection || boundaryStatus == SpikeReflection
+            || boundaryStatus == CoatedDielectricReflection) ) { // photon detected in the LD
 
 
             evtac->CountDetectedLD2();
             
-            SetPhotonDetectedInformation(aStep, evtac);
+            SetPhotonDetectedInformationLD2(aStep, evtac);
             theTrack->SetTrackStatus(fStopAndKill);
             
             if (VerbosityLevel > 1){
@@ -531,7 +613,6 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
                     CountCerenkov(aStep, evtac);
             }
         }
-        
     }
 
     // TPSimTrackInformation *info = static_cast<TPSimTrackInformation

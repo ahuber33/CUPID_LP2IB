@@ -249,7 +249,7 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     G4Element* elCu = new G4Element( "Copper",     "Cu", 29., 63.55      * g/mole );
     G4Element* elGe = new G4Element( "Germanium",  "Ge", 32., 72.630     * g/mole );
     G4Element* elZn = new G4Element( "Zinc",       "Zn", 30., 65.38      * g/mole );
-    G4Element* elSe = new G4Element( "Selenimu",   "Se", 34., 78.96      * g/mole );
+    G4Element* elSe = new G4Element( "Selenium",   "Se", 34., 78.96      * g/mole );
     //G4Element* elMo = new G4Element( "Molybdenum", "Mo", 42., 95.96      * g/mole );
     G4Isotope* iso96Mo  = new G4Isotope( "97Mo",  42, 96,  95.91 * g/mole );
     G4Isotope* iso97Mo  = new G4Isotope( "97Mo",  42, 97,  96.91 * g/mole );
@@ -445,7 +445,7 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
         ALPHALY_var.clear();
 
         // READ ABSORPTION SPECTRUM
-        file = path2 + "LD_ABSORPTION_eV_cm.txt";
+        file = path2 + "Ge_ABSORPTION_eV_cm.txt";
 
         ReadABSORPTION.open(file);
         if (ReadABSORPTION.is_open()) {
@@ -460,7 +460,7 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
         ReadABSORPTION.close();
 
         // READ REFRACTIVE INDEX
-        file = path2 + "LD_RINDEX_eV.txt";
+        file = path2 + "Ge_RINDEX_eV.txt";
 
         ReadRINDEX.open(file);
         if (ReadRINDEX.is_open()) {
@@ -480,6 +480,62 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     mptGermanium->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
 
     Germanium->SetMaterialPropertiesTable(mptGermanium);
+
+    // Silicon LD
+
+    {
+        ReadEMISSION.clear();
+        ReadABSORPTION.clear();
+        ReadRINDEX.clear();
+        ReadELECTRONLY.clear();
+        ReadALPHALY.clear();
+        EMISSION_energy.clear();
+        EMISSION_var.clear();
+        ABSORPTION_energy.clear();
+        ABSORPTION_var.clear();
+        RINDEX_energy.clear();
+        RINDEX_var.clear();
+        ELECTRONLY_energy.clear();
+        ELECTRONLY_var.clear();
+        ALPHALY_energy.clear();
+        ALPHALY_var.clear();
+
+        // READ ABSORPTION SPECTRUM
+        file = path2 + "Si_ABSORPTION_eV_cm.txt";
+
+        ReadABSORPTION.open(file);
+        if (ReadABSORPTION.is_open()) {
+            while (!ReadABSORPTION.eof()) {
+                ReadABSORPTION >> energy >> filler >> var;
+                ABSORPTION_energy.push_back(energy * eV);
+                ABSORPTION_var.push_back(var * mm);
+            }
+        } else {
+            G4cout << "Error opening file: " << file << G4endl;
+        }
+        ReadABSORPTION.close();
+
+        // READ REFRACTIVE INDEX
+        file = path2 + "Si_RINDEX_eV.txt";
+
+        ReadRINDEX.open(file);
+        if (ReadRINDEX.is_open()) {
+            while (!ReadRINDEX.eof()) {
+                ReadRINDEX >> energy >> filler >> var;
+                RINDEX_energy.push_back(energy * eV);
+                RINDEX_var.push_back(var);
+            }
+        } else {
+            G4cout << "Error opening file: " << file << G4endl;
+        }
+        ReadRINDEX.close();
+    }
+
+    auto mptSilicon = new G4MaterialPropertiesTable();
+    mptSilicon->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
+    mptSilicon->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
+
+    Silicon->SetMaterialPropertiesTable(mptSilicon);
 
     // SiO coating
     // https://doi.org/10.1051/epjconf/20136504003
@@ -501,6 +557,7 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     fMaterialsList.push_back(Li2MoO4);
     fMaterialsList.push_back(Germanium);
     fMaterialsList.push_back(SiO);
+    fMaterialsList.push_back(Silicon);
 
 
     // #######################################################################################################################################
