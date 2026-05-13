@@ -1,11 +1,11 @@
-for THICKNESS in 30 60 90 120 150 180
+for N in 0 1 2 3 4 5
 do
-    for RINDEX in 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5
+    for DISTANCE in 0 1 2 3 4 5 6 7 8 9
     do
-    	until [ -e ../Resultats/coating_Si/output_"$THICKNESS"nm_n="$RINDEX".root ]
+    	until [ -e ../Resultats/distance/output_"$N"."$DISTANCE"mm.root ]
     	do
-		./OpSim output_"$THICKNESS"nm_n="$RINDEX" 1000 vrml.mac OFF LDCoatThickness="$THICKNESS" LDCoatRINDEX="$RINDEX" LDMat=Silicon
-		mv ../Resultats/output_"$THICKNESS"nm_n="$RINDEX".root ../Resultats/coating_Si/
+		./SCOPSim output_"$N"."$DISTANCE"mm 1000 vrml.mac OFF S1Distance="$N"."$DISTANCE"
+		mv ../Resultats/output_"$N"."$DISTANCE"mm.root ../Resultats/distance/
 	done
     done
 done

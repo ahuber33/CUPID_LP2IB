@@ -108,7 +108,8 @@ class SCOPSimGeometryConstruction final
     void SetLDCoatingRINDEX(const G4double LDCoatingRINDEX) {fLDCoatingRINDEX = LDCoatingRINDEX;};
     void SetLDCoatingThickness(const G4double LDCoatingThickness) {fLDCoatingThickness = LDCoatingThickness;};
 
-    void SetDetectorDistance(const G4double Distance) {fDetectorDistance = Distance;};
+    void SetLD1DistanceToLMO(const G4double Distance) {if (!buildStructure){fDistanceLMOtoLD1 = Distance * CLHEP::mm;}};
+    void SetLD2DistanceToLMO(const G4double Distance) {if (!buildStructure){fDistanceLMOtoLD2 = Distance * CLHEP::mm;}};
 
     const float GetLMOLength() const { return fLMOLength; }
     const float GetLMOWidth() const { return fLMOWidth; }
@@ -352,6 +353,8 @@ class SCOPSimGeometryConstruction final
 
   private:
     static const G4String path;
+    G4bool constructSecLMO = false;
+    G4bool buildStructure = false;
 
     /** @brief Geometry handler. */
     std::unique_ptr<Geometry> Geom;

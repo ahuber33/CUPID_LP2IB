@@ -58,8 +58,6 @@ class SCOPSimGeometryMessenger : public G4UImessenger {
     G4UIcmdWithADoubleAndUnit *fGeometryLMOWidthCmd = nullptr;
     /// Command to set the Scintillator Thickness
     G4UIcmdWithADoubleAndUnit *fGeometryLMOThicknessCmd = nullptr;
-    /// Command to set the Detector Distance
-    G4UIcmdWithADoubleAndUnit *fGeometryDetectorDistanceCmd = nullptr;
     /// Command to set the LMO Surface Model
     G4UIcmdWithAString *fGeometryLMOModelCmd = nullptr;
     /// Command to set the LMO Surface Polish

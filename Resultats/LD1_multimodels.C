@@ -1,17 +1,19 @@
 void LD1_multimodels(){
 
+    vector<double> mean;
+    vector<double> mean_err;
     const char *models[] = {"unified"};
     int i, j;
     for (i = 0; i < 1; i++) {
-        for (j = 2; j <= 11; j++) {
+        for (j = 0; j <= 53; j++) {
             char filename[50];
-            double RINDEX = j * 0.5;
-            snprintf(filename, sizeof(filename), "output_120nm_n=%.1f", RINDEX);
+            double RINDEX = j * 0.1;
+            snprintf(filename, sizeof(filename), "output_%.1fmm", RINDEX);
             //snprintf(filename, sizeof(filename), "output_%s_dielectric_dielectric_ground_%.1f", models[i], polish);
             //std::cout<<"------------------------------------------------------------------"<<std::endl;output_30nm_n=1.0.root
             //std::cout<<"opening file "<<filename<<std::endl;
 
-            TString filepath = "../Resultats/coating_Si/";
+            TString filepath = "../Resultats/distance/";
             filepath += filename;
             filepath += ".root";
             //std::cout<<"opening file "<<filepath<<std::endl;
@@ -58,9 +60,25 @@ void LD1_multimodels(){
             double mean_gauss = f2->GetParameter(1);
             double mean_gauss_error = f2->GetParError(1);
 
-            std::cout<<models[i]<<" RINDEX="<<RINDEX<<" | MEAN GAUSS = "<<mean_gauss<<" +- "<<mean_gauss_error<<
+            std::cout<<models[i]<<" S1 Distance="<<RINDEX<<" | MEAN GAUSS = "<<mean_gauss<<" +- "<<mean_gauss_error<<
             " | MEAN = "<<h2->GetMean(1)<<" +- "<<h2->GetMeanError(1)<<std::endl;
 
+            mean.push_back(h2->GetMean(1));
+            mean_err.push_back(h2->GetMeanError(1));
        }
     }
+    std::cout<<"********************** PYTHON MEAN LIST **********************"<<std::endl;
+    std::cout<<"["<<"";
+    for (double i: mean){
+        std::cout<< i<<", ";
+    }
+    std::cout<<"]"<<std::endl;
+
+    std::cout<<"******************* PYTHON MEAN ERROR LIST *******************"<<std::endl;
+    std::cout<<"["<<"";
+    for (double i: mean_err){
+        std::cout<< i<<", ";
+    }
+    std::cout<<"]"<<std::endl;
+    std::cout<<"**************************************************************"<<std::endl;
 }

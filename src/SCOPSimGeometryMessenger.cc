@@ -149,21 +149,6 @@ SCOPSimGeometryMessenger::SCOPSimGeometryMessenger(
         "/SCOPSim/geometry/setLMOSurfaceSigmaAlpha", this);
     fGeometryLMOSigmaAlphaCmd->SetParameterName("LMOSurfaceSigmaAlpha", false);
 
-    /**
-     * @brief Command to set the Detector Distance.
-     *
-     * Parameter: DetectorDistance (double) unit
-     */
-    fGeometryDetectorDistanceCmd = new G4UIcmdWithADoubleAndUnit(
-        "/SCOPSim/geometry/setDetectorDistance", this);
-    fGeometryDetectorDistanceCmd->SetGuidance("Set Detector Distance");
-    fGeometryDetectorDistanceCmd->SetParameterName("DetectorDistance", false);
-    fGeometryDetectorDistanceCmd->SetRange("DetectorDistance>0.");
-    fGeometryDetectorDistanceCmd->SetUnitCategory("Length");
-    fGeometryDetectorDistanceCmd->AvailableForStates(G4State_PreInit,
-                                                     G4State_Idle);
-    fGeometryDetectorDistanceCmd->SetToBeBroadcasted(false);
-
     //=====================================
     // Materials Commands
     //=====================================
@@ -193,7 +178,6 @@ SCOPSimGeometryMessenger::~SCOPSimGeometryMessenger() {
     delete fGeometryLMOLengthCmd;
     delete fGeometryLMOWidthCmd;
     delete fGeometryLMOThicknessCmd;
-    delete fGeometryDetectorDistanceCmd;
     delete fGeometryLMOLYCmd;
     delete fGeometryLMOModelCmd;
     delete fGeometryLMOPolishCmd;
@@ -226,9 +210,6 @@ void SCOPSimGeometryMessenger::SetNewValue(G4UIcommand *aCommand,
     } else if (aCommand == fGeometryLMOThicknessCmd) {
         fGeometry->SetLMOThickness(
             fGeometryLMOThicknessCmd->GetNewDoubleValue(aNewValue));
-    } else if (aCommand == fGeometryDetectorDistanceCmd) {
-        fGeometry->SetDetectorDistance(
-            fGeometryDetectorDistanceCmd->GetNewDoubleValue(aNewValue));
     } else if (aCommand == fGeometryLMOLYCmd) {
         fGeometry->SetLMOLY(fGeometryLMOLYCmd->GetNewDoubleValue(aNewValue));
     } else if (aCommand == fGeometryLMOModelCmd) {
@@ -267,9 +248,6 @@ SCOPSimGeometryMessenger::GetCurrentValue(G4UIcommand *aCommand) {
     } else if (aCommand == fGeometryLMOThicknessCmd) {
         cv = fGeometryLMOThicknessCmd->ConvertToString(
             fGeometry->GetLMOThickness(), "m");
-    } else if (aCommand == fGeometryDetectorDistanceCmd) {
-        cv = fGeometryDetectorDistanceCmd->ConvertToString(
-            fGeometry->GetDetectorDistance(), "m");
     } else if (aCommand == fGeometryLMOLYCmd) {
         cv = fGeometryLMOLYCmd->ConvertToString(fGeometry->GetLMOLY());
     }

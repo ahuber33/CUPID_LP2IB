@@ -94,6 +94,11 @@ class SCOPSimPhysics final : public G4VModularPhysicsList {
 
     /// Destructor
     ~SCOPSimPhysics() override;
+
+    void SetCerenkov(G4bool var){cerenkovBool=var;};
+
+  private:
+    G4bool cerenkovBool = false;
 };
 
 #endif // SCOPSimPhysics_h

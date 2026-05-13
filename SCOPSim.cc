@@ -50,19 +50,7 @@ int main(int argc, char **argv) {
     // Geometry and physics
     Geometry *Geom = new Geometry();
     SCOPSimGeometryConstruction *GeomCons = new SCOPSimGeometryConstruction;
-
-    // Surface Finish inputs
-    if (argc == 9) {
-        GeomCons->SetLMOSurfaceModel(G4String(argv[5]));
-        GeomCons->SetLMOSurfaceType(G4String(argv[6]));
-        GeomCons->SetLMOSurfaceFinish(G4String(argv[7]));
-        if (G4String(argv[5])=="unified"){
-            GeomCons->SetLMOSurfaceSigmaAlpha(G4double(atof(argv[8])));
-        }
-        if (G4String(argv[5])=="glisur"){
-            GeomCons->SetLMOSurfacePolish(G4double(atof(argv[8])));
-        }
-    }
+    SCOPSimPhysics *Phys = new SCOPSimPhysics;
 
     // Enter optical parameters in shell
 
@@ -95,6 +83,24 @@ int main(int argc, char **argv) {
             else if (param=="LDCoatThickness"){
                 GeomCons->SetLDCoatingThickness(G4double(stod(var)));
             }
+            else if (param=="S1Distance"){
+                GeomCons->SetLD1DistanceToLMO(G4double(stod(var)));
+            }
+            else if (param=="S2Distance"){
+                GeomCons->SetLD2DistanceToLMO(G4double(stod(var)));
+            }
+            else if (param=="Cerenkov"){
+                if (var=="true"){
+                    Phys->SetCerenkov(G4bool(true));
+                    G4cout<<"TOO LATE"<<G4endl;
+                }
+                else if (var=="false"){
+                    Phys->SetCerenkov(G4bool(false));
+                }
+                else{
+                    G4cout<<"[Error] Unknown argument for Cerenkov: "<<var<<". Using default value."<<G4endl;
+                }
+            }
             else {
                 G4Exception(
                     argv[0],
@@ -106,11 +112,10 @@ int main(int argc, char **argv) {
         }
     }
 
-
     runManager->SetUserInitialization(GeomCons);
-    runManager->SetUserInitialization(new SCOPSimPhysics);
+    runManager->SetUserInitialization(Phys);
     runManager->SetUserInitialization(new SCOPSimActionInitialization(
-        outputFile, TotalNParticles, Ncores, flag_MT, GeomCons));
+    outputFile, TotalNParticles, Ncores, flag_MT, GeomCons));
 
     // --- Initialize visualization manager silently (no real window) ---
     G4VisManager *visManager = new G4VisExecutive("Quiet");

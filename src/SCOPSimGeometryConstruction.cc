@@ -1176,7 +1176,7 @@ void SCOPSimGeometryConstruction::ConstructLMO() {
 
     // Secondary LMOs
 
-    G4bool constructSecLMO = false;
+    constructSecLMO = false;
 
     if (constructSecLMO){
         LogicalLMOsec1 = Geom->GetBoxVolume("LMOsec1", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
@@ -1320,7 +1320,7 @@ G4VPhysicalVolume *SCOPSimGeometryConstruction::Construct() {
     //  DEFINE GEOMETRY VOLUMES
     // #########################################################################
 
-    G4bool buildStructure = false; //build structure volumes
+    buildStructure = false; //build structure volumes
 
     /// Create the world and main holder volume
     CreateWorldAndHolder();
