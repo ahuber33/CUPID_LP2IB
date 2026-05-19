@@ -534,14 +534,14 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
             CheckBoundaryStatus(aStep, evtac);
         }
 
-        if (volumeNamePostStep== "CuFrame" || volumeNamePostStep== "PTFE"){ // photon in secondary volume -> killed
+        /* if (volumeNamePostStep== "CuFrame" || volumeNamePostStep== "PTFE"){ // photon in secondary volume -> killed
             evtac->CountKilled();
             theTrack->SetTrackStatus(fStopAndKill);
 
             if (VerbosityLevel > 1){
                 G4cout << "Photon detected in secondary volume and killed." << G4endl;
             }
-        }
+        } */
 
 
         G4OpBoundaryProcessStatus boundaryStatus = Undefined;

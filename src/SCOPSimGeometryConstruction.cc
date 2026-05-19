@@ -90,44 +90,50 @@ void SCOPSimGeometryConstruction::SetLogicalVolumeColor(
     // ***********************
     invis = new G4VisAttributes(G4Colour(255 / 255., 255 / 255., 255 / 255.));
     invis->SetVisibility(false);
-
     black = new G4VisAttributes(G4Colour(0, 0, 0, 0.9));
     black->SetForceSolid(true);
     black->SetVisibility(true);
-
     white = new G4VisAttributes(G4Colour(1, 1, 1, 1.));
     white->SetForceSolid(true);
     white->SetVisibility(true);
-
     gray = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.5));
+    gray->SetForceSolid(true);
     gray->SetVisibility(true);
-
     red = new G4VisAttributes(G4Colour(1, 0, 0, 0.3));
     red->SetForceSolid(true);
     red->SetVisibility(true);
-
     orange = new G4VisAttributes(G4Colour(1, 0.5, 0, 0.3));
     orange->SetForceSolid(true);
     orange->SetVisibility(true);
-
     yellow = new G4VisAttributes(G4Colour(1, 1, 0, 0.5));
     yellow->SetForceSolid(true);
     yellow->SetVisibility(true);
-
     green = new G4VisAttributes(G4Colour(0, 1, 0, 0.3));
     green->SetForceSolid(true);
     green->SetVisibility(true);
-
     cyan = new G4VisAttributes(G4Colour(0, 1, 1, 0.3));
     cyan->SetForceSolid(true);
     cyan->SetVisibility(true);
-
     blue = new G4VisAttributes(G4Colour(0, 0, 1, 0.5));
     blue->SetForceSolid(true);
     blue->SetVisibility(true);
-
     magenta = new G4VisAttributes(G4Colour(1, 0, 1, 0.3));
     magenta->SetVisibility(true);
+
+    G4double alpha = 0.2;
+
+    blueAlpha = new G4VisAttributes(G4Colour(0, 0, 1, alpha));
+    blueAlpha->SetForceSolid(true);
+    blueAlpha->SetVisibility(true);
+    yellowAlpha = new G4VisAttributes(G4Colour(1, 1, 0, alpha));
+    yellowAlpha->SetForceSolid(true);
+    yellowAlpha->SetVisibility(true);
+    orangeAlpha = new G4VisAttributes(G4Colour(1, 0.5, 0, alpha));
+    orangeAlpha->SetForceSolid(true);
+    orangeAlpha->SetVisibility(true);
+    grayAlpha = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, alpha));
+    grayAlpha->SetForceSolid(true);
+    grayAlpha->SetVisibility(true);
 
     // Apply selected color
     if (Color == "invis") {
@@ -152,6 +158,14 @@ void SCOPSimGeometryConstruction::SetLogicalVolumeColor(
         LogicalVolume->SetVisAttributes(blue);
     } else if (Color == "magenta") {
         LogicalVolume->SetVisAttributes(magenta);
+    } else if (Color == "blueAlpha") {
+        LogicalVolume->SetVisAttributes(blueAlpha);
+    } else if (Color == "yellowAlpha") {
+        LogicalVolume->SetVisAttributes(yellowAlpha);
+    } else if (Color == "orangeAlpha") {
+        LogicalVolume->SetVisAttributes(orangeAlpha);
+    } else if (Color == "grayAlpha") {
+        LogicalVolume->SetVisAttributes(grayAlpha);
     }
 }
 
@@ -189,8 +203,11 @@ void SCOPSimGeometryConstruction::CreateWorldAndHolder() {
  * @brief Construct the Copper Frame.
  */
 
-void SCOPSimGeometryConstruction::ConstructCopperFrame() {
-    auto Copper = SCOPSimMaterials::getInstance()->getMaterial("Vacuum");
+void SCOPSimGeometryConstruction::ConstructCopperFrame(G4ThreeVector  moduleCoords,
+                                                    G4String CuName,
+                                                    G4String CuColor,
+                                                    G4LogicalVolume* motherLogical) {
+    auto Copper = SCOPSimMaterials::getInstance()->getMaterial("Copper");
 
     NFloors         = 1;
 
@@ -522,7 +539,7 @@ void SCOPSimGeometryConstruction::ConstructCopperFrame() {
 
     // Put everything together
     
-    G4MultiUnion* CuFrame = new G4MultiUnion( "CuFrame" );
+    G4MultiUnion* CuFrame = new G4MultiUnion( CuName );
 
     /* for( unsigned int i=0; i<CuHorizontalFrameTrans.size(); i++ )
     	CuFrame->AddNode( *CuHorizontalFrame, *CuHorizontalFrameTrans[i] );
@@ -549,33 +566,32 @@ void SCOPSimGeometryConstruction::ConstructCopperFrame() {
     CuFrame->AddNode( *CuMidBand, *CuMidBandTrans[2] );
     CuFrame->AddNode( *CuMidBand, *CuMidBandTrans[3] );
 
-    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[0] );
-    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[1] );
-    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[2] );
-    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[3] );
+    /* CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[0] );
+    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[1] );      // NE FONCTIONNE PAS ??????
+    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[2] );      //
+    CuFrame->AddNode( *CuLatBand, *CuLatBandTrans[3] ); */
 
     CuFrame->Voxelize();
 
     SolidCuFrame = CuFrame;
+    LogicalCuFrame    = new G4LogicalVolume( SolidCuFrame,    Copper,    CuName,    0, 0, 0 );
 
-    /* CuHorizontalFrame = new G4SubtractionSolid( "CuHorizontalFrame", CuHorizontalFrame,                           ////// TO REMOVE HALF
-        new G4Box( "CuRemoveHalf", 0.5 * 60*mm, 0.5 * 60*mm, 0.5 * 60*mm ), 0, G4ThreeVector(31*mm,0*mm,0*mm) );  ////// OF THE FRAME */
-
-    LogicalCuFrame    = new G4LogicalVolume( SolidCuFrame,    Copper,    "CuFrame",    0, 0, 0 );
-
-    LogicalCuFrame->SetVisAttributes(orange);
+    SetLogicalVolumeColor(LogicalCuFrame, CuColor);
 
     PhysicalCuFrame = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(26.5 * mm, 0 * mm, -13 * mm)),
-        LogicalCuFrame, "CuFrame", LogicalHolder, false, 0);
+        G4Transform3D(DontRotate, moduleCoords+G4ThreeVector(26.5 * mm, 0 * mm, -13 * mm)),
+        LogicalCuFrame, CuName, motherLogical, false, 0);
 }
 
 
 /**
  * @brief Construct the LMO part.
  */
-void SCOPSimGeometryConstruction::ConstructPTFE() {
-    auto Teflon = SCOPSimMaterials::getInstance()->getMaterial("Vacuum");
+void SCOPSimGeometryConstruction::ConstructPTFE(G4ThreeVector  moduleCoords,
+                                                G4String PTFEName,
+                                                G4String PTFEColor,
+                                                G4LogicalVolume* motherLogical) {
+    auto Teflon = SCOPSimMaterials::getInstance()->getMaterial("Teflon");
 
     NFloors = 1;
 
@@ -819,7 +835,7 @@ void SCOPSimGeometryConstruction::ConstructPTFE() {
 					      0,
 					      G4ThreeVector( 0., 0., 0.5 * ( PTFELargeCapH + PTFESmallCapH ) ) );
 
-    G4MultiUnion* PTFE = new G4MultiUnion( "PTFE" );
+    G4MultiUnion* PTFE = new G4MultiUnion( PTFEName );
     /* for( unsigned int i=0; i<PTFECornerTrans.size(); i++ )
     	PTFE->AddNode( *PTFECorner, *PTFECornerTrans[i] );
     for( unsigned int i=0; i<PTFEButterflyTopTrans.size(); i++ )
@@ -838,60 +854,59 @@ void SCOPSimGeometryConstruction::ConstructPTFE() {
 
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[0] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[1] );
-    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[2] );
-    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[3] );
-    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[4] );
-    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[5] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[2] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[3] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[4] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[5] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[6] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[7] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[8] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[9] );
-    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[10] );
-    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[11] );
-    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[12] );
-    //PTFE->AddNode( *PTFECorner, *PTFECornerTrans[13] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[10] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[11] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[12] );
+    PTFE->AddNode( *PTFECorner, *PTFECornerTrans[13] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[14] );
     PTFE->AddNode( *PTFECorner, *PTFECornerTrans[15] );
 
     PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[0] );
     PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[1] );
-    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[2] );
-    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[3] );
+    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[2] );
+    PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[3] );
     PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[4] );
     PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[5] );
-    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[6] );
-    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[7] );
+    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[6] );  // Ne marche pas pourquoi ??????????????????????
+    //PTFE->AddNode( *PTFEButterflyTop, *PTFEButterflyTopTrans[7] );  //
 
     PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[0] );
     PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[1] );
-    //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[2] );
-    //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[3] );
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[2] );
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[3] );
     PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[4] );
     PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[5] );
-    //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[6] );
-    //PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[7] );
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[6] );
+    PTFE->AddNode( *PTFEButterflyBottom, *PTFEButterflyBottomTrans[7] );
 
     PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[0] );
     PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[1] );
-    //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[2] );
-    //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[3] );
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[2] );
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[3] );
     PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[4] );
     PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[5] );
-    //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[6] );
-    //PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[7] );
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[6] );
+    PTFE->AddNode( *PTFEButterflyFlap, *PTFEButterflyFlapTrans[7] );
 
 
     PTFE->Voxelize();
 
     SolidPTFE = PTFE;
 
-    LogicalPTFE = new G4LogicalVolume( SolidPTFE,      Teflon,    "PTFE",       0, 0, 0 );
-    LogicalPTFE->SetVisAttributes(gray);
-    // LOGICAL
+    LogicalPTFE = new G4LogicalVolume( SolidPTFE,      Teflon,    PTFEName,       0, 0, 0 );
+    SetLogicalVolumeColor(LogicalPTFE, PTFEColor);
 
     PhysicalPTFE = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(26.5 * mm, 0 * mm, -49 * mm + 9.5 * mm)),
-        LogicalPTFE, "PTFE", LogicalHolder, false, 0);
+        G4Transform3D(DontRotate, moduleCoords+G4ThreeVector(26.5 * mm, 0 * mm, -49 * mm + 9.5 * mm)),
+        LogicalPTFE, PTFEName, motherLogical, false, 0);
 }
 
 /**
@@ -1068,21 +1083,35 @@ void SCOPSimGeometryConstruction::ConstructPTFE() {
 /**
  * @brief Construct the LMO part.
  */
-void SCOPSimGeometryConstruction::ConstructLMO() {
+void SCOPSimGeometryConstruction::ConstructLMO(G4ThreeVector  moduleCoords,
+                                            G4String LMO1Name,
+                                            G4String LMO2Name,
+                                            G4String LMO1Color,
+                                            G4String LMO2Color,
+                                            G4LogicalVolume* motherLogical,
+                                            G4bool buildTwoLMOs = true) {
     auto Vacuum = SCOPSimMaterials::getInstance()->getMaterial("Vacuum");
     auto Li2MoO4 = SCOPSimMaterials::getInstance()->getMaterial("Li2MoO4");
     G4MaterialPropertiesTable *mpt = Li2MoO4->GetMaterialPropertiesTable();
 
-    LogicalLMO = Geom->GetBoxVolume("Li2MoO4", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+    LogicalLMO1 = Geom->GetBoxVolume(LMO1Name, Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
 
-    // Assign colors
-    SetLogicalVolumeColor(LogicalLMO, "blue");
+    SetLogicalVolumeColor(LogicalLMO1, LMO1Color);
 
-    PhysicalLMO = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(fLMOx, fLMOy, fLMOz)),LogicalLMO, "LMO", LogicalHolder, false, 0);
+    PhysicalLMO1 = new G4PVPlacement(G4Transform3D(DontRotate,
+        moduleCoords+G4ThreeVector(fLMOx, fLMOy, fLMOz)),
+        LogicalLMO1, LMO1Name, motherLogical, false, 0);
+    
+    if (buildTwoLMOs){ // build the second LMO of the module
+        LogicalLMO2 = Geom->GetBoxVolume(LMO2Name, Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
+        SetLogicalVolumeColor(LogicalLMO2, LMO2Color);
+        PhysicalLMO2 = new G4PVPlacement(G4Transform3D(DontRotate,
+            fOffsetBetweenLMO+moduleCoords+G4ThreeVector(fLMOx, fLMOy, fLMOz)),
+            LogicalLMO2, LMO2Name, motherLogical, false, 0);
+    }
+
 
     // Surface properties
-
-    G4bool diffLMOsurfaces = true;
 
     auto opLMOSurface = new G4OpticalSurface("LMOSurface");
 
@@ -1094,8 +1123,6 @@ void SCOPSimGeometryConstruction::ConstructLMO() {
         if (fLMOSurfaceModel=="unified"){opLMOSurface->SetModel(unified);}
         if (fLMOSurfaceModel=="glisur"){opLMOSurface->SetModel(glisur);}
 
-        G4cout<<"POLISH VALUE = "<<fLMOSurfacePolish<<G4endl;
-
         if (fLMOSurfacePolish >= 0.){
             opLMOSurface->SetPolish(fLMOSurfacePolish);
         }
@@ -1104,7 +1131,10 @@ void SCOPSimGeometryConstruction::ConstructLMO() {
             opLMOSurface->SetSigmaAlpha(fLMOSurfaceSigmaAlpha);
         }
 
-        auto LMOSurface = new G4LogicalSkinSurface("LMOSurface", LogicalLMO, opLMOSurface);
+        auto LMOSurface1 = new G4LogicalSkinSurface("LMOSurface", LogicalLMO1, opLMOSurface);
+        if (buildTwoLMOs){
+            auto LMOSurface2 = new G4LogicalSkinSurface("LMO2Surface", LogicalLMO2, opLMOSurface);
+        }
     }
 
     // Differents surface finishes
@@ -1131,17 +1161,17 @@ void SCOPSimGeometryConstruction::ConstructLMO() {
         SetLogicalVolumeColor(LogicalLMOSurf5, "red");
         SetLogicalVolumeColor(LogicalLMOSurf6, "red");
         
-        PhysicalLMOSurf1 = new G4PVPlacement(G4Transform3D(DontRotate,
+        PhysicalLMOSurf1 = new G4PVPlacement(G4Transform3D(DontRotate, moduleCoords +
             G4ThreeVector(fLMOx, fLMOy, fLMOz + fLMOThickness/2 + LMOSurfWidth/2)),LogicalLMOSurf1, "LMOSurf1", LogicalHolder, false, 0);
-        PhysicalLMOSurf2 = new G4PVPlacement(G4Transform3D(DontRotate,
+        PhysicalLMOSurf2 = new G4PVPlacement(G4Transform3D(DontRotate, moduleCoords +
             G4ThreeVector(fLMOx, fLMOy, fLMOz - fLMOThickness/2 - LMOSurfWidth/2)),LogicalLMOSurf2, "LMOSurf2", LogicalHolder, false, 0);
-        PhysicalLMOSurf3 = new G4PVPlacement(G4Transform3D(DontRotate,
+        PhysicalLMOSurf3 = new G4PVPlacement(G4Transform3D(DontRotate, moduleCoords +
             G4ThreeVector(fLMOx, fLMOy + fLMOWidth/2 + LMOSurfWidth/2, fLMOz)),LogicalLMOSurf3, "LMOSurf3", LogicalHolder, false, 0);
-        PhysicalLMOSurf4 = new G4PVPlacement(G4Transform3D(DontRotate,
+        PhysicalLMOSurf4 = new G4PVPlacement(G4Transform3D(DontRotate, moduleCoords +
             G4ThreeVector(fLMOx, fLMOy - fLMOWidth/2 - LMOSurfWidth/2, fLMOz)),LogicalLMOSurf4, "LMOSurf4", LogicalHolder, false, 0);
-        PhysicalLMOSurf5 = new G4PVPlacement(G4Transform3D(DontRotate,
+        PhysicalLMOSurf5 = new G4PVPlacement(G4Transform3D(DontRotate, moduleCoords +
             G4ThreeVector(fLMOx + fLMOLength/2 + LMOSurfWidth/2, fLMOy, fLMOz)),LogicalLMOSurf5, "LMOSurf5", LogicalHolder, false, 0);
-        PhysicalLMOSurf6 = new G4PVPlacement(G4Transform3D(DontRotate,
+        PhysicalLMOSurf6 = new G4PVPlacement(G4Transform3D(DontRotate, moduleCoords +
             G4ThreeVector(fLMOx - fLMOLength/2 - LMOSurfWidth/2, fLMOy, fLMOz)),LogicalLMOSurf6, "LMOSurf6", LogicalHolder, false, 0);
     
         auto opLMOSurfaceRough = new G4OpticalSurface("LMOSurfaceRough");
@@ -1154,78 +1184,37 @@ void SCOPSimGeometryConstruction::ConstructLMO() {
         opLMOSurfacePolished->SetModel(unified);
         opLMOSurfacePolished->SetFinish(polished);
 
-        auto LMOSurfBorder1 = new G4LogicalBorderSurface("LMOSurfBorder1", PhysicalLMO, PhysicalLMOSurf1, opLMOSurfaceRough);
-        auto LMOSurfBorder2 = new G4LogicalBorderSurface("LMOSurfBorder2", PhysicalLMO, PhysicalLMOSurf2, opLMOSurfaceRough);
-        auto LMOSurfBorder3 = new G4LogicalBorderSurface("LMOSurfBorder3", PhysicalLMO, PhysicalLMOSurf3, opLMOSurfacePolished);
-        auto LMOSurfBorder4 = new G4LogicalBorderSurface("LMOSurfBorder4", PhysicalLMO, PhysicalLMOSurf4, opLMOSurfacePolished);
-        auto LMOSurfBorder5 = new G4LogicalBorderSurface("LMOSurfBorder5", PhysicalLMO, PhysicalLMOSurf5, opLMOSurfacePolished);
-        auto LMOSurfBorder6 = new G4LogicalBorderSurface("LMOSurfBorder6", PhysicalLMO, PhysicalLMOSurf6, opLMOSurfacePolished);
-        auto SurfLMOBorder1 = new G4LogicalBorderSurface("SurfLMOBorder1", PhysicalLMOSurf1, PhysicalLMO, opLMOSurfaceRough);
-        auto SurfLMOBorder2 = new G4LogicalBorderSurface("SurfLMOBorder2", PhysicalLMOSurf2, PhysicalLMO, opLMOSurfaceRough);
-        auto SurfLMOBorder3 = new G4LogicalBorderSurface("SurfLMOBorder3", PhysicalLMOSurf3, PhysicalLMO, opLMOSurfacePolished);
-        auto SurfLMOBorder4 = new G4LogicalBorderSurface("SurfLMOBorder4", PhysicalLMOSurf4, PhysicalLMO, opLMOSurfacePolished);
-        auto SurfLMOBorder5 = new G4LogicalBorderSurface("SurfLMOBorder5", PhysicalLMOSurf5, PhysicalLMO, opLMOSurfacePolished);
-        auto SurfLMOBorder6 = new G4LogicalBorderSurface("SurfLMOBorder6", PhysicalLMOSurf6, PhysicalLMO, opLMOSurfacePolished);
-    }
-    
-    
-
-
-    //auto opticalSurface = dynamic_cast<G4OpticalSurface*>(LMOSurface->GetSurface(LogicalLMO)->GetSurfaceProperty());
-    //if (opticalSurface) opticalSurface->DumpInfo();
-
-    // Secondary LMOs
-
-    constructSecLMO = false;
-
-    if (constructSecLMO){
-        LogicalLMOsec1 = Geom->GetBoxVolume("LMOsec1", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
-        LogicalLMOsec2 = Geom->GetBoxVolume("LMOsec2", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
-        LogicalLMOsec3 = Geom->GetBoxVolume("LMOsec3", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
-        LogicalLMOsec4 = Geom->GetBoxVolume("LMOsec4", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
-        LogicalLMOsec5 = Geom->GetBoxVolume("LMOsec5", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
-        LogicalLMOsec6 = Geom->GetBoxVolume("LMOsec6", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
-        LogicalLMOsec7 = Geom->GetBoxVolume("LMOsec7", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
-        LogicalLMOsec8 = Geom->GetBoxVolume("LMOsec8", Li2MoO4, fLMOLength, fLMOWidth, fLMOThickness);
-
-        SetLogicalVolumeColor(LogicalLMOsec1, "blue");
-        SetLogicalVolumeColor(LogicalLMOsec2, "blue");
-        SetLogicalVolumeColor(LogicalLMOsec3, "blue");
-        SetLogicalVolumeColor(LogicalLMOsec4, "blue");
-        SetLogicalVolumeColor(LogicalLMOsec5, "blue");
-        SetLogicalVolumeColor(LogicalLMOsec6, "blue");
-        SetLogicalVolumeColor(LogicalLMOsec7, "blue");
-        SetLogicalVolumeColor(LogicalLMOsec8, "blue");
-
-        G4double side_offset =  15. * mm;
-
-        PhysicalLMOsec1 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(-53. * mm, -53. * mm - side_offset, 0 * mm)), LogicalLMOsec1, "LMOsec1", LogicalHolder, false, 0);
-        PhysicalLMOsec2 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(-53. * mm, 0. * mm, 0 * mm)), LogicalLMOsec2, "LMOsec2", LogicalHolder, false, 0);
-        PhysicalLMOsec3 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(-53. * mm, 53. * mm + side_offset, 0 * mm)), LogicalLMOsec3, "LMOsec3", LogicalHolder, false, 0);
-        PhysicalLMOsec4 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(0. * mm, -53 * mm - side_offset, 0 * mm)), LogicalLMOsec4, "LMOsec4", LogicalHolder, false, 0);
-        PhysicalLMOsec5 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 53 * mm + side_offset, 0 * mm)), LogicalLMOsec5, "LMOsec5", LogicalHolder, false, 0);
-        PhysicalLMOsec6 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(53. * mm, -53 * mm - side_offset, 0 * mm)), LogicalLMOsec6, "LMOsec6", LogicalHolder, false, 0);
-        PhysicalLMOsec7 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(53. * mm, 0 * mm, 0 * mm)), LogicalLMOsec7, "LMOsec7", LogicalHolder, false, 0);
-        PhysicalLMOsec8 = new G4PVPlacement(G4Transform3D(DontRotate, G4ThreeVector(53. * mm, 53 * mm + side_offset, 0 * mm)), LogicalLMOsec8, "LMOsec8", LogicalHolder, false, 0);
-
-        auto LMOSurface1 = new G4LogicalSkinSurface("LMOSurface1", LogicalLMOsec1, opLMOSurface);
-        auto LMOSurface2 = new G4LogicalSkinSurface("LMOSurface2", LogicalLMOsec2, opLMOSurface);
-        auto LMOSurface3 = new G4LogicalSkinSurface("LMOSurface3", LogicalLMOsec3, opLMOSurface);
-        auto LMOSurface4 = new G4LogicalSkinSurface("LMOSurface4", LogicalLMOsec4, opLMOSurface);
-        auto LMOSurface5 = new G4LogicalSkinSurface("LMOSurface5", LogicalLMOsec5, opLMOSurface);
-        auto LMOSurface6 = new G4LogicalSkinSurface("LMOSurface6", LogicalLMOsec6, opLMOSurface);
-        auto LMOSurface7 = new G4LogicalSkinSurface("LMOSurface7", LogicalLMOsec7, opLMOSurface);
-        auto LMOSurface8 = new G4LogicalSkinSurface("LMOSurface8", LogicalLMOsec8, opLMOSurface);
+        auto LMO1SurfBorder1 = new G4LogicalBorderSurface("LMOSurfBorder1", PhysicalLMO1, PhysicalLMOSurf1, opLMOSurfaceRough);
+        auto LMO1SurfBorder2 = new G4LogicalBorderSurface("LMOSurfBorder2", PhysicalLMO1, PhysicalLMOSurf2, opLMOSurfaceRough);
+        auto LMO1SurfBorder3 = new G4LogicalBorderSurface("LMOSurfBorder3", PhysicalLMO1, PhysicalLMOSurf3, opLMOSurfacePolished);
+        auto LMO1SurfBorder4 = new G4LogicalBorderSurface("LMOSurfBorder4", PhysicalLMO1, PhysicalLMOSurf4, opLMOSurfacePolished);
+        auto LMO1SurfBorder5 = new G4LogicalBorderSurface("LMOSurfBorder5", PhysicalLMO1, PhysicalLMOSurf5, opLMOSurfacePolished);
+        auto LMO1SurfBorder6 = new G4LogicalBorderSurface("LMOSurfBorder6", PhysicalLMO1, PhysicalLMOSurf6, opLMOSurfacePolished);
+        auto SurfLMO1Border1 = new G4LogicalBorderSurface("SurfLMOBorder1", PhysicalLMOSurf1, PhysicalLMO1, opLMOSurfaceRough);
+        auto SurfLMO1Border2 = new G4LogicalBorderSurface("SurfLMOBorder2", PhysicalLMOSurf2, PhysicalLMO1, opLMOSurfaceRough);
+        auto SurfLMO1Border3 = new G4LogicalBorderSurface("SurfLMOBorder3", PhysicalLMOSurf3, PhysicalLMO1, opLMOSurfacePolished);
+        auto SurfLMO1Border4 = new G4LogicalBorderSurface("SurfLMOBorder4", PhysicalLMOSurf4, PhysicalLMO1, opLMOSurfacePolished);
+        auto SurfLMO1Border5 = new G4LogicalBorderSurface("SurfLMOBorder5", PhysicalLMOSurf5, PhysicalLMO1, opLMOSurfacePolished);
+        auto SurfLMO1Border6 = new G4LogicalBorderSurface("SurfLMOBorder6", PhysicalLMOSurf6, PhysicalLMO1, opLMOSurfacePolished);
     }
 }
 
 /**
  * @brief Construct the Light Detector part.
  */
-void SCOPSimGeometryConstruction::ConstructLD() {
+void SCOPSimGeometryConstruction::ConstructLD(G4ThreeVector moduleCoords,
+                                            G4String LD1Name,
+                                            G4String LD2Name,
+                                            G4String LD3Name,
+                                            G4String LD4Name,
+                                            G4String LD1LD2Color,
+                                            G4String LD3LD4Color,
+                                            G4LogicalVolume* motherLogical,
+                                            G4bool buildTwoLDs = true
+                                        ) {
     auto matLD = SCOPSimMaterials::getInstance()->getMaterial(fLDMaterial);
 
-    // Octogonal Germanium LD dimensions
+    // Octogonal Germanium LD dimensions //
 
     G4double LDThickness;
     std::vector<G4TwoVector> LDPolygon; // LD octogonal shape vector
@@ -1239,29 +1228,34 @@ void SCOPSimGeometryConstruction::ConstructLD() {
     LDPolygon.push_back( G4TwoVector( -24.3 * mm, +15.7 * mm ) );
     LDPolygon.push_back( G4TwoVector( -24.3 * mm, -15.7 * mm ) );
     LDThickness = 0.5 * mm;
-
-    LogicalLD1 = Geom->GetOctogonalVolume("LD1", matLD, LDPolygon, LDThickness);
-    LogicalLD2 = Geom->GetOctogonalVolume("LD2", matLD, LDPolygon, LDThickness);
-
-    // Assign colors
-    SetLogicalVolumeColor(LogicalLD1, "yellow");
-    SetLogicalVolumeColor(LogicalLD2, "yellow");
-
-    PhysicalLD1 = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, -fLMOThickness/2 - fDistanceLMOtoLD1 - LDThickness/2 )),
-        LogicalLD1, "LD1", LogicalHolder, false, 0);
-
-    PhysicalLD2 = new G4PVPlacement(
-        G4Transform3D(DontRotate, G4ThreeVector(0. * mm, 0 * mm, fLMOThickness/2 + fDistanceLMOtoLD2 + LDThickness/2 )),
-        LogicalLD2, "LD2", LogicalHolder, false, 0);
     
-    //G4cout<<"LMO Thickness="<<fLMOThickness<<" | DistanceLMOtoLD="<<fDistanceLMOtoLD<<" | LDThickness="<<
-    //LDThickness<<" | fLMOThickness/2 + fDistanceLMOtoLD + LDThickness/2 = "<<(fLMOThickness/2 + fDistanceLMOtoLD + LDThickness/2)<<G4endl;
+    // LD1 | LD2 //
+    LogicalLD1 = Geom->GetOctogonalVolume(LD1Name, matLD, LDPolygon, LDThickness);
+    LogicalLD2 = Geom->GetOctogonalVolume(LD2Name, matLD, LDPolygon, LDThickness);
+    SetLogicalVolumeColor(LogicalLD1, LD1LD2Color);
+    SetLogicalVolumeColor(LogicalLD2, LD1LD2Color);
+    PhysicalLD1 = new G4PVPlacement(
+        G4Transform3D(DontRotate, moduleCoords+G4ThreeVector(0. * mm, 0 * mm, -fLMOThickness/2 - fDistanceLMOtoLD1 - LDThickness/2 )),
+        LogicalLD1, LD1Name, motherLogical, false, 0);
+    PhysicalLD2 = new G4PVPlacement(
+        G4Transform3D(DontRotate, moduleCoords+G4ThreeVector(0. * mm, 0 * mm, fLMOThickness/2 + fDistanceLMOtoLD2 + LDThickness/2 )),
+        LogicalLD2, LD2Name, motherLogical, false, 0);
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////// SiO coating
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // LD3 | LD4 //
+    if (buildTwoLDs){
+        LogicalLD3 = Geom->GetOctogonalVolume(LD3Name, matLD, LDPolygon, LDThickness);
+        LogicalLD4 = Geom->GetOctogonalVolume(LD4Name, matLD, LDPolygon, LDThickness);
+        SetLogicalVolumeColor(LogicalLD3, LD3LD4Color);
+        SetLogicalVolumeColor(LogicalLD4, LD3LD4Color);
+        PhysicalLD3 = new G4PVPlacement(
+            G4Transform3D(DontRotate,moduleCoords+fOffsetBetweenLMO+G4ThreeVector(0. * mm, 0 * mm, -fLMOThickness/2 - fDistanceLMOtoLD1 - LDThickness/2 )),
+            LogicalLD3, LD3Name, motherLogical, false, 0);
+        PhysicalLD4 = new G4PVPlacement(
+            G4Transform3D(DontRotate, moduleCoords+fOffsetBetweenLMO+G4ThreeVector(0. * mm, 0 * mm, fLMOThickness/2 + fDistanceLMOtoLD2 + LDThickness/2 )),
+            LogicalLD4, LD4Name, motherLogical, false, 0);
+    }
 
+    // SiO coating //
     G4MaterialPropertiesTable *mptLDcoating = new G4MaterialPropertiesTable();
     G4cout<<"fLDCoatingRINDEX = "<<fLDCoatingRINDEX<<G4endl;
     G4cout<<"fLDCoatingThickness = "<<fLDCoatingThickness<<G4endl;
@@ -1279,8 +1273,48 @@ void SCOPSimGeometryConstruction::ConstructLD() {
 
     auto LD1Surface = new G4LogicalBorderSurface("VacuumLD", PhysicalHolder, PhysicalLD1, opLDSurface);
     auto LD2Surface = new G4LogicalBorderSurface("VacuumLD", PhysicalHolder, PhysicalLD2, opLDSurface);
+    if (buildTwoLDs){
+        auto LD3Surface = new G4LogicalBorderSurface("VacuumLD", PhysicalHolder, PhysicalLD3, opLDSurface);
+        auto LD4Surface = new G4LogicalBorderSurface("VacuumLD", PhysicalHolder, PhysicalLD4, opLDSurface);
+    }
 }
 
+/**
+ * @brief Construct one module with 2 LMOs, 4 LDs, CuFrame and PTFE.
+ * Input: center coordinates of the module
+ */
+void SCOPSimGeometryConstruction::ConstructPrimaryModule() {
+
+    ConstructLMO(G4ThreeVector(0*mm, 0*mm, 0*mm), "LMO", "LMOdead", "blue", "blueAlpha", LogicalHolder, buildSecModules);
+    ConstructLD(G4ThreeVector(0*mm, 0*mm, 0*mm), "LD1", "LD2", "LD3dead", "LD4dead", "yellow", "yellowAlpha", LogicalHolder, buildSecModules);
+    if (buildStructure){
+        ConstructPTFE(G4ThreeVector(0*mm, 0*mm, 0*mm), "PTFE", "gray", LogicalHolder);
+        ConstructCopperFrame(G4ThreeVector(0*mm, 0*mm, 0*mm), "CuFrame", "orange", LogicalHolder);
+    }
+}
+
+/**
+ * @brief Construct one module with 2 LMOs, 4 LDs, CuFrame and PTFE.
+ * Input: center coordinates of the module
+ */
+void SCOPSimGeometryConstruction::ConstructSecondaryModules() {
+
+    auto Vacuum = SCOPSimMaterials::getInstance()->getMaterial("Vacuum");
+
+    auto SolidModule = new G4Box("Module", 0.5*112*mm, 0.5*80*mm, 0.5*(80)*mm);
+    auto LogicalModule = new G4LogicalVolume(SolidModule, Vacuum, "Module");
+    ConstructLMO(G4ThreeVector(-28*mm, 0*mm, 0*mm), "secLMO1", "secLMO2", "blueAlpha", "blueAlpha", LogicalModule);
+    ConstructLD(G4ThreeVector(-28*mm, 0*mm, 0*mm), "secLD1", "secLD2", "secLD3", "secLD4", "yellowAlpha", "yellowAlpha", LogicalModule);
+    if (buildStructure){
+        ConstructPTFE(G4ThreeVector(-28*mm, 0*mm, 0*mm), "secPTFE", "grayAlpha", LogicalModule);
+        ConstructCopperFrame(G4ThreeVector(-28*mm, 0*mm, 0*mm), "secCuFrame", "orangeAlpha", LogicalModule);
+    }
+    new G4PVPlacement(nullptr, G4ThreeVector(28*mm, -80*mm, 0*mm), LogicalModule, "Module", LogicalHolder, false, 1);
+    new G4PVPlacement(nullptr, G4ThreeVector(28*mm, 80*mm, 0*mm), LogicalModule, "Module", LogicalHolder, false, 2);
+    new G4PVPlacement(nullptr, G4ThreeVector(28*mm-112*mm, -80*mm, 0*mm), LogicalModule, "Module", LogicalHolder, false, 3);
+    new G4PVPlacement(nullptr, G4ThreeVector(28*mm-112*mm, 0*mm, 0*mm), LogicalModule, "Module", LogicalHolder, false, 4);
+    new G4PVPlacement(nullptr, G4ThreeVector(28*mm-112*mm, 80*mm, 0*mm), LogicalModule, "Module", LogicalHolder, false, 5);
+}
 
 /**
  * @brief Construct the full detector geometry for the simulation.
@@ -1316,19 +1350,21 @@ G4VPhysicalVolume *SCOPSimGeometryConstruction::Construct() {
     Flip.rotateX(90 * deg);
     Flip.rotateY(0 * deg);
 
-    // #########################################################################
-    //  DEFINE GEOMETRY VOLUMES
-    // #########################################################################
+    // --- Geometry conditions -------------------------------------------------
+    buildSecModules = false;     // build secondary modules
+    buildStructure = true;       // build structure volumes (Copper, PTFE)
+    diffLMOsurfaces = false;     // use 6 differents surface states for the LMO
 
-    buildStructure = false; //build structure volumes
+    if (buildStructure){         // ensure that we don't use 6 surfaces for the
+        diffLMOsurfaces = false; // LMO when the structure is build, to avoid
+    }                            // overlaps between surface volumes and structure
 
-    /// Create the world and main holder volume
-    CreateWorldAndHolder();
-    ConstructLMO();
-    ConstructLD();
-    if (buildStructure){
-        ConstructPTFE();
-        ConstructCopperFrame();
+
+    // --- Construct Volumes ---------------------------------------------------
+    CreateWorldAndHolder();          // construct the world and main holder volume
+    ConstructPrimaryModule();        // contruct primary module
+    if (buildSecModules){
+        ConstructSecondaryModules(); // contruct secondary modules
     }
 
     G4cout << "END OF THE DETECTOR CONSTRUCTION" << G4endl;

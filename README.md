@@ -163,6 +163,32 @@ cd build
 
 ---
 
+## 📝 Documentation des Macros Shell
+
+Possibilité de préciser des paramètres dans le shell en mode batch.
+
+```bash
+./SCOPSim output 100 vrml.mac OFF LMOModel=unified LMOType=dielectric_dielectric LMOFinish=polish
+# Plus lent mais déterministe (reproductible)
+```
+
+**Liste des commandes:**
+
+```bash
+LMOModel        # default: unified
+LMOType         # default: dielectric_dielectric
+LMOFinish       # default: ground
+LMOSigmaAlpha   # default: 0.0
+LMOPolish       # default: 0.0
+LDMat           # default: Germanium
+LDCoatRINDEX    # default: 2.48
+LDCoatThickness # default: 60 (nm)
+S1Distance      # default: 0.5 (mm)
+S2Distance      # default: 3 (mm)
+```
+
+---
+
 ## 📝 Documentation des Macros Geant4
 
 Les fichiers macro (`.mac`) sont des scripts de commandes qui configurent la simulation. Géant4 les exécute de manière séquentielle.

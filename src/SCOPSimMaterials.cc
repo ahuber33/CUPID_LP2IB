@@ -61,18 +61,21 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     G4Material* VacuumWorld = new G4Material("VacuumWorld", 1., 1. * g/mole, 1.e-20 * g/cm3, kStateGas, 0.1 * kelvin, 1.e-20 * bar);
     G4Material* Germanium = new G4Material( elGe->GetName(), elGe->GetZ(), elGe->GetAtomicMassAmu() * g/mole, 5.323  * g/cm3 );
     G4Material* Silicon   = new G4Material( elSi->GetName(), elSi->GetZ(), elSi->GetAtomicMassAmu() * g/mole, 2.3290 * g/cm3 );
+    G4Material* Copper = new G4Material( elCu->GetName(), elCu->GetZ(), elCu->GetAtomicMassAmu() * g/mole, 8.935  * g/cm3 );
+    G4Material* Teflon = G4NistManager::Instance()->FindOrBuildMaterial("G4_TEFLON");
+    Teflon->SetName("Teflon");
 
     // ------------------
     // Compound materials
     // ------------------
 
-    // Li2MoO4
+    // Li2MoO4 //
     auto Li2MoO4 = new G4Material("Li2MoO4", 3.07*g/cm3, 3);
     Li2MoO4->AddElement( elLi, 2);
     Li2MoO4->AddElement( elMo, 1);
     Li2MoO4->AddElement( elO, 4);
 
-    // SiO
+    // SiO //
     auto SiO = new G4Material( "SiO", 2.13*g/cm3, 2 );
     SiO->AddElement( elSi, 1);
     SiO->AddElement( elO,  1);
@@ -81,10 +84,9 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     // Optical parameters
     // ------------------
 
-    G4OpticalParameters::Instance()->SetScintByParticleType(true); //different scintillation for each interacting particle
+    G4OpticalParameters::Instance()->SetScintByParticleType(true); // different scintillation for each interacting particle
 
-    // Vacuum
-
+    // Vacuum //
     std::vector<G4double> energy_vacuum = {1.5 * eV, 5.0 * eV};
     std::vector<G4double> refractive_index_vacuum = {1.0, 1.0};
     std::vector<G4double> absorption_vacuum = {100. *m, 100. *m};
@@ -92,11 +94,9 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     auto mptVacuum = new G4MaterialPropertiesTable();
     mptVacuum->AddProperty("RINDEX", energy_vacuum, refractive_index_vacuum);
     mptVacuum->AddProperty("ABSLENGTH", energy_vacuum, absorption_vacuum);
-
     Vacuum->SetMaterialPropertiesTable(mptVacuum);
 
-    // LMO
-
+    // LMO //
     SetProperty("EMISSION", "LMO_EMISSION_eV.txt");
     SetProperty("ABSORPTION", "LMO_ABSORPTION_eV_mm.txt");
     SetProperty("RINDEX", "LMO_RINDEX_eV.txt");
@@ -112,36 +112,50 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     mptLi2MoO4->AddConstProperty("RESOLUTIONSCALE", 1.0);
     mptLi2MoO4->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
     mptLi2MoO4->AddConstProperty("SCINTILLATIONTIMECONSTANT1", 84.5 * us); // https://doi.org/10.1140/epjc/s10052-019-7242-1
-
     Li2MoO4->SetMaterialPropertiesTable(mptLi2MoO4);
 
-    // Germanium
-
-    SetProperty("ABSORPTION", "Ge_ABSORPTION_eV_cm.txt");
+    // Germanium //
+    SetProperty("ABSORPTION", "Ge_ABSORPTION_eV_mm.txt");
     SetProperty("RINDEX", "Ge_RINDEX_eV.txt");
 
     auto mptGermanium = new G4MaterialPropertiesTable();
     mptGermanium->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
     mptGermanium->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
-
     Germanium->SetMaterialPropertiesTable(mptGermanium);
 
-    // Silicon
-
-    SetProperty("ABSORPTION", "Si_ABSORPTION_eV_cm.txt");
+    // Silicon //
+    SetProperty("ABSORPTION", "Si_ABSORPTION_eV_mm.txt");
     SetProperty("RINDEX", "Si_RINDEX_eV.txt");
 
     auto mptSilicon = new G4MaterialPropertiesTable();
     mptSilicon->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
     mptSilicon->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
-
     Silicon->SetMaterialPropertiesTable(mptSilicon);
 
+    // Copper //
+    SetProperty("ABSORPTION", "Cu_ABSORPTION_eV_mm.txt");
+    SetProperty("RINDEX", "Cu_RINDEX_eV.txt");
+
+    auto mptCopper = new G4MaterialPropertiesTable();
+    mptCopper->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
+    mptCopper->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
+    Copper->SetMaterialPropertiesTable(mptCopper);
+
+    // Teflon //
+    SetProperty("RINDEX", "PTFE_RINDEX_eV.txt");
+
+    auto mptTeflon= new G4MaterialPropertiesTable();
+    mptTeflon->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
+    Teflon->SetMaterialPropertiesTable(mptTeflon);
+
+    // Add to Material List
     fMaterialsList.push_back(Vacuum);
     fMaterialsList.push_back(VacuumWorld);
     fMaterialsList.push_back(Li2MoO4);
     fMaterialsList.push_back(Germanium);
     fMaterialsList.push_back(Silicon);
+    fMaterialsList.push_back(Copper);
+    fMaterialsList.push_back(Teflon);
 }
 
 SCOPSimMaterials::~SCOPSimMaterials() {}

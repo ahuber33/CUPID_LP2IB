@@ -65,19 +65,45 @@ class SCOPSimGeometryConstruction final
     void CreateWorldAndHolder();
 
     /** @brief Construct PTFE Part. */
-    void ConstructPTFE();
+    void ConstructPTFE(G4ThreeVector  moduleCoords,
+                      G4String PTFEName,
+                      G4String PTFEColor,
+                      G4LogicalVolume* motherLogical);
 
     /** @brief Construct PTFE Part. */
     /* void ConstructPEN(); */
     
     /** @brief Construct Copper Frame. */
-    void ConstructCopperFrame();
+    void ConstructCopperFrame(G4ThreeVector  moduleCoords,
+                              G4String CuName,
+                              G4String CuColor,
+                              G4LogicalVolume* motherLogical);
 
     /** @brief Construct LMO Part. */
-    void ConstructLMO();
+    void ConstructLMO(G4ThreeVector  moduleCoords,
+                      G4String LMO1Name,
+                      G4String LMO2Name,
+                      G4String LMO1Color,
+                      G4String LMO2Color,
+                      G4LogicalVolume* motherLogical,
+                      G4bool onlyOneLMO);
 
     /** @brief Construct LD Part. */
-    void ConstructLD();
+    void ConstructLD(G4ThreeVector  moduleCoords,
+                    G4String LD1Name,
+                    G4String LD2Name,
+                    G4String LD3Name,
+                    G4String LD4Name,
+                    G4String LD1LD2Color,
+                    G4String LD3LD4Color,
+                    G4LogicalVolume* motherLogical,
+                    G4bool buildTwoLDs);
+
+    /** @brief Construct primary module. */
+    void ConstructPrimaryModule();
+
+    /** @brief Construct secondary modules. */
+    void ConstructSecondaryModules();
 
     /** @brief Construct DetectionOpticalProperties. */
     void CreateDetectionOpticalProperties();
@@ -353,8 +379,9 @@ class SCOPSimGeometryConstruction final
 
   private:
     static const G4String path;
-    G4bool constructSecLMO = false;
+    G4bool buildSecModules = false;
     G4bool buildStructure = false;
+    G4bool diffLMOsurfaces = false;
 
     /** @brief Geometry handler. */
     std::unique_ptr<Geometry> Geom;
@@ -376,6 +403,7 @@ class SCOPSimGeometryConstruction final
     G4double fDistanceLMOtoLD1 = 0.5 * CLHEP::mm;
     G4double fDistanceLMOtoLD2 = 3 * CLHEP::mm;
     G4double fDetectorDistance = 100 * CLHEP::mm;
+    G4ThreeVector fOffsetBetweenLMO = {53 * CLHEP::mm, 0 * CLHEP::mm, 0 * CLHEP::mm};
     G4String fLMOSurfaceModel = "unified";
     G4double fLMOSurfacePolish = -1.;
     G4String fLMOSurfaceType = "dielectric_dielectric";
@@ -400,14 +428,20 @@ class SCOPSimGeometryConstruction final
     G4VisAttributes *cyan = nullptr;
     G4VisAttributes *blue = nullptr;
     G4VisAttributes *magenta = nullptr;
+    G4VisAttributes *blueAlpha = nullptr;
+    G4VisAttributes *yellowAlpha = nullptr;
+    G4VisAttributes *orangeAlpha = nullptr;
+    G4VisAttributes *grayAlpha = nullptr;
 
     /** @brief Logical volumes (geometry definitions). */
     G4LogicalVolume *LogicalWorld = nullptr;
     G4LogicalVolume *LogicalHolder = nullptr;
     G4LogicalVolume *LogicalLD1 = nullptr;
     G4LogicalVolume *LogicalLD2 = nullptr;
-    //G4LogicalVolume *LogicalLDCoating = nullptr;
-    G4LogicalVolume *LogicalLMO = nullptr;
+    G4LogicalVolume *LogicalLD3 = nullptr;
+    G4LogicalVolume *LogicalLD4 = nullptr;
+    G4LogicalVolume *LogicalLMO1 = nullptr;
+    G4LogicalVolume *LogicalLMO2 = nullptr;
     G4LogicalVolume *LogicalPTFE = nullptr;
     G4LogicalVolume *LogicalCuFrame = nullptr;
     G4LogicalVolume *LogicalLMOsec1 = nullptr;
@@ -436,8 +470,10 @@ class SCOPSimGeometryConstruction final
     G4VPhysicalVolume *PhysicalHolder = nullptr;
     G4VPhysicalVolume *PhysicalLD1 = nullptr;
     G4VPhysicalVolume *PhysicalLD2 = nullptr;
-    //G4VPhysicalVolume *PhysicalLDCoating = nullptr;
-    G4VPhysicalVolume *PhysicalLMO = nullptr;
+    G4VPhysicalVolume *PhysicalLD3 = nullptr;
+    G4VPhysicalVolume *PhysicalLD4 = nullptr;
+    G4VPhysicalVolume *PhysicalLMO1 = nullptr;
+    G4VPhysicalVolume *PhysicalLMO2 = nullptr;
     G4VPhysicalVolume *PhysicalPTFE = nullptr;
     G4VPhysicalVolume *PhysicalCuFrame = nullptr;
     G4VPhysicalVolume *PhysicalLMOsec1 = nullptr;
