@@ -124,8 +124,6 @@ void SCOPSimSteppingAction::CheckBoundaryStatus(
             evtac->FillPhotonDetectorPositionX(postStep.x);
             evtac->FillPhotonDetectorPositionY(postStep.y);
             evtac->FillPhotonDetectorPositionZ(postStep.z);
-            evtac->FillPhotonTime(aStep->GetPostStepPoint()->GetGlobalTime() /
-                                  ns);
             evtac->FillPhotonTotalLength(aStep->GetTrack()->GetTrackLength());
             if (VerbosityLevel > 1) {
                 G4cout << "Photon detecté" << G4endl;
@@ -350,6 +348,7 @@ void SCOPSimSteppingAction::SetPhotonDetectedInformationLD1(
 
     evtac->FillDetectedWavelengthLD1(1240 / (theTrack->GetTotalEnergy() / eV));
     evtac->FillDetectedTrackLengthLD1(aStep->GetTrack()->GetTrackLength());
+    evtac->FillPhotonTime(aStep->GetPostStepPoint()->GetGlobalTime() / ns);
     if (VerbosityLevel > 0) {
         G4cout << "Detected Photon Wavelength = "
                << 1240 / (theTrack->GetTotalEnergy() / eV) << G4endl;
@@ -573,7 +572,6 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
 
             evtac->CountDetectedLD1();
-        
             
             SetPhotonDetectedInformationLD1(aStep, evtac);
             theTrack->SetTrackStatus(fStopAndKill);

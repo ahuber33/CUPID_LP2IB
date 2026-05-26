@@ -1,11 +1,11 @@
-for N in 0 1 2 3 4 5
+for N in 0
 do
-    for DISTANCE in 0 1 2 3 4 5 6 7 8 9
+    for cut in 0.00000001 0.0000001 0.000001 0.00001 0.0001 0.001 0.01 0.1 1.0 10.0
     do
-    	until [ -e ../Resultats/distance/output_"$N"."$DISTANCE"mm.root ]
+    	until [ -e ../Resultats/cut/output_cut"$cut"mm.root ]
     	do
-		./SCOPSim output_"$N"."$DISTANCE"mm 1000 vrml.mac OFF S1Distance="$N"."$DISTANCE"
-		mv ../Resultats/output_"$N"."$DISTANCE"mm.root ../Resultats/distance/
+		./SCOPSim output_cut"$cut"mm 1000 vrml.mac OFF cut="$cut"
+		mv ../Resultats/output_cut"$cut"mm.root ../Resultats/cut/
 	done
     done
 done

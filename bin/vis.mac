@@ -5,7 +5,7 @@
 /vis/geometry/set/forceSolid PTFE
 /vis/geometry/set/forceSolid CuFrame
 /vis/viewer/set/viewpointThetaPhi 0 0                             # Set the camera viewpoint angles theta=0, phi=0
-/vis/viewer/set/upVector 1 0 0                                    # Set the camera "up" vector
+/vis/viewer/set/upVector 0 0 1                                    # Set the camera "up" vector
 /vis/viewer/set/viewpointVector -0.99 0 0.01                      # Set the camera pointing vector
 /vis/viewer/zoom 1.                                               # Set initial zoom to 1x
 /vis/viewer/set/auxiliaryEdge true                                # Display auxiliary edges for better visibility
@@ -57,16 +57,12 @@
 ###################################################################
 /gps/number 1                                                     # Generate 1 particle
 /gps/particle e-                                              # Set particle type
-#/gps/pos/type Point                                               # Particle generated at a point
-
+/gps/energy 1. MeV                                              # Particle energy
 /gps/pos/type Volume
 /gps/pos/shape Para
 /gps/pos/halfx 22.5 mm
 /gps/pos/halfy 22.5 mm
 /gps/pos/halfz 22.5 mm
-
 /gps/pos/centre 0.0 0.0 0.0 mm                                      # Particle start position
-
-#/gps/direction 0.0 0.0 1.0                                        # Particle direction along Y-axis
 /gps/ang/type iso                                                # Particle isotropic direction
-/gps/energy 1 MeV                                              # Particle energy
+/gps/ang/type iso                                                # Particle isotropic direction

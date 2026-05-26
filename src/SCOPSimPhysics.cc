@@ -51,6 +51,7 @@ SCOPSimPhysics::SCOPSimPhysics() {
     // Verbosity level for physics processes
     G4int verb = 1;
     SetVerboseLevel(verb);
+    fGlobalCut = 0.0001; // mm
 
     // --- Nuclide Table configuration ---
     // Set half-life threshold to 1 ns for storing unstable isotopes
@@ -109,6 +110,7 @@ SCOPSimPhysics::SCOPSimPhysics() {
     RegisterPhysics(new G4OpticalPhysics());
 }
 
+
 // ============================================================
 // Destructor
 // ============================================================
@@ -117,3 +119,16 @@ SCOPSimPhysics::SCOPSimPhysics() {
  * constructors).
  */
 SCOPSimPhysics::~SCOPSimPhysics() {}
+
+void SCOPSimPhysics::SetGlobalCut(G4double val)
+{
+    fGlobalCut = val;
+}
+
+void SCOPSimPhysics::SetCuts()
+{
+    defaultCutValue = fGlobalCut * CLHEP::mm;
+    SetCutsWithDefault();
+    //SetCutValue(0.1 * CLHEP::mm, "gamma");
+    //SetCutValue(0.01 * CLHEP::mm, "e-");
+}

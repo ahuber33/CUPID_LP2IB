@@ -168,8 +168,8 @@ cd build
 Possibilité de préciser des paramètres dans le shell en mode batch.
 
 ```bash
-./SCOPSim output 100 vrml.mac OFF LMOModel=unified LMOType=dielectric_dielectric LMOFinish=polish
-# Plus lent mais déterministe (reproductible)
+# example
+./SCOPSim output 100 vrml.mac OFF LMOModel=unified LMOFinish=polish
 ```
 
 **Liste des commandes:**

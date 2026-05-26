@@ -2,7 +2,7 @@ void optical_results_LD1(){
 
     
 
-TFile *f = TFile::Open("../Resultats/output.root");
+TFile *f = TFile::Open("../Resultats/cut/output_cut10.0mm.root");
 TTree *Optical_tree = (TTree*)f->Get("Optical");
 
 TCanvas *c1 = new TCanvas("c1", "Wavelength spectrum");
@@ -152,7 +152,7 @@ h6->SetLineColor(kGreen);
 h7->SetLineColor(kOrange);
 h4->GetXaxis()->SetTitle("number of photons");
 h4->GetYaxis()->SetTitle("event");
-TF1 *f3 = new TF1 ("f3", "gaus", 0., 0.);
+TF1 *f3 = new TF1 ("f3", "gaus", h3->GetMean(1)-200,h3->GetMean(1)+200);
 TF1 *f4 = new TF1 ("f4", "gaus", 0., 0.);
 TF1 *f5 = new TF1 ("f5", "gaus", 0., 0.);
 TF1 *f6 = new TF1 ("f6", "gaus", 0., 0.);
@@ -217,10 +217,10 @@ double Nscint = f3->GetParameter(1);
 double NdetLD1 = f4->GetParameter(1);
 double Nescaped = f5->GetParameter(1);
 double Nabsorbed = f6->GetParameter(1);
-double Nscint_err = f3->GetParameter(2);
-double NdetLD1_err = f4->GetParameter(2);
-double Nescaped_err = f5->GetParameter(2);
-double Nabsorbed_err = f6->GetParameter(2);
+double Nscint_err = f3->GetParError(1);
+double NdetLD1_err = f4->GetParError(1);
+double Nescaped_err = f5->GetParError(1);
+double Nabsorbed_err = f6->GetParError(1);
 
 double RdetLD1 = 100*(NdetLD1/Nscint);
 double Rescaped  = 100*(Nescaped /Nscint);
@@ -235,6 +235,7 @@ std::cout<<"----------------- S1 STATS -----------------"<<std::endl;
 std::cout<<"--------------------------------------------"<<std::endl;
 //std::cout<<"Ndetected: "<<h4->GetMean(1)<<" +- "<<h4->GetMeanError(1)<<" photons"<<std::endl;
 std::cout<<"LY: "<<h10->GetMean(1)<<" +- "<<h10->GetMeanError(1)<<" keV/MeV"<<std::endl;
+std::cout<<"Scintillated: "<<Nscint<<" +- "<<Nscint_err<<" photons"<<std::endl;
 std::cout<<"Detected S1: "<<RdetLD1<<" +- "<<RdetLD1_err<<" %"<<std::endl;
 std::cout<<"Escaped: "<<Rescaped<<" +- "<<Rescaped_err<<" %"<<std::endl;
 std::cout<<"Absorbed: "<<Rabsorbed<<" +- "<<Rabsorbed_err<<" %"<<std::endl;

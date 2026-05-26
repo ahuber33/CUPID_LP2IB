@@ -5,15 +5,15 @@ void LD1_multimodels(){
     const char *models[] = {"unified"};
     int i, j;
     for (i = 0; i < 1; i++) {
-        for (j = 0; j <= 53; j++) {
+        for (j = 1; j <= 10; j+=10) {
             char filename[50];
-            double RINDEX = j * 0.1;
+            double RINDEX = j*0.000001;
             snprintf(filename, sizeof(filename), "output_%.1fmm", RINDEX);
             //snprintf(filename, sizeof(filename), "output_%s_dielectric_dielectric_ground_%.1f", models[i], polish);
             //std::cout<<"------------------------------------------------------------------"<<std::endl;output_30nm_n=1.0.root
             //std::cout<<"opening file "<<filename<<std::endl;
 
-            TString filepath = "../Resultats/distance/";
+            TString filepath = "../Resultats/cut/";
             filepath += filename;
             filepath += ".root";
             //std::cout<<"opening file "<<filepath<<std::endl;

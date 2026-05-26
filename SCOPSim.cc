@@ -89,6 +89,9 @@ int main(int argc, char **argv) {
             else if (param=="S2Distance"){
                 GeomCons->SetLD2DistanceToLMO(G4double(stod(var)));
             }
+            else if (param=="cut"){
+                Phys->SetGlobalCut(G4double(stod(var)));
+            }
             else if (param=="Cerenkov"){
                 if (var=="true"){
                     Phys->SetCerenkov(G4bool(true));

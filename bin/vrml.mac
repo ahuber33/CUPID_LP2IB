@@ -23,6 +23,7 @@
 
 /run/reinitializeGeometry                                           # Apply geometry changes
 /run/physicsModified                                                # Notify Geant4 physics has changed
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
 
 # ------------------------- PHOTON TRACKING (Batch, no VIS) ------------------
 /tracking/storeTrajectory 1                                         # Force storage of all trajectories
@@ -36,17 +37,22 @@
 ########## PART TO SIMULATE PARTICLE WITH GPS (no setgun) #########
 ###################################################################
 /gps/number 1                                                     # Generate 1 particle
-/gps/particle e-                                              # Set particle type
-#/gps/pos/type Point                                               # Particle generated at a point
+/gps/particle e-                                             # Set particle type
+/gps/energy 1. MeV                                              # Particle energy
+#/gps/particle ion 
+#/gps/ion 86 220 0 0
+
 
 /gps/pos/type Volume
 /gps/pos/shape Para
 /gps/pos/halfx 22.5 mm
 /gps/pos/halfy 22.5 mm
 /gps/pos/halfz 22.5 mm
-
-#/gps/pos/centre 0.0 0.0 -15.0 mm                                      # Particle start position
-
-#/gps/direction 0.0 0.0 1.0                                        # Particle direction along Y-axis
+/gps/pos/centre 0.0 0.0 0.0 mm                                      # Particle start position
 /gps/ang/type iso                                                # Particle isotropic direction
-/gps/energy 1. MeV                                              # Particle energy
+
+#/gps/ene/type Lin
+#/gps/ene/gradient 0
+#/gps/ene/intercept 1
+#/gps/ene/min 500 keV
+#/gps/ene/max 1500 keV

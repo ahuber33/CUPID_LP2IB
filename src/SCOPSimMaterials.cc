@@ -84,7 +84,9 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     // Optical parameters
     // ------------------
 
-    G4OpticalParameters::Instance()->SetScintByParticleType(true); // different scintillation for each interacting particle
+    G4bool scintByParticleType = false;
+
+    G4OpticalParameters::Instance()->SetScintByParticleType(scintByParticleType); // different scintillation for each interacting particle
 
     // Vacuum //
     std::vector<G4double> energy_vacuum = {1.5 * eV, 5.0 * eV};
@@ -106,8 +108,19 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     auto mptLi2MoO4 = new G4MaterialPropertiesTable();
     mptLi2MoO4->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
     mptLi2MoO4->AddProperty("ABSLENGTH", ABSORPTION_energy, ABSORPTION_var);
-    mptLi2MoO4->AddProperty("ELECTRONSCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
-    mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2); // no quenching
+    if (scintByParticleType){
+        mptLi2MoO4->AddProperty("ELECTRONSCINTILLATIONYIELD", ELECTRONLY_energy, ELECTRONLY_var, 2);
+        mptLi2MoO4->AddProperty("ALPHASCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2); // quenching
+        mptLi2MoO4->AddProperty("TRITONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+        mptLi2MoO4->AddProperty("IONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+        mptLi2MoO4->AddProperty("PROTONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+        mptLi2MoO4->AddProperty("DEUTERONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
+    }
+    else {
+        mptLi2MoO4->AddConstProperty("SCINTILLATIONYIELD", 1015 / MeV);
+        Li2MoO4->GetIonisation()->SetBirksConstant(0.0004 * cm / MeV);
+    }
+
     mptLi2MoO4->AddProperty("SCINTILLATIONCOMPONENT1", EMISSION_energy, EMISSION_var);
     mptLi2MoO4->AddConstProperty("RESOLUTIONSCALE", 1.0);
     mptLi2MoO4->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
@@ -145,6 +158,11 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     SetProperty("RINDEX", "PTFE_RINDEX_eV.txt");
 
     auto mptTeflon= new G4MaterialPropertiesTable();
+    /* double multiplier = 1.1;
+
+    for (auto &element : RINDEX_var) {
+        element *= multiplier;
+    } */
     mptTeflon->AddProperty("RINDEX", RINDEX_energy, RINDEX_var);
     Teflon->SetMaterialPropertiesTable(mptTeflon);
 
