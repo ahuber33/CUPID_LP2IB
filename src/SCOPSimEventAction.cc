@@ -78,6 +78,7 @@ void SCOPSimEventAction::EndOfEventAction(const G4Event *evt) {
     /** Update Beam Stop YAG statistics if not empty */
     if (!StatsLMO.energy.empty())
         runac->UpdateStatisticsLMO(StatsLMO);
+    StatsOptical.IncidentE = StatsInput.energy;
 
     if (StatsOptical.ScintillationLMO < 0) {
         StatsOptical.IncidentE = StatsInput.energy;
@@ -100,6 +101,7 @@ void SCOPSimEventAction::EndOfEventAction(const G4Event *evt) {
         float Killedfrac =
             100 * StatsOptical.Killed / StatsOptical.GeneratedTotal;
 
+        G4cout<<"FLAG EVENT"<<G4endl;
         // Output the results
     }
     runac->UpdateStatisticsOptical(StatsOptical);

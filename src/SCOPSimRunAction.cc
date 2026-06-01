@@ -94,13 +94,15 @@ static void CreateScBranches(TTree *tree, RunTallySc &stats) {
     tree->Branch("x_entrance", "vector<float>", &stats.x_entrance);
     tree->Branch("y_entrance", "vector<float>", &stats.y_entrance);
     tree->Branch("z_entrance", "vector<float>", &stats.z_entrance);
-    tree->Branch("parentID", "vector<int>", &stats.parentID);
-    tree->Branch("particleID", "vector<int>", &stats.particleID);
     tree->Branch("energy", "vector<float>", &stats.energy);
     tree->Branch("deposited_energy", "vector<float>",
                  &stats.total_deposited_energy);
     tree->Branch("deposited_energy_event", &stats.deposited_energy_event,
                  "deposited_energy_event/F");
+    tree->Branch("particle_deposited_energy", "vector<float>", &stats.particle_deposited_energy);
+    tree->Branch("particle_deposited_ancestorID", "vector<int>", &stats.particle_deposited_ancestorID);
+    tree->Branch("particle_deposited_particleID", "vector<int>", &stats.particle_deposited_particleID);
+    tree->Branch("particle_deposited_particleName", "vector<string>", &stats.particle_deposited_particleName);
 }
 
 /**
@@ -162,7 +164,14 @@ static void CreateOpticalBranches(TTree *tree, RunTallyOptical &stats) {
     // "vector<float>", &stats.TotalLength);
     tree->Branch("angle_creation", "vector<float>", &stats.Angle_creation);
     tree->Branch("angle_detection", "vector<float>", &stats.Angle_detection);
-    // tree->Branch("final_state", "vector<int>", &stats.FinalState);
+    tree->Branch("particleID", "vector<int>", &stats.particleID);
+    tree->Branch("trackID", "vector<int>", &stats.trackID);
+    tree->Branch("parentID", "vector<int>", &stats.parentID);
+    tree->Branch("ancestorID_LD1", "vector<int>", &stats.AncestorIDLD1);
+    tree->Branch("ancestorID_LD2", "vector<int>", &stats.AncestorIDLD2);
+    tree->Branch("list_ancestorID", "vector<int>", &stats.AncestorIDList);
+    tree->Branch("list_ancestorName", "vector<string>", &stats.AncestorNameList);
+    tree->Branch("primary_track_length", "primary_track_length/F", &stats.PrimaryTrackLength);
 }
 
 //---------------------------------------------------------

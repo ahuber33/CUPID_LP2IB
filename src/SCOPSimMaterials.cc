@@ -64,6 +64,8 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     G4Material* Copper = new G4Material( elCu->GetName(), elCu->GetZ(), elCu->GetAtomicMassAmu() * g/mole, 8.935  * g/cm3 );
     G4Material* Teflon = G4NistManager::Instance()->FindOrBuildMaterial("G4_TEFLON");
     Teflon->SetName("Teflon");
+    G4Material* Mylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
+    Mylar->SetName("Mylar");
 
     // ------------------
     // Compound materials
@@ -117,8 +119,8 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
         mptLi2MoO4->AddProperty("DEUTERONSCINTILLATIONYIELD", ALPHALY_energy, ALPHALY_var, 2);
     }
     else {
-        mptLi2MoO4->AddConstProperty("SCINTILLATIONYIELD", 1015 / MeV);
-        Li2MoO4->GetIonisation()->SetBirksConstant(0.0004 * cm / MeV);
+        mptLi2MoO4->AddConstProperty("SCINTILLATIONYIELD", 1050 / MeV);
+        Li2MoO4->GetIonisation()->SetBirksConstant(0.0016 * cm / MeV);
     }
 
     mptLi2MoO4->AddProperty("SCINTILLATIONCOMPONENT1", EMISSION_energy, EMISSION_var);
@@ -174,6 +176,7 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     fMaterialsList.push_back(Silicon);
     fMaterialsList.push_back(Copper);
     fMaterialsList.push_back(Teflon);
+    fMaterialsList.push_back(Mylar);
 }
 
 SCOPSimMaterials::~SCOPSimMaterials() {}

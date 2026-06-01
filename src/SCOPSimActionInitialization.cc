@@ -97,4 +97,5 @@ void SCOPSimActionInitialization::Build() const {
     SetUserAction(runAction);
     SetUserAction(eventAction);
     SetUserAction(new SCOPSimSteppingAction());
+    SetUserAction(new SCOPSimTrackingAction());
 }

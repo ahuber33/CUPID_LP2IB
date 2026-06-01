@@ -345,10 +345,11 @@ void SCOPSimSteppingAction::SetPhotonDetectedInformationLD1(
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING SetPhotonDetectedInformation-----"<<G4endl;
     }
-
+    auto decayInfo = static_cast<TrackDecayInfo*>(theTrack->GetUserInformation());
     evtac->FillDetectedWavelengthLD1(1240 / (theTrack->GetTotalEnergy() / eV));
     evtac->FillDetectedTrackLengthLD1(aStep->GetTrack()->GetTrackLength());
     evtac->FillPhotonTime(aStep->GetPostStepPoint()->GetGlobalTime() / ns);
+    evtac->FillAncestorIDLD1(decayInfo->ancestorID);
     if (VerbosityLevel > 0) {
         G4cout << "Detected Photon Wavelength = "
                << 1240 / (theTrack->GetTotalEnergy() / eV) << G4endl;
@@ -364,9 +365,10 @@ void SCOPSimSteppingAction::SetPhotonDetectedInformationLD2(
     if (VerbosityLevel>2){
         G4cout<<"-----ENTERING SetPhotonDetectedInformation-----"<<G4endl;
     }
-
+    auto decayInfo = static_cast<TrackDecayInfo*>(theTrack->GetUserInformation());
     evtac->FillDetectedWavelengthLD2(1240 / (theTrack->GetTotalEnergy() / eV));
     evtac->FillDetectedTrackLengthLD2(aStep->GetTrack()->GetTrackLength());
+    evtac->FillAncestorIDLD2(decayInfo->ancestorID);
     if (VerbosityLevel > 0) {
         G4cout << "Detected Photon Wavelength = "
                << 1240 / (theTrack->GetTotalEnergy() / eV) << G4endl;
@@ -375,6 +377,12 @@ void SCOPSimSteppingAction::SetPhotonDetectedInformationLD2(
     if (VerbosityLevel>2){
         G4cout<<"-----LEAVING SetPhotonDetectedInformation-----"<<G4endl;
     }
+}
+
+void SCOPSimSteppingAction::SetParticleIDs(SCOPSimEventAction *evtac){
+    evtac->AddTrackID(trackID);
+    //evtac->AddParentID(parentID);
+    //G4cout<<"trackID: "<<trackID<<" | parentID: "<<parentID<<G4endl;
 }
 
 /**
@@ -407,8 +415,6 @@ void UpdateSc(RunTallySc &tally, G4float x, G4float y, G4float z,
         tally.AddXEntrance(x);
         tally.AddYEntrance(y);
         tally.AddZEntrance(z);
-        tally.AddParentID(parentID);
-        tally.AddParticleID(particleID);
         tally.AddEnergy(energy);
         tally.ActivateFlag();
     }
@@ -416,6 +422,13 @@ void UpdateSc(RunTallySc &tally, G4float x, G4float y, G4float z,
     // Add energy deposited for this step
     tally.AddDepositedEnergy(energyDeposited);
     tally.AddDepositedEnergyEvent(energyDeposited);
+
+    // To know whicj particle ancestor is depositing energy
+    auto decayInfo = static_cast<TrackDecayInfo*>(track->GetUserInformation());
+    tally.SetDepositedEnergy(energyDeposited);
+    tally.SetDepositedAncestorID(decayInfo->ancestorID);
+    tally.SetDepositedParticleID(track->GetTrackID());
+    tally.SetDepositedParticleName(track->GetDefinition()->GetParticleName());
 
     // If particle reached holder volume or lost all energy
     if (volumeNamePostStep == "Holder" || energy_post == 0) {
@@ -444,6 +457,14 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
     if (VerbosityLevel>2){
         G4cout<<"---------ENTERING UserSteppingAction---------"<<G4endl;
     }
+
+
+    // for crashes when physicalvolume is nullptr
+    auto postPV = aStep->GetPostStepPoint()->GetPhysicalVolume();
+    if (!postPV) {
+        theTrack->SetTrackStatus(fStopAndKill);
+        return;
+    }
     
     // --- Preparation of variables ---
     auto evtac = static_cast<SCOPSimEventAction *>(
@@ -464,6 +485,9 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
     energyDeposited = aStep->GetTotalEnergyDeposit() / CLHEP::keV;
     angle = acos((postStep.x - preStep.x) / aStep->GetStepLength());
     time = aStep->GetPostStepPoint()->GetGlobalTime() / ns;
+    if (parentID!=0){
+        creatorproc = aStep->GetTrack()->GetCreatorProcess()->GetProcessName();
+    }
 
     // Positions
     auto prePos = pre->GetPosition() / CLHEP::mm;
@@ -489,6 +513,9 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
     volumeNamePreStep = pre->GetPhysicalVolume()->GetName();
     volumeNamePostStep = post->GetPhysicalVolume()->GetName();
 
+    // Decay info
+    auto decayInfo = static_cast<TrackDecayInfo*>(theTrack->GetUserInformation());
+
     // --- Begin main logic ---
     if (VerbosityLevel>2){
         G4cout<<"| particleID="<<particleID<<" | trackID="<<trackID<<" | parentID="<<parentID<<" | stepNo="<<stepNo<<" | PreVolume = "<<volumeNamePreStep<<" | PostVolume = "<<volumeNamePostStep<<G4endl;
@@ -497,6 +524,29 @@ void SCOPSimSteppingAction::UserSteppingAction(const G4Step *aStep) {
     // Initial beam info (step 1, primary particle only)
     if (parentID == 0 && stepNo == 1)
         SetInputInformations(evtac);
+    
+    if (parentID == 0 && energy_post == 0.)
+        evtac->SetTrackLength(theTrack->GetTrackLength());
+        
+
+
+    // Save ancestorID for decays
+    G4bool saveTrackID = true;
+    if (saveTrackID && stepNo == 1){
+        //G4cout<<"trackID = "<<trackID<<" | parentID = "<<parentID<<" | particleName = "<<particleName<<" | stepNo = "<<stepNo<<" | creatorproc "<<G4endl;
+        if (parentID!=0){
+            if (creatorproc=="RadioactiveDecay") {
+                decayInfo->ancestorID = trackID; // set a new ancestorID for the decay product secondaries
+                evtac->AddToAncestorIDList(trackID);
+                evtac->AddToAncestorNameList(particleName);
+            }
+        }
+        else{
+            evtac->AddToAncestorIDList(trackID);
+            evtac->AddToAncestorNameList(particleName);
+        }
+        
+    }
 
     // YAG screens
     static const std::map<std::string,

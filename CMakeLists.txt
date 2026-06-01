@@ -52,6 +52,7 @@ set(PROJECT_SRC
     src/SCOPSimSteppingAction.cc
     src/SCOPSimActionInitialization.cc
     src/SCOPSimMaterials.cc
+    src/SCOPSimTrackingAction.cc
 )
 
 set(PROJECT_HEADER
@@ -66,6 +67,8 @@ set(PROJECT_HEADER
     include/SCOPSimSteppingAction.hh
     include/SCOPSimActionInitialization.hh
     include/SCOPSimMaterials.hh
+    include/SCOPSimTrackingAction.hh
+    include/TrackDecayInfo.hh
 )
 
 #----------------------------------------------------------------------------

@@ -105,6 +105,8 @@ class SCOPSimGeometryConstruction final
     /** @brief Construct secondary modules. */
     void ConstructSecondaryModules();
 
+    void ConstructMylar();
+
     /** @brief Construct DetectionOpticalProperties. */
     void CreateDetectionOpticalProperties();
 

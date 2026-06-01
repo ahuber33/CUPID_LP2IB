@@ -20,6 +20,7 @@
 #include "SCOPSimPrimaryGeneratorAction.hh"
 #include "SCOPSimRunAction.hh"
 #include "SCOPSimSteppingAction.hh"
+#include "SCOPSimTrackingAction.hh"
 
 class SCOPSimGeometryConstruction;
 class SCOPSimPrimaryGeneratorAction;

@@ -15,6 +15,7 @@
 #include <TBranch.h>
 #include <TTree.h>
 #include <vector>
+#include <string>
 
 class G4Event;
 
@@ -39,6 +40,7 @@ struct RunTallyOptical {
     float IncidentE;
     float DepositTotal;
     float DepositLMO;
+    float PrimaryTrackLength;
     G4int GeneratedTotal;
     G4int GeneratedLMO;
     G4int ScintillationLMO;
@@ -63,6 +65,8 @@ struct RunTallyOptical {
     std::vector<float> DetectorPositionZ;
     std::vector<float> BirthWavelength;
     std::vector<float> DetectedWavelengthLD1;
+    std::vector<float> AncestorIDLD1;
+    std::vector<float> AncestorIDLD2;
     std::vector<float> DetectedWavelengthLD2;
     std::vector<float> DetectedTrackLengthLD1;
     std::vector<float> DetectedTrackLengthLD2;
@@ -78,6 +82,12 @@ struct RunTallyOptical {
     std::vector<float> Angle_creation;
     std::vector<float> Angle_detection;
     std::vector<int> FinalState;
+    std::vector<int> particleID;
+    std::vector<int> parentID;
+    std::vector<int> trackID;
+    std::vector<int> AncestorIDList;
+    std::vector<std::string> AncestorNameList;
+
 
     inline G4int operator==(const RunTallyOptical &right) const {
         return (this == &right);
@@ -93,33 +103,43 @@ struct RunTallySc {
     std::vector<float> x_entrance;
     std::vector<float> y_entrance;
     std::vector<float> z_entrance;
-    std::vector<int> parentID;
-    std::vector<int> particleID;
     std::vector<float> energy;
     float deposited_energy = 0.0;
     float deposited_energy_event = 0.0;
     std::vector<float> total_deposited_energy;
     G4bool flag = false;
+    std::vector<float> particle_deposited_energy;
+    std::vector<int> particle_deposited_ancestorID;
+    std::vector<int> particle_deposited_particleID;
+    std::vector<std::string> particle_deposited_particleName;
 
     // Methods to add data
     void AddXEntrance(float d) { x_entrance.push_back(d); }
     void AddYEntrance(float d) { y_entrance.push_back(d); }
     void AddZEntrance(float d) { z_entrance.push_back(d); }
-    void AddParentID(int d) { parentID.push_back(d); }
-    void AddParticleID(int d) { particleID.push_back(d); }
     void AddEnergy(float d) { energy.push_back(d); }
     void AddDepositedEnergyEvent(float d) { deposited_energy_event += d; }
     void AddDepositedEnergy(float d) { deposited_energy += d; }
     void AddTotalDepositedEnergy(float d) {
         total_deposited_energy.push_back(d);
     }
+    void SetDepositedEnergy(float d){
+        particle_deposited_energy.push_back(d);
+    }
+    void SetDepositedAncestorID(int d){
+        particle_deposited_ancestorID.push_back(d);
+    }
+    void SetDepositedParticleID(int d){
+        particle_deposited_particleID.push_back(d);
+    }
+    void SetDepositedParticleName(G4String d){
+        particle_deposited_particleName.push_back(d);
+    }
 
     // Size accessors
     size_t XEntranceSize() const { return x_entrance.size(); }
     size_t YEntranceSize() const { return y_entrance.size(); }
     size_t ZEntranceSize() const { return z_entrance.size(); }
-    size_t ParentIDSize() const { return parentID.size(); }
-    size_t ParticleIDSize() const { return particleID.size(); }
     size_t EnergySize() const { return energy.size(); }
     size_t TotalDepositedEnergySize() const {
         return total_deposited_energy.size();
@@ -129,8 +149,6 @@ struct RunTallySc {
     float GetXEntrance(size_t i) const { return x_entrance.at(i); }
     float GetYEntrance(size_t i) const { return y_entrance.at(i); }
     float GetZEntrance(size_t i) const { return z_entrance.at(i); }
-    int GetParentID(size_t i) const { return parentID.at(i); }
-    int GetParticleID(size_t i) const { return particleID.at(i); }
     float GetEnergy(size_t i) const { return energy.at(i); }
     float GetTotalDepositedEnergy(size_t i) const {
         return total_deposited_energy.at(i);
@@ -176,6 +194,9 @@ class SCOPSimEventAction : public G4UserEventAction {
     void SetZStart(G4float d) { StatsInput.z = d; }
     void SetZpStart(G4float d) { StatsInput.zp = d; }
     void SetEnergyStart(G4float d) { StatsInput.energy = d; }
+    void AddParentID(int d) { StatsOptical.parentID.push_back(d);}
+    void AddParticleID(int d) { StatsOptical.particleID.push_back(d); }
+    void AddTrackID(int d) { StatsOptical.trackID.push_back(d); }
 
     // ░█████╗░██████╗░████████╗██╗░█████╗░░█████╗░██╗░░░░░
     // ██╔══██╗██╔══██╗╚══██╔══╝██║██╔══██╗██╔══██╗██║░░░░░
@@ -185,6 +206,7 @@ class SCOPSimEventAction : public G4UserEventAction {
     // ░╚════╝░╚═╝░░░░░░░░╚═╝░░░╚═╝░╚════╝░╚═╝░░╚═╝╚══════╝
 
     // Functions for Optical Tree
+    void SetTrackLength(float d) { StatsOptical.PrimaryTrackLength = d;}
     void CountCerenkovLMO() { StatsOptical.CerenkovLMO++; }
     void CountScintillationLMO() { StatsOptical.ScintillationLMO++; }
     void CountReemissionLMO() { StatsOptical.ReemissionLMO++; }
@@ -238,6 +260,12 @@ class SCOPSimEventAction : public G4UserEventAction {
     void FillDetectedTrackLengthLD2(float e) {
         StatsOptical.DetectedTrackLengthLD2.push_back(e);
     }
+    void FillAncestorIDLD1(float e) {
+        StatsOptical.AncestorIDLD1.push_back(e);
+    }
+    void FillAncestorIDLD2(float e) {
+        StatsOptical.AncestorIDLD2.push_back(e);
+    }
     void FillAbsorbedTrackLength(float e) {
         StatsOptical.AbsorbedTrackLength.push_back(e);
     }
@@ -270,8 +298,13 @@ class SCOPSimEventAction : public G4UserEventAction {
     }
     void SetAirIndex(float a) { Air_Index = a; }
     float GetAirIndex() { return Air_Index; }
-
-    void AddEnergyDepositLMO(float d){energy_deposit_electron_LMO += d; }
+    void AddEnergyDepositLMO(float d){energy_deposit_electron_LMO += d;}
+    void AddToAncestorIDList(int e) {
+        StatsOptical.AncestorIDList.push_back(e);
+    }
+    void AddToAncestorNameList(G4String e) {
+        StatsOptical.AncestorNameList.push_back(e);
+    }
 
     /** Accessors for generic detector statistics */
     RunTallySc &GetLMO() { return StatsLMO; }

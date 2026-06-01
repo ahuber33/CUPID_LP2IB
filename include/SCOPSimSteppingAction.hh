@@ -19,6 +19,7 @@
 #include "G4OpBoundaryProcess.hh"
 #include "G4UserSteppingAction.hh"
 #include "SCOPSimRunAction.hh"
+#include "TrackDecayInfo.hh"
 
 class SCOPSimSteppingAction : public G4UserSteppingAction {
   public:
@@ -54,6 +55,7 @@ class SCOPSimSteppingAction : public G4UserSteppingAction {
     void SetPhotonDetectedInformationLD2(const G4Step *,
                                    SCOPSimEventAction *);
     void SetInitialInformations(const G4Step *, SCOPSimEventAction *);
+    void SetParticleIDs(SCOPSimEventAction *evtac);
 
     /**
      * @brief Stepping action executed at each Geant4 step.
@@ -95,6 +97,7 @@ class SCOPSimSteppingAction : public G4UserSteppingAction {
     G4int trackID = 0;           ///< Current track ID
     G4int stepNo = 0;            ///< Step number in the current track
     G4String endproc;            ///< Process at track end
+    G4String creatorproc;            ///< Creator Process
     G4String volumeNamePreStep;  ///< Volume name at pre-step point
     G4String volumeNamePostStep; ///< Volume name at post-step point
     G4double angle = 0.0;

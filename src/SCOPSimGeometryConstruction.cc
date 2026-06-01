@@ -1316,6 +1316,19 @@ void SCOPSimGeometryConstruction::ConstructSecondaryModules() {
     new G4PVPlacement(nullptr, G4ThreeVector(28*mm-112*mm, 80*mm, 0*mm), LogicalModule, "Module", LogicalHolder, false, 5);
 }
 
+void SCOPSimGeometryConstruction::ConstructMylar() {
+    auto matMylar = SCOPSimMaterials::getInstance()->getMaterial("Mylar");
+
+    G4Box* SolidMylar = new G4Box("Mylar", 0.006*mm, 25*mm, 25*mm);
+
+    G4LogicalVolume* LogicalMylar = new G4LogicalVolume( SolidMylar, matMylar, "Mylar", 0, 0, 0 );
+
+    G4VPhysicalVolume* PhysicalMylar = new G4PVPlacement(
+        G4Transform3D(DontRotate, G4ThreeVector(-40*mm, 0*mm, 0*mm)),
+        LogicalMylar, "Mylar", LogicalHolder, false, 0);
+
+}
+
 /**
  * @brief Construct the full detector geometry for the simulation.
  *
@@ -1366,6 +1379,7 @@ G4VPhysicalVolume *SCOPSimGeometryConstruction::Construct() {
     if (buildSecModules){
         ConstructSecondaryModules(); // contruct secondary modules
     }
+    //ConstructMylar();              // to smear an alpha source
 
     G4cout << "END OF THE DETECTOR CONSTRUCTION" << G4endl;
 
