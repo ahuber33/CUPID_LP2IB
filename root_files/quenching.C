@@ -1,12 +1,13 @@
 void quenching(){
 
-TFile *f_el = TFile::Open("../Resultats/output_gamma.root");
-TFile *f_alph = TFile::Open("../Resultats/output_alpha.root");
+TFile *f_el = TFile::Open("../Resultats/output_ELECTRON.root");
+TFile *f_alph = TFile::Open("../Resultats/output_ALPHA.root");
 TTree *Optical_tree_el = (TTree*)f_el->Get("Optical");
 TTree *Optical_tree_alph = (TTree*)f_alph->Get("Optical");
 
 TCanvas *c1 = new TCanvas("c1", "LY");
 TCanvas *c2 = new TCanvas("c2", "light/heat");
+TCanvas *c3 = new TCanvas("c3", "lat");
 
 TH1* h1 = new TH1I("h1", "e- Yield [kev/MeV]", 100.0, 0.0, 0.0);
 TH1* h2 = new TH1I("h2", "alpha Yield [kev/MeV]", 100.0, 0.0, 0.0);
@@ -104,11 +105,38 @@ mg1->Draw("APPMC");
 c2->cd(2);
 g2el->SetMarkerStyle(20);
 g2alph->SetMarkerStyle(20);
+g2el->SetMarkerColor(4);
+g2alph->SetMarkerColor(94);
 TMultiGraph *mg2 = new TMultiGraph();
 mg2->Add(g2el);
 mg2->Add(g2alph);
 mg2->GetYaxis()->SetTitle("LY [keV/MeV]");
 mg2->GetXaxis()->SetTitle("Energy [keV]");
-mg2->Draw("APPMC");
+mg2->Draw("AP");
+
+auto legend = new TLegend(0.9,0.7,0.8,0.9);
+legend->AddEntry(g2el, "e-", "P");
+legend->AddEntry(g2alph, "#alpha", "P");
+legend->Draw();
+
+
+c3->cd();
+c3->SetWindowSize(950, 600);
+gStyle->SetLabelSize(0.06, "XY");
+gStyle->SetTitleSize(0.06, "XY");
+g2el->SetMarkerColor(4);
+g2alph->SetMarkerColor(94);
+TMultiGraph *mg3 = new TMultiGraph();
+mg3->Add(g2el);
+mg3->Add(g2alph);
+mg3->GetYaxis()->SetTitle("LY [keV/MeV]");
+mg3->GetXaxis()->SetTitle("Energy [keV]");
+mg3->GetYaxis()->SetRangeUser(0.,0.485);
+mg3->Draw("AP");
+
+auto legend2 = new TLegend(0.9,0.7,0.8,0.9);
+legend2->AddEntry(g2el, "e-", "P");
+legend2->AddEntry(g2alph, "#alpha", "P");
+legend2->Draw();
 
 }

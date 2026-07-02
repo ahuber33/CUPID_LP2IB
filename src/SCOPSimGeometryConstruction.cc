@@ -1314,6 +1314,8 @@ void SCOPSimGeometryConstruction::ConstructSecondaryModules() {
     new G4PVPlacement(nullptr, G4ThreeVector(28*mm-112*mm, -80*mm, 0*mm), LogicalModule, "Module", LogicalHolder, false, 3);
     new G4PVPlacement(nullptr, G4ThreeVector(28*mm-112*mm, 0*mm, 0*mm), LogicalModule, "Module", LogicalHolder, false, 4);
     new G4PVPlacement(nullptr, G4ThreeVector(28*mm-112*mm, 80*mm, 0*mm), LogicalModule, "Module", LogicalHolder, false, 5);
+
+    SetLogicalVolumeColor(LogicalModule, "invis");
 }
 
 void SCOPSimGeometryConstruction::ConstructMylar() {
@@ -1365,7 +1367,7 @@ G4VPhysicalVolume *SCOPSimGeometryConstruction::Construct() {
 
     // --- Geometry conditions -------------------------------------------------
     buildSecModules = false;     // build secondary modules
-    buildStructure = true;       // build structure volumes (Copper, PTFE)
+    buildStructure = false;       // build structure volumes (Copper, PTFE)
     diffLMOsurfaces = false;     // use 6 differents surface states for the LMO
 
     if (buildStructure){         // ensure that we don't use 6 surfaces for the

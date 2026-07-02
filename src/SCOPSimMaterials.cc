@@ -93,7 +93,7 @@ SCOPSimMaterials::SCOPSimMaterials() : fMaterialsList{} {
     // Vacuum //
     std::vector<G4double> energy_vacuum = {1.5 * eV, 5.0 * eV};
     std::vector<G4double> refractive_index_vacuum = {1.0, 1.0};
-    std::vector<G4double> absorption_vacuum = {100. *m, 100. *m};
+    std::vector<G4double> absorption_vacuum = {100000. *m, 100000. *m};
 
     auto mptVacuum = new G4MaterialPropertiesTable();
     mptVacuum->AddProperty("RINDEX", energy_vacuum, refractive_index_vacuum);

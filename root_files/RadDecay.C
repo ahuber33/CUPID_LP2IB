@@ -14,7 +14,7 @@ TGraph* g2ga = new TGraph();
 
 
 //vector<std::string> filenames = {"../Resultats/decay/output_210Po.root", "../Resultats/decay/output_208Tl.root", "../Resultats/decay/output_238U.root"};*
-vector<std::string> filenames = {"../Resultats/output_238Ulong.root"};
+vector<std::string> filenames = {"../Resultats/output_alph.root", "../Resultats/output_alph2.root"};
 
 for (int n = 0; n < filenames.size(); n++)
 {

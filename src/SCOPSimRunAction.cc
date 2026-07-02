@@ -112,6 +112,7 @@ static void CreateScBranches(TTree *tree, RunTallySc &stats) {
  */
 static void CreateOpticalBranches(TTree *tree, RunTallyOptical &stats) {
     tree->Branch("incident_E", &stats.IncidentE, "incident_E/F");
+    tree->Branch("primary_track_length", &stats.PrimaryTrackLength, "primary_track_length/F");
     tree->Branch("deposit_LMO", &stats.DepositLMO, "deposit_LMO/F");
     tree->Branch("scintillation_LMO", &stats.ScintillationLMO,
                  "scintillation_LMO/I");
@@ -171,7 +172,6 @@ static void CreateOpticalBranches(TTree *tree, RunTallyOptical &stats) {
     tree->Branch("ancestorID_LD2", "vector<int>", &stats.AncestorIDLD2);
     tree->Branch("list_ancestorID", "vector<int>", &stats.AncestorIDList);
     tree->Branch("list_ancestorName", "vector<string>", &stats.AncestorNameList);
-    tree->Branch("primary_track_length", "primary_track_length/F", &stats.PrimaryTrackLength);
 }
 
 //---------------------------------------------------------

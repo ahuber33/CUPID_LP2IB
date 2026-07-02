@@ -5,15 +5,15 @@ void LD1_multimodels(){
     const char *models[] = {"unified"};
     int i, j;
     for (i = 0; i < 1; i++) {
-        for (j = 1; j <= 10; j+=10) {
+        for (j = 45; j <= 85; j+=1) {
             char filename[50];
-            double RINDEX = j*0.000001;
-            snprintf(filename, sizeof(filename), "output_%.1fmm", RINDEX);
+            double RINDEX = j;
+            snprintf(filename, sizeof(filename), "output_Si_SiN_%.0fmm", RINDEX);
             //snprintf(filename, sizeof(filename), "output_%s_dielectric_dielectric_ground_%.1f", models[i], polish);
             //std::cout<<"------------------------------------------------------------------"<<std::endl;output_30nm_n=1.0.root
             //std::cout<<"opening file "<<filename<<std::endl;
 
-            TString filepath = "../Resultats/cut/";
+            TString filepath = "../Resultats/coating_thickness/";
             filepath += filename;
             filepath += ".root";
             //std::cout<<"opening file "<<filepath<<std::endl;
@@ -28,10 +28,12 @@ void LD1_multimodels(){
             float E_dep_eV;
             int detected;
             vector<float>* detected_wavelength_LD1 = nullptr;
+            vector<float>* detected_wavelength_LD2 = nullptr;
 
             Optical_tree->SetBranchAddress("deposited_energy_event", &E_dep_event_LMO);
             Optical_tree->SetBranchAddress("detected_LD1", &detected);
             Optical_tree->SetBranchAddress("detected_wavelength_LD1", &detected_wavelength_LD1);
+            Optical_tree->SetBranchAddress("detected_wavelength_LD2", &detected_wavelength_LD2);
 
             for (int i = 0; i < Optical_tree->GetEntries(); i++)
             {
@@ -41,6 +43,10 @@ void LD1_multimodels(){
                 for(int j=0;j<(detected_wavelength_LD1->size());j++)
                 {
                     E_dep_eV += (1240 / detected_wavelength_LD1->at(j));
+                }
+                for(int j=0;j<(detected_wavelength_LD2->size());j++)
+                {
+                    E_dep_eV += (1240 / detected_wavelength_LD2->at(j));
                 }
 
                 h2->Fill(E_dep_eV/E_dep_event_LMO);

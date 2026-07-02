@@ -56,28 +56,30 @@
 ########## PART TO SIMULATE PARTICLE WITH GPS (no setgun) #########
 ###################################################################
 # ---------------- Generate particle in crystal ---------------------------
-/gps/particle alpha                            # Set particle type
-#/gps/energy 1 MeV                           # Particle energy
+/gps/particle e-                            # Set particle type
+/gps/energy 1 MeV                           # Particle energy
 
-#/gps/pos/type Volume
-#/gps/pos/shape Para
-#/gps/pos/halfx 22.5 mm
-#/gps/pos/halfy 22.5 mm
-#/gps/pos/halfz 22.5 mm
-#/gps/pos/centre 0.0 0.0 0.0 mm              # Particle start position
-#/gps/ang/type iso                           # Particle isotropic direction
+/gps/pos/type Volume
+/gps/pos/shape Para
+/gps/pos/halfx 22.5 mm
+/gps/pos/halfy 22.5 mm
+/gps/pos/halfz 22.5 mm
+/gps/pos/centre 0.0 0.0 0.0 mm              # Particle start position
+/gps/ang/type iso                           # Particle isotropic direction
 # -------------------------------------------------------------------------
 
 # ---------------- Generate decaying source outside -----------------------
 #/gps/particle ion
 #/gps/energy 0. MeV                           # Particle energy
 #/gps/ion 92 238 0 0
-/gps/pos/centre -45 0.0 0.0 mm               # Particle start position
-/gps/direction 1.0 0.0 0.0                    # Particle direction along Y-axis
+#/gps/pos/centre -25 0.0 0.0 mm               # Particle start position
+#/gps/direction -1.0 0.0 0.0                    # Particle direction along Y-axis
+#/gps/ang/maxtheta 0 deg
+#/gps/ang/maxtheta 90 deg
 
 
-/gps/ene/type Lin
-/gps/ene/gradient 0
-/gps/ene/intercept 1
-/gps/ene/min 2000 keV
-/gps/ene/max 6000 keV
+#/gps/ene/type Lin
+#/gps/ene/gradient 0
+#/gps/ene/intercept 1
+#/gps/ene/min 5000 keV
+#/gps/ene/max 5001 keV
